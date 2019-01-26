@@ -22,16 +22,18 @@ MAP_FILE = $(OUTPUT_DIR)/$(OUTNAME).map
 SYM_FILE = $(OUTPUT_DIR)/$(OUTNAME).sym
 
 ASM_SRCS = $(wildcard $(PRJ_HOME)/boot/$(TARGET)/*.S)
-ASM_OBJS = $(patsubst %.S, $(OUTPUT_DIR)/%.os, $(ASM_SRCS))
+ASM_OBJS = $(patsubst $(PRJ_HOME)/boot/$(TARGET)/%.S, $(OUTPUT_DIR)/%.os, $(ASM_SRCS))
 
-VPATH = boot 			\
-        hal/$(TARGET)	\
+VPATH = boot/$(TARGET) 			\
+        hal/$(TARGET)	                \
+        hal/src	                        \
         lib				\
-        lib/$(ARM_ARCH)				\
+        lib/$(ARM_ARCH)			\
         kernel
 
-C_SRCS  = $(notdir $(wildcard $(PRJ_HOME)/boot/*.c))
+C_SRCS  = $(notdir $(wildcard $(PRJ_HOME)/boot/$(TARGET)/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/hal/$(TARGET)/*.c))
+C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/hal/src/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/lib/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/lib/$(ARM_ARCH)/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/kernel/*.c))
@@ -45,13 +47,15 @@ INC_DIRS  = -I boot/$(TARGET)           \
             -I lib/$(ARM_ARCH)		\
             -I kernel
 
-CFLAGS = -c -g -std=c11 -mthumb-interwork -mlittle-endian
-CFLAGS += -O2 -Wall
-CFLAGS += -mcpu=$(MCPU) -m$(ARMTHMODE) $(INC_DIRS)
-CFLAGS += -Wl,--gc-sections
-CFLAGS += $(USR_DEFINE)
+COMMON_FLG = -mfloat-abi=hard -mfpu=fpv4-sp-d16 -mthumb-interwork -mlittle-endian
+COMMON_FLG += -mcpu=$(MCPU) -m$(ARMTHMODE)
 
-LDFLAGS = -nostartfiles -nostdlib -nodefaultlibs -static -lgcc
+CFLAGS = -c -g -std=c11 
+CFLAGS += -O2 -Wall
+CFLAGS += $(USR_DEFINE) $(INC_DIRS)
+CFLAGS += $(COMMON_FLG) 
+
+LDFLAGS = -Wl,--gc-sections $(COMMON_FLG)
 
 navilos = $(OUTPUT_DIR)/$(OUTNAME).axf
 navilos_bin = $(OUTPUT_DIR)/$(OUTNAME).bin
@@ -60,19 +64,28 @@ navilos_bin = $(OUTPUT_DIR)/$(OUTNAME).bin
 
 all: $(navilos)
 
+burn: $(navilos)
+	sudo stm32flash -w $(navilos_bin) -v -g 0x0 /dev/ttyUSB0
+    
+
 clean:
-	@rm -fr out 
+	@echo "Delete.. " $(OUTPUT_DIR) 
+	@rm -fr $(OUTPUT_DIR) 
 	
 $(navilos): $(ASM_OBJS) $(C_OBJS)
-	$(LD) -n -T $(LINKER_SCRIPT) -o $(navilos) $(ASM_OBJS) $(C_OBJS) -Wl,-Map=$(MAP_FILE) $(LDFLAGS)
-	$(OD) -t $(navilos) > $(SYM_FILE)
-	$(OC) -O binary $(navilos) $(navilos_bin)
+	@echo "Linking.."
+	@echo "Generate binary.. " $(navilos_bin)
+	@$(LD) $(ASM_OBJS) $(C_OBJS) -o $(navilos) -n -T $(LINKER_SCRIPT) -Wl,-Map=$(MAP_FILE) $(LDFLAGS)
+	@$(OD) -t $(navilos) > $(SYM_FILE)
+	@$(OC) -O binary $(navilos) $(navilos_bin)
 	
 $(OUTPUT_DIR)/%.os: %.S
-	mkdir -p $(shell dirname $@)
-	$(CC) $(CFLAGS) -o $@ $<
+	@echo "compile " $<
+	@mkdir -p $(shell dirname $@)
+	@$(CC) $(CFLAGS) -o $@ $<
 	
 $(OUTPUT_DIR)/%.o: %.c
-	mkdir -p $(shell dirname $@)
-	$(CC) $(CFLAGS) -o $@ $<
+	@echo "compile " $<
+	@mkdir -p $(shell dirname $@)
+	@$(CC) $(CFLAGS) -o $@ $<
 	

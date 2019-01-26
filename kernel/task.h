@@ -12,7 +12,7 @@
 
 #define NOT_ENOUGH_TASK_NUM     0xFFFFFFFF
 
-#define USR_TASK_STACK_SIZE     0x100000
+#define USR_TASK_STACK_SIZE     0x100
 #define MAX_TASK_NUM            (TASK_STACK_SIZE / USR_TASK_STACK_SIZE)
 
 typedef struct KernelTaskContext_t

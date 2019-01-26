@@ -1,14 +1,5 @@
 #include "main.h"
 
-void delay(int millis) {
-    while (millis-- > 0) {
-        volatile int x = 5971;
-        while (x-- > 0) {
-            __asm("nop");
-        }
-    }
-}
-
 int get_string_length(const char* s) {
     int len=0;
     while (s[len] != 0) {
@@ -169,6 +160,6 @@ int main(void) {
     // main loop
     while (1) {
         // do nothing
-        usart_send_line("yi manwoo\r\n");
+        usart_send_line("yi manwoo chunjae\r\n");
     }
 }

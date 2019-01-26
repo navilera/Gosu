@@ -1,3 +1,3 @@
 #!/bin/bash
 
-make -f build/bluepill/Makefile
+make -f build/bluepill/Makefile $1
