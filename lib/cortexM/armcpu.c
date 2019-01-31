@@ -9,8 +9,7 @@
 
 void enable_irq(void)
 {
-	__asm__ ("mov r12, 0x00000000");
-	__asm__ ("msr BASEPRI, r12":::"r12");
+	__asm__ ("cpsie i");
 }
 
 void enable_fiq(void)
@@ -20,8 +19,7 @@ void enable_fiq(void)
 
 void disable_irq(void)
 {
-	__asm__ ("mov r12, 0x00000080");
-	__asm__ ("msr BASEPRI, r12":::"r12");
+	__asm__ ("cpsid i");
 }
 
 void disable_fiq(void)

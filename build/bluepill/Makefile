@@ -26,14 +26,14 @@ ASM_OBJS = $(patsubst $(PRJ_HOME)/boot/$(TARGET)/%.S, $(OUTPUT_DIR)/%.os, $(ASM_
 
 VPATH = boot/$(TARGET) 			\
         hal/$(TARGET)	                \
-        hal/src	                        \
+        hal/$(TARGET)/src       \
         lib				\
         lib/$(ARM_ARCH)			\
         kernel
 
 C_SRCS  = $(notdir $(wildcard $(PRJ_HOME)/boot/$(TARGET)/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/hal/$(TARGET)/*.c))
-C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/hal/src/*.c))
+C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/hal/$(TARGET)/src/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/lib/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/lib/$(ARM_ARCH)/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/kernel/*.c))
