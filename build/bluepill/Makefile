@@ -83,9 +83,11 @@ $(OUTPUT_DIR)/%.os: %.S
 	@echo "compile " $<
 	@mkdir -p $(shell dirname $@)
 	@$(CC) $(CFLAGS) -o $@ $<
+	@$(OD) -d $@ > $@.dump
 	
 $(OUTPUT_DIR)/%.o: %.c
 	@echo "compile " $<
 	@mkdir -p $(shell dirname $@)
 	@$(CC) $(CFLAGS) -o $@ $<
+	@$(OD) -d $@ > $@.dump
 	

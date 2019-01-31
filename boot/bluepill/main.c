@@ -1,5 +1,8 @@
 #include "main.h"
 
+#include "stdbool.h"
+#include "Kernel.h"
+
 int get_string_length(const char* s) {
     int len=0;
     while (s[len] != 0) {
@@ -149,6 +152,40 @@ void USART1_IRQHandler() {
     }
 }
 
+void User_task0(void);
+void User_task1(void);
+void User_task2(void);
+
+static void Kernel_init(void)
+{
+    uint32_t taskId;
+
+    Kernel_task_init();
+
+    taskId = Kernel_task_create(User_task0);
+    if (NOT_ENOUGH_TASK_NUM == taskId)
+    {
+        //putstr("Task0 creation fail\n");
+    	usart_send_line("Task0 creation fail\n");
+    }
+
+    taskId = Kernel_task_create(User_task1);
+    if (NOT_ENOUGH_TASK_NUM == taskId)
+    {
+        //putstr("Task1 creation fail\n");
+    	usart_send_line("Task1 creation fail\n");
+    }
+
+    taskId = Kernel_task_create(User_task2);
+    if (NOT_ENOUGH_TASK_NUM == taskId)
+    {
+        //putstr("Task2 creation fail\n");
+    	usart_send_line("Task2 creation fail\n");
+    }
+
+    Kernel_start();
+}
+
 int main(void) {
 
     // initialize output ports
@@ -157,9 +194,85 @@ int main(void) {
     // initialize USART
     usart_init();
 
+    usart_send_line("Start Navilos");
+
+    Kernel_init();
+
     // main loop
-    while (1) {
-        // do nothing
-        usart_send_line("yi manwoo chunjae\r\n");
-    }
+    while (1);
+}
+
+void User_task0(void)
+{
+	int a = 1;
+	int b = 2;
+	int c = 0;
+
+	while (1)
+	{
+		usart_send_line("Task0 before context switch : ");
+		usart_send(0x30 + a); usart_send(' '); usart_send(0x30 + b);
+		usart_send_newline();
+
+		c = a + b;
+
+		Kernel_yield();
+
+		usart_send_line("Task0 after context switch : ");
+		usart_send(0x30 + c);
+		usart_send_newline();
+
+		a++;
+		b++;
+	}
+}
+
+void User_task1(void)
+{
+	int a = 3;
+	int b = 4;
+	int c = 0;
+
+	while (1)
+	{
+		usart_send_line("Task1 before context switch : ");
+		usart_send(0x30 + a); usart_send(' '); usart_send(0x30 + b);
+		usart_send_newline();
+
+		c = a + b;
+
+		Kernel_yield();
+
+		usart_send_line("Task1 after context switch : ");
+		usart_send(0x30 + c);
+		usart_send_newline();
+
+		a++;
+		b++;
+	}
+}
+
+void User_task2(void)
+{
+	int a = 5;
+	int b = 6;
+	int c = 0;
+
+	while (1)
+	{
+		usart_send_line("Task2 before context switch : ");
+		usart_send(0x30 + a); usart_send(' '); usart_send(0x30 + b);
+		usart_send_newline();
+
+		c = a + b;
+
+		Kernel_yield();
+
+		usart_send_line("Task2 after context switch : ");
+		usart_send(0x30 + c);
+		usart_send_newline();
+
+		a++;
+		b++;
+	}
 }
