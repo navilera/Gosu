@@ -16,7 +16,6 @@
 
 #include "MemoryMap.h"
 
-#define USR_TASK_STACK_SIZE     0x100
 #define MAX_TASK_NUM            (TASK_STACK_SIZE / USR_TASK_STACK_SIZE)
 
 KernelTcb_t* gCurrent_tcb;

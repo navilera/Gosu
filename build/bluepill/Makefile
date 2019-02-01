@@ -3,10 +3,10 @@ ARMTHMODE = thumb
 ARM_ARCH = cortexM
 
 SOC = stm32f10c8
-TARGET = bluepill
+BOARD = bluepill
 OUTNAME = gosu
 
-USR_DEFINE = -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER
+USR_DEFINE = -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F103xB
 
 CC = arm-none-eabi-gcc
 AS = arm-none-eabi-as
@@ -17,34 +17,40 @@ OD = arm-none-eabi-objdump
 PRJ_HOME = .
 OUTPUT_DIR = $(PRJ_HOME)/out
 
-LINKER_SCRIPT = $(PRJ_HOME)/build/$(TARGET)/$(SOC).ld
+LINKER_SCRIPT = $(PRJ_HOME)/build/$(BOARD)/$(SOC).ld
 MAP_FILE = $(OUTPUT_DIR)/$(OUTNAME).map
 SYM_FILE = $(OUTPUT_DIR)/$(OUTNAME).sym
 
-ASM_SRCS = $(wildcard $(PRJ_HOME)/boot/$(TARGET)/*.S)
-ASM_OBJS = $(patsubst $(PRJ_HOME)/boot/$(TARGET)/%.S, $(OUTPUT_DIR)/%.os, $(ASM_SRCS))
+ASM_SRCS = $(wildcard $(PRJ_HOME)/boot/$(BOARD)/*.S)
+ASM_OBJS = $(patsubst $(PRJ_HOME)/boot/$(BOARD)/%.S, $(OUTPUT_DIR)/%.os, $(ASM_SRCS))
 
-VPATH = boot/$(TARGET) 			\
-        hal/$(TARGET)	                \
-        hal/$(TARGET)/src       \
+VPATH = boot/$(BOARD) 			\
+        hal/$(BOARD)	                \
+        hal/$(BOARD)/src       \
         lib				\
         lib/$(ARM_ARCH)			\
+        app/$(BOARD)	\
+        app/			\
         kernel
 
-C_SRCS  = $(notdir $(wildcard $(PRJ_HOME)/boot/$(TARGET)/*.c))
-C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/hal/$(TARGET)/*.c))
-C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/hal/$(TARGET)/src/*.c))
+C_SRCS  = $(notdir $(wildcard $(PRJ_HOME)/boot/$(BOARD)/*.c))
+C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/hal/$(BOARD)/*.c))
+C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/hal/$(BOARD)/src/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/lib/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/lib/$(ARM_ARCH)/*.c))
+C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/app/$(BOARD)/*.c))
+C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/app/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/kernel/*.c))
 C_OBJS = $(patsubst %.c, $(OUTPUT_DIR)/%.o, $(C_SRCS))
 
-INC_DIRS  = -I boot/$(TARGET)           \
+INC_DIRS  = -I boot/$(BOARD)           \
             -I include 			\
             -I hal	   		\
-            -I hal/$(TARGET)	        \
+            -I hal/$(BOARD)	        \
             -I lib			\
             -I lib/$(ARM_ARCH)		\
+            -I app/$(BOARD)		\
+            -I app/				\
             -I kernel
 
 COMMON_FLG = -mfloat-abi=hard -mfpu=fpv4-sp-d16 -mthumb-interwork -mlittle-endian

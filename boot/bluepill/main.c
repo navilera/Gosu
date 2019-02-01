@@ -3,7 +3,12 @@
 #include "stdio.h"
 #include "Kernel.h"
 
+#include "stm32f1xx_hal.h"
+
 #include "HalUart.h"
+#include "HalTimer.h"
+#include "HalGpio.h"
+#include "HalUsb.h"
 
 void User_task0(void);
 void User_task1(void);
@@ -36,11 +41,28 @@ static void Kernel_init(void)
     Kernel_start();
 }
 
-int main(void) {
+static void Hw_init(void)
+{
+	HAL_Init();
 
 	Hal_uart_init();
+	debug_printf("Uart Init Done\n");
 
-	putstr("Start Navilos\n");
+	Hal_timer_init();
+	debug_printf("Timer Init Done\n");
+
+	Hal_gpio_init();
+	debug_printf("GPIO Init Done\n");
+
+	Hal_usb_init();
+	debug_printf("USB Init Done\n");
+}
+
+int main(void) {
+
+	Hw_init();
+
+	debug_printf("Start Navilos\n");
 
     Kernel_init();
 
@@ -62,7 +84,7 @@ void User_task0(void)
 
 		Kernel_yield();
 
-		debug_printf("Task0 after context switch : %u\n", c);
+		debug_printf("Task0 after context switch (0x%x) : %u\n", &c, c);
 
 		a++;
 		b++;
@@ -83,7 +105,7 @@ void User_task1(void)
 
 		Kernel_yield();
 
-		debug_printf("Task1 after context switch : %u\n", c);
+		debug_printf("Task1 after context switch (0x%x) : %u\n", &c, c);
 
 		a++;
 		b++;
@@ -104,7 +126,7 @@ void User_task2(void)
 
 		Kernel_yield();
 
-		debug_printf("Task2 after context switch : %u\n", c);
+		debug_printf("Task2 after context switch (0x%x) : %u\n", &c, c);
 
 		a++;
 		b++;
