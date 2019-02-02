@@ -570,8 +570,10 @@ void HAL_PCD_IRQHandler(PCD_HandleTypeDef *hpcd)
   */
 void HAL_PCD_IRQHandler(PCD_HandleTypeDef *hpcd)
 { 
+	debug_printf("hal pcd irq handler...\n");
   if (__HAL_PCD_GET_FLAG (hpcd, USB_ISTR_CTR))
   {
+	  debug_printf("usb ctrl?\n");
     /* servicing of the endpoint correct transfer interrupt */
     /* clear of the CTR flag into the sub */
     PCD_EP_ISR_Handler(hpcd);
@@ -579,6 +581,7 @@ void HAL_PCD_IRQHandler(PCD_HandleTypeDef *hpcd)
 
   if (__HAL_PCD_GET_FLAG (hpcd, USB_ISTR_RESET))
   {
+	  debug_printf("usb reset?\n");
     __HAL_PCD_CLEAR_FLAG(hpcd, USB_ISTR_RESET);
     HAL_PCD_ResetCallback(hpcd);
     HAL_PCD_SetAddress(hpcd, 0U);
@@ -586,15 +589,18 @@ void HAL_PCD_IRQHandler(PCD_HandleTypeDef *hpcd)
 
   if (__HAL_PCD_GET_FLAG (hpcd, USB_ISTR_PMAOVR))
   {
+	  debug_printf("usb USB_ISTR_PMAOVR?\n");
     __HAL_PCD_CLEAR_FLAG(hpcd, USB_ISTR_PMAOVR);    
   }
   if (__HAL_PCD_GET_FLAG (hpcd, USB_ISTR_ERR))
   {
+	  debug_printf("usb USB_ISTR_ERR?\n");
     __HAL_PCD_CLEAR_FLAG(hpcd, USB_ISTR_ERR); 
   }
 
   if (__HAL_PCD_GET_FLAG (hpcd, USB_ISTR_WKUP))
   {
+	  debug_printf("usb USB_ISTR_WKUP?\n");
     hpcd->Instance->CNTR &= ~(USB_CNTR_LP_MODE);
     hpcd->Instance->CNTR &= ~(USB_CNTR_FSUSP);
     
@@ -605,6 +611,7 @@ void HAL_PCD_IRQHandler(PCD_HandleTypeDef *hpcd)
 
   if (__HAL_PCD_GET_FLAG (hpcd, USB_ISTR_SUSP))
   { 
+	  debug_printf("usb USB_ISTR_SUSP?\n");
     /* Force low-power mode in the macrocell */
     hpcd->Instance->CNTR |= USB_CNTR_FSUSP;
     
@@ -620,12 +627,14 @@ void HAL_PCD_IRQHandler(PCD_HandleTypeDef *hpcd)
 
   if (__HAL_PCD_GET_FLAG (hpcd, USB_ISTR_SOF))
   {
+	  debug_printf("usb USB_ISTR_SOF?\n");
     __HAL_PCD_CLEAR_FLAG(hpcd, USB_ISTR_SOF); 
     HAL_PCD_SOFCallback(hpcd);
   }
 
   if (__HAL_PCD_GET_FLAG (hpcd, USB_ISTR_ESOF))
   {
+	  debug_printf("usb USB_ISTR_ESOF?\n");
     /* clear ESOF flag in ISTR */
     __HAL_PCD_CLEAR_FLAG(hpcd, USB_ISTR_ESOF); 
   }
@@ -702,20 +711,6 @@ void HAL_PCD_IRQHandler(PCD_HandleTypeDef *hpcd)
   UNUSED(hpcd);
   /* NOTE : This function should not be modified, when the callback is needed,
             the HAL_PCD_ResetCallback could be implemented in the user file
-   */
-}
-
-/**
-  * @brief  Suspend event callbacks
-  * @param  hpcd: PCD handle
-  * @retval None
-  */
- __weak void HAL_PCD_SuspendCallback(PCD_HandleTypeDef *hpcd)
-{
-  /* Prevent unused argument(s) compilation warning */
-  UNUSED(hpcd);
-  /* NOTE : This function should not be modified, when the callback is needed,
-            the HAL_PCD_SuspendCallback could be implemented in the user file
    */
 }
 

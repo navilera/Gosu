@@ -45,17 +45,12 @@ static void Hw_init(void)
 {
 	HAL_Init();
 
-	Hal_uart_init();
-	debug_printf("Uart Init Done\n");
-
 	Hal_timer_init();
-	debug_printf("Timer Init Done\n");
-
+	Hal_uart_init();
 	Hal_gpio_init();
-	debug_printf("GPIO Init Done\n");
-
 	Hal_usb_init();
-	debug_printf("USB Init Done\n");
+
+	debug_printf("Hw_init Done\n");
 }
 
 int main(void) {
@@ -76,15 +71,17 @@ void User_task0(void)
 	int b = 2;
 	int c = 0;
 
+	debug_printf("Task0 start stack : %x %x\n", &a, &b);
+
 	while (1)
 	{
-		debug_printf("Task0 before context switch : %u %u\n", a, b);
+		//debug_printf("Task0 before context switch : %u %u\n", a, b);
 
 		c = a + b;
 
 		Kernel_yield();
 
-		debug_printf("Task0 after context switch (0x%x) : %u\n", &c, c);
+		//debug_printf("Task0 after context switch (0x%x) : %u\n", &c, c);
 
 		a++;
 		b++;
@@ -97,15 +94,17 @@ void User_task1(void)
 	int b = 4;
 	int c = 0;
 
+	debug_printf("Task1 start stack : %x %x\n", &a, &b);
+
 	while (1)
 	{
-		debug_printf("Task1 before context switch : %u %u\n", a, b);
+		//debug_printf("Task1 before context switch : %u %u\n", a, b);
 
 		c = a + b;
 
 		Kernel_yield();
 
-		debug_printf("Task1 after context switch (0x%x) : %u\n", &c, c);
+		//debug_printf("Task1 after context switch (0x%x) : %u\n", &c, c);
 
 		a++;
 		b++;
@@ -118,15 +117,17 @@ void User_task2(void)
 	int b = 6;
 	int c = 0;
 
+	debug_printf("Task2 start stack : %x %x\n", &a, &b);
+
 	while (1)
 	{
-		debug_printf("Task2 before context switch : %u %u\n", a, b);
+		//debug_printf("Task2 before context switch : %u %u\n", a, b);
 
 		c = a + b;
 
 		Kernel_yield();
 
-		debug_printf("Task2 after context switch (0x%x) : %u\n", &c, c);
+		//debug_printf("Task2 after context switch (0x%x) : %u\n", &c, c);
 
 		a++;
 		b++;

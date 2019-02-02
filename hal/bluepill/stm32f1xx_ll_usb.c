@@ -1655,6 +1655,7 @@ HAL_StatusTypeDef USB_DevInit (USB_TypeDef *USBx, USB_CfgTypeDef cfg)
   USBx->BTABLE = BTABLE_ADDRESS;
   
   /* Enable USB Device Interrupt mask */
+  debug_printf("USB_DevInit OK..\n");
   USB_EnableGlobalInt(USBx);
     
   return HAL_OK;

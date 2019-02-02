@@ -40,6 +40,8 @@
  extern "C" {
 #endif
 
+#include "stdint.h"
+#include "stdio.h"
 #include "armcpu.h"
 
 /* Exported types ------------------------------------------------------------*/

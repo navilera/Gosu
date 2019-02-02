@@ -188,6 +188,7 @@ void HAL_PCD_ResetCallback(PCD_HandleTypeDef *hpcd)
   */
 void HAL_PCD_SuspendCallback(PCD_HandleTypeDef *hpcd)
 {
+	debug_printf("USB suspend call back\n");
   /* Inform USB library that core enters in suspend Mode */
   USBD_LL_Suspend((USBD_HandleTypeDef*)hpcd->pData);
   /*Enter in STOP mode */
