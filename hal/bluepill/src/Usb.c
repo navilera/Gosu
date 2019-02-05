@@ -10,8 +10,7 @@
 #include "usbd_def.h"
 #include "usbd_core.h"
 #include "usbd_desc.h"
-#include "usbd_customhid.h"
-#include "usbd_custom_hid_if.h"
+#include "usbd_hid.h"
 
 #include "HalUsb.h"
 
@@ -20,11 +19,15 @@ USBD_HandleTypeDef hUsbDeviceFS;
 
 void Hal_usb_init(void)
 {
-	  USBD_Init(&hUsbDeviceFS, &FS_Desc, DEVICE_FS);
+	/* Init Device Library,Add Supported Class and Start the library*/
+	__disable_irq();
 
-	  USBD_RegisterClass(&hUsbDeviceFS, &USBD_CUSTOM_HID);
+	USBD_Init(&hUsbDeviceFS, &FS_Desc, DEVICE_FS);
+	USBD_RegisterClass(&hUsbDeviceFS, &USBD_HID);
+	USBD_Start(&hUsbDeviceFS);
 
-	  USBD_CUSTOM_HID_RegisterInterface(&hUsbDeviceFS, &USBD_CustomHID_fops_FS);
+	debug_printf("USB init Done\n");
 
-	  USBD_Start(&hUsbDeviceFS);
+	__enable_irq();
 }
+

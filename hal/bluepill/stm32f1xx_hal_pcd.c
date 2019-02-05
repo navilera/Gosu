@@ -243,20 +243,6 @@ HAL_StatusTypeDef HAL_PCD_DeInit(PCD_HandleTypeDef *hpcd)
 }
 
 /**
-  * @brief  Initializes the PCD MSP.
-  * @param  hpcd: PCD handle
-  * @retval None
-  */
-__weak void HAL_PCD_MspInit(PCD_HandleTypeDef *hpcd)
-{
-  /* Prevent unused argument(s) compilation warning */
-  UNUSED(hpcd);
-  /* NOTE : This function should not be modified, when the callback is needed,
-            the HAL_PCD_MspInit could be implemented in the user file
-   */
-}
-
-/**
   * @brief  DeInitializes PCD MSP.
   * @param  hpcd: PCD handle
   * @retval None
@@ -570,7 +556,6 @@ void HAL_PCD_IRQHandler(PCD_HandleTypeDef *hpcd)
   */
 void HAL_PCD_IRQHandler(PCD_HandleTypeDef *hpcd)
 { 
-	debug_printf("hal pcd irq handler...\n");
   if (__HAL_PCD_GET_FLAG (hpcd, USB_ISTR_CTR))
   {
 	  debug_printf("usb ctrl?\n");
@@ -700,33 +685,6 @@ void HAL_PCD_IRQHandler(PCD_HandleTypeDef *hpcd)
    */
 }
 
-/**
-  * @brief  USB Reset callbacks
-  * @param  hpcd: PCD handle
-  * @retval None
-  */
- __weak void HAL_PCD_ResetCallback(PCD_HandleTypeDef *hpcd)
-{
-  /* Prevent unused argument(s) compilation warning */
-  UNUSED(hpcd);
-  /* NOTE : This function should not be modified, when the callback is needed,
-            the HAL_PCD_ResetCallback could be implemented in the user file
-   */
-}
-
-/**
-  * @brief  Resume event callbacks
-  * @param  hpcd: PCD handle
-  * @retval None
-  */
- __weak void HAL_PCD_ResumeCallback(PCD_HandleTypeDef *hpcd)
-{
-  /* Prevent unused argument(s) compilation warning */
-  UNUSED(hpcd);
-  /* NOTE : This function should not be modified, when the callback is needed,
-            the HAL_PCD_ResumeCallback could be implemented in the user file
-   */
-}
 
 /**
   * @brief  Incomplete ISO OUT callbacks
@@ -875,10 +833,11 @@ HAL_StatusTypeDef HAL_PCD_EP_Open(PCD_HandleTypeDef *hpcd, uint8_t ep_addr, uint
   ep->is_in = (0x80U & ep_addr) != 0U;
   ep->maxpacket = ep_mps;
   ep->type = ep_type;
-    
+
   __HAL_LOCK(hpcd);
   USB_ActivateEndpoint(hpcd->Instance , ep);
   __HAL_UNLOCK(hpcd);
+
   return ret;
 }
 

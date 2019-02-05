@@ -1,4 +1,4 @@
-MCPU = cortex-m4
+MCPU = cortex-m3
 ARMTHMODE = thumb
 ARM_ARCH = cortexM
 
@@ -6,7 +6,7 @@ SOC = stm32f10c8
 BOARD = bluepill
 OUTNAME = gosu
 
-USR_DEFINE = -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F103xB
+USR_DEFINE = -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F103xB -DUSE_HAL_DRIVER
 
 CC = arm-none-eabi-gcc
 AS = arm-none-eabi-as
@@ -53,7 +53,7 @@ INC_DIRS  = -I boot/$(BOARD)           \
             -I app/				\
             -I kernel
 
-COMMON_FLG = -mfloat-abi=hard -mfpu=fpv4-sp-d16 -mthumb-interwork -mlittle-endian
+COMMON_FLG = -mthumb-interwork -mlittle-endian
 COMMON_FLG += -mcpu=$(MCPU) -m$(ARMTHMODE)
 
 CFLAGS = -c -g -std=c11 

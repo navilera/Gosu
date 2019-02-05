@@ -58,8 +58,9 @@ int main(void) {
 	Hw_init();
 
 	debug_printf("Start Navilos\n");
+	debug_printf("=============\n");
 
-    Kernel_init();
+    //Kernel_init();
 
     // main loop
     while (1);
