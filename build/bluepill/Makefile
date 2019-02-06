@@ -57,11 +57,12 @@ COMMON_FLG = -mthumb-interwork -mlittle-endian
 COMMON_FLG += -mcpu=$(MCPU) -m$(ARMTHMODE)
 
 CFLAGS = -c -g -std=c11 
-CFLAGS += -O2 -Wall
+CFLAGS += -Os -Wall
 CFLAGS += $(USR_DEFINE) $(INC_DIRS)
 CFLAGS += $(COMMON_FLG) 
 
-LDFLAGS = -Wl,--gc-sections $(COMMON_FLG)
+LDFLAGS = -Wl,--cref,--gc-sections $(COMMON_FLG)
+#LDFLAGS += -lc -lgcc
 
 navilos = $(OUTPUT_DIR)/$(OUTNAME).axf
 navilos_bin = $(OUTPUT_DIR)/$(OUTNAME).bin
