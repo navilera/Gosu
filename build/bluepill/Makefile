@@ -6,7 +6,7 @@ SOC = stm32f10c8
 BOARD = bluepill
 OUTNAME = gosu
 
-USR_DEFINE = -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F103xB -DUSE_HAL_DRIVER
+USR_DEFINE = -DSTM32F103xB -DUSE_HAL_DRIVER
 
 CC = arm-none-eabi-gcc
 AS = arm-none-eabi-as
@@ -25,17 +25,17 @@ ASM_SRCS = $(wildcard $(PRJ_HOME)/boot/$(BOARD)/*.S)
 ASM_OBJS = $(patsubst $(PRJ_HOME)/boot/$(BOARD)/%.S, $(OUTPUT_DIR)/%.os, $(ASM_SRCS))
 
 VPATH = boot/$(BOARD) 			\
-        hal/$(BOARD)	                \
-        hal/$(BOARD)/src       \
-        lib				\
+        hal/$(BOARD)	        \
+        hal/$(BOARD)/drivers    \
+        lib						\
         lib/$(ARM_ARCH)			\
-        app/$(BOARD)	\
-        app/			\
+        app/$(BOARD)			\
+        app/					\
         kernel
 
 C_SRCS  = $(notdir $(wildcard $(PRJ_HOME)/boot/$(BOARD)/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/hal/$(BOARD)/*.c))
-C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/hal/$(BOARD)/src/*.c))
+C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/hal/$(BOARD)/drivers/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/lib/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/lib/$(ARM_ARCH)/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/app/$(BOARD)/*.c))
@@ -43,26 +43,26 @@ C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/app/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/kernel/*.c))
 C_OBJS = $(patsubst %.c, $(OUTPUT_DIR)/%.o, $(C_SRCS))
 
-INC_DIRS  = -I boot/$(BOARD)           \
-            -I include 			\
-            -I hal	   		\
-            -I hal/$(BOARD)	        \
-            -I lib			\
-            -I lib/$(ARM_ARCH)		\
-            -I app/$(BOARD)		\
-            -I app/				\
+INC_DIRS  = -I boot/$(BOARD)    		\
+            -I include 					\
+            -I hal	   					\
+            -I hal/$(BOARD)	    		\
+            -I hal/$(BOARD)/drivers	    \
+            -I lib						\
+            -I lib/$(ARM_ARCH)			\
+            -I app/$(BOARD)				\
+            -I app/						\
             -I kernel
 
-COMMON_FLG = -mthumb-interwork -mlittle-endian
-COMMON_FLG += -mcpu=$(MCPU) -m$(ARMTHMODE)
+COMMON_FLG = -mcpu=$(MCPU) -m$(ARMTHMODE)
 
 CFLAGS = -c -g -std=c11 
-CFLAGS += -Os -Wall
+CFLAGS += -Os -Wall -fdata-sections -ffunction-sections
 CFLAGS += $(USR_DEFINE) $(INC_DIRS)
 CFLAGS += $(COMMON_FLG) 
 
-LDFLAGS = -Wl,--cref,--gc-sections $(COMMON_FLG)
-#LDFLAGS += -lc -lgcc
+LDFLAGS = $(COMMON_FLG) -Wl,--cref,--gc-sections
+LDFLAGS += -lc -lm -lnosys
 
 navilos = $(OUTPUT_DIR)/$(OUTNAME).axf
 navilos_bin = $(OUTPUT_DIR)/$(OUTNAME).bin

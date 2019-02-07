@@ -22,13 +22,13 @@
 							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="cdt.managedbuild.targetPlatform.gnu.cross.306623179" isAbstract="false" osList="all" superClass="cdt.managedbuild.targetPlatform.gnu.cross"/>
 							<builder id="cdt.managedbuild.builder.gnu.cross.1786776722" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" superClass="cdt.managedbuild.builder.gnu.cross"/>
 							<tool id="cdt.managedbuild.tool.gnu.cross.c.compiler.1190787182" name="Cross GCC Compiler" superClass="cdt.managedbuild.tool.gnu.cross.c.compiler">
-								<option id="gnu.c.compiler.option.preprocessor.def.symbols.546059547" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
+								<option id="gnu.c.compiler.option.preprocessor.def.symbols.546059547" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="STM32F103xB=1"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.643744332" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.cross.cpp.compiler.2073017443" name="Cross G++ Compiler" superClass="cdt.managedbuild.tool.gnu.cross.cpp.compiler">
-								<option id="gnu.cpp.compiler.option.preprocessor.def.1690473159" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
+								<option id="gnu.cpp.compiler.option.preprocessor.def.1690473159" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="STM32F103xB=1"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1695001902" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
@@ -46,6 +46,27 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
+					<folderInfo id="cdt.managedbuild.toolchain.gnu.cross.base.1032495071.527898841" name="/" resourcePath="out">
+						<toolChain id="cdt.managedbuild.toolchain.gnu.cross.base.958549551" name="Cross GCC" superClass="cdt.managedbuild.toolchain.gnu.cross.base" unusedChildren="">
+							<option id="cdt.managedbuild.option.gnu.cross.prefix.689597268.1923607956" name="Prefix" superClass="cdt.managedbuild.option.gnu.cross.prefix.689597268"/>
+							<option id="cdt.managedbuild.option.gnu.cross.path.268384449.298456532" name="Path" superClass="cdt.managedbuild.option.gnu.cross.path.268384449"/>
+							<tool id="cdt.managedbuild.tool.gnu.cross.c.compiler.511087153" name="Cross GCC Compiler" superClass="cdt.managedbuild.tool.gnu.cross.c.compiler.1190787182">
+								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.8529304" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
+							</tool>
+							<tool id="cdt.managedbuild.tool.gnu.cross.cpp.compiler.198814357" name="Cross G++ Compiler" superClass="cdt.managedbuild.tool.gnu.cross.cpp.compiler.2073017443">
+								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.809201295" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
+							</tool>
+							<tool id="cdt.managedbuild.tool.gnu.cross.c.linker.1328030645" name="Cross GCC Linker" superClass="cdt.managedbuild.tool.gnu.cross.c.linker.68719464"/>
+							<tool id="cdt.managedbuild.tool.gnu.cross.cpp.linker.1403909950" name="Cross G++ Linker" superClass="cdt.managedbuild.tool.gnu.cross.cpp.linker.428276929"/>
+							<tool id="cdt.managedbuild.tool.gnu.cross.archiver.2065145239" name="Cross GCC Archiver" superClass="cdt.managedbuild.tool.gnu.cross.archiver.1258368003"/>
+							<tool id="cdt.managedbuild.tool.gnu.cross.assembler.102840234" name="Cross GCC Assembler" superClass="cdt.managedbuild.tool.gnu.cross.assembler.515119966">
+								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1718777698" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
+							</tool>
+						</toolChain>
+					</folderInfo>
+					<sourceEntries>
+						<entry excluding="out" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name=""/>
+					</sourceEntries>
 				</configuration>
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
