@@ -12,7 +12,7 @@
 #include "HalUart.h"
 
 #include "Kernel.h"
-
+#include "bluepill_def.h" /* boot/bluepill/bluepill_def.h */
 
 #define SYSTEM_US_TICKS (SystemCoreClock / 1000000) // cycles per microsecond
 
@@ -55,12 +55,34 @@ static void Kernel_Init(void)
 
 int main(void)
 {
+  BootMode bmode;
 	HAL_Init();
 	SystemClock_Config();
 
 	Hal_gpio_init();
 	Hal_uart_init();
+  HAL_Init();
+
+  bmode = CheckBootMode();
+
+  /* Initialization stage */
+  switch(bmode) {
+    case bootNormal:
 	App_usb_Init();
+      break;
+
+    case bootKeymapDl:
+      kmapdl_init();
+      break;
+
+    case bootDFU:
+      /* Do Nothing at this time */
+      break;
+
+    default:
+      /* Error */
+      break;
+  }
 
 	Kernel_Init();
 	debug_printf("Navilos Start..\n");
@@ -79,8 +101,24 @@ int main(void)
 		App_hid_send(hidpack, sizeof(hidpack));
 		*/
 	}
-}
+  /* Cleanup stage */
+  switch(bmode) {
+    case bootNormal:
+      break;
 
+    case bootKeymapDl:
+      kmapdl_cleanup();
+      break;
+
+    case bootDFU:
+      /* Do Nothing at this time */
+      break;
+
+    default:
+      /* Error */
+      break;
+  }
+}
 
 void User_task0(void)
 {
@@ -103,6 +141,13 @@ void User_task0(void)
 	}
 }
 
+static BootMode CheckBootMode(void)
+{
+	// get Fn key pressed during keyboard power-up time.
+	// while user presses Fn key, FW enters a keymap download mode or FW update mode.
+	return bootKeymapDl;
+}
+
 void User_task1(void)
 {
 	int a = 3;
@@ -118,12 +163,10 @@ void User_task1(void)
                 Kernel_yield();
 
 		debug_printf("Task1 after context switch : %x\n", &c);
-
-		a++;
+  		a++;
 		b++;
 	}
 }
-
 
 void User_task2(void)
 {
