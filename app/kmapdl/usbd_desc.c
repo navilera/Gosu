@@ -52,11 +52,11 @@
 
 /* Private typedef ----------------------------------------------------------- */
 /* Private define ------------------------------------------------------------ */
-#define USBD_VID                      0x0483
-#define USBD_PID                      0x5740
+#define USBD_VID                      0xCAFE
+#define USBD_PID                      0xDEAD
 #define USBD_LANGID_STRING            0x409
-#define USBD_MANUFACTURER_STRING      "STMicroelectronics"
-#define USBD_PRODUCT_FS_STRING        "STM32 Virtual ComPort in FS Mode"
+#define USBD_MANUFACTURER_STRING      "Polypeak"
+#define USBD_PRODUCT_FS_STRING        "Gosu Virtual ComPort"
 #define USBD_CONFIGURATION_FS_STRING  "VCP Config"
 #define USBD_INTERFACE_FS_STRING      "VCP Interface"
 
