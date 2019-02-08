@@ -9,6 +9,7 @@ extern KernelTcb_t* gNext_tcb;
 
 void Arch_start(void)
 {
+	set_CONTROL(2);
 	Arch_Restore_context();
 }
 
@@ -68,7 +69,7 @@ __attribute__ ((naked)) void Arch_Save_context(void)
     // save current task stack pointer into the current TCB
     __asm__ ("LDR   r0, =gCurrent_tcb");
     __asm__ ("LDR   r0, [r0]");
-    __asm__ ("MRS  	r1, MSP");
+    __asm__ ("MRS  	r1, PSP");
     __asm__ ("STMIA r0!,{r1}");
 }
 
@@ -78,7 +79,7 @@ __attribute__ ((naked)) void Arch_Restore_context(void)
     __asm__ ("LDR   r0, =gNext_tcb");
     __asm__ ("LDR   r0, [r0]");
     __asm__ ("LDMIA r0!,{r1}");
-    __asm__ ("MSR  	MSP,r1");
+    __asm__ ("MSR  	PSP,r1");
     // restore next task context from the next task stack
     __asm__ ("POP  {r0}");
     __asm__ ("MSR  PSR_nzcvq, r0");

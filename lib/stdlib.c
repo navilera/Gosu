@@ -7,7 +7,10 @@
 
 #include "stdint.h"
 #include "stdbool.h"
+#include "stdio.h"
+
 #include "HalTimer.h"
+
 
 void delay(uint32_t ms)
 {
@@ -24,4 +27,10 @@ void memclr(void* dst, uint32_t count)
     {
         *d++ = 0;
     }
+}
+
+void halt(char* filename, uint32_t line)
+{
+	debug_printf("HALT [%s] at (%u)\n", filename, line);
+	while(1);
 }

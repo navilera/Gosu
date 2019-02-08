@@ -2,8 +2,8 @@
   ******************************************************************************
   * @file    usbd_hid.h
   * @author  MCD Application Team
-  * @version V2.4.2
-  * @date    11-December-2015
+  * @version V2.4.1
+  * @date    19-June-2015
   * @brief   Header file for the usbd_hid_core.c file.
   ******************************************************************************
   * @attention
@@ -54,7 +54,7 @@
 
 #define USB_HID_CONFIG_DESC_SIZ       34
 #define USB_HID_DESC_SIZ              9
-#define HID_CUSTOM_REPORT_DESC_SIZE    130+69
+#define HID_KEYBOARD_REPORT_DESC_SIZE 63
 
 #define HID_DESCRIPTOR_TYPE           0x21
 #define HID_REPORT_DESC               0x22
@@ -92,12 +92,14 @@ typedef struct
   uint32_t             Protocol;   
   uint32_t             IdleState;  
   uint32_t             AltSetting;
-  HID_StateTypeDef     state;  
+  HID_StateTypeDef     state;
+  uint8_t			   ledState;
 }
 USBD_HID_HandleTypeDef; 
 /**
   * @}
   */ 
+typedef void (*USBD_HID_LedStateCallback)(uint8_t ledState);
 
 
 
@@ -115,6 +117,7 @@ USBD_HID_HandleTypeDef;
 
 extern USBD_ClassTypeDef  USBD_HID;
 #define USBD_HID_CLASS    &USBD_HID
+
 /**
   * @}
   */ 
@@ -122,13 +125,15 @@ extern USBD_ClassTypeDef  USBD_HID;
 /** @defgroup USB_CORE_Exported_Functions
   * @{
   */ 
+
+void USBD_HID_SetLedStateCallback( USBD_HID_LedStateCallback callback );
+
 uint8_t USBD_HID_SendReport (USBD_HandleTypeDef *pdev, 
                                  uint8_t *report,
                                  uint16_t len);
 
 uint32_t USBD_HID_GetPollingInterval (USBD_HandleTypeDef *pdev);
 
-uint8_t USBD_HID_Is_Configured(USBD_HandleTypeDef  *pdev);
 /**
   * @}
   */ 
