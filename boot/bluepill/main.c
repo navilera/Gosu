@@ -9,29 +9,65 @@
 #include "HalGpio.h"
 #include "HalUart.h"
 
+#include "Kernel.h"
+
 
 #define SYSTEM_US_TICKS (SystemCoreClock / 1000000) // cycles per microsecond
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 
+void User_task0(void);
+void User_task1(void);
+void User_task2(void);
+
+static void Kernel_Init(void)
+{
+    uint32_t taskId;
+
+    Kernel_task_init();
+
+    taskId = Kernel_task_create(User_task0);
+    if (NOT_ENOUGH_TASK_NUM == taskId)
+    {
+        //putstr("Task0 creation fail\n");
+    	debug_printf("Task0 creation fail\n");
+    }
+
+    taskId = Kernel_task_create(User_task1);
+    if (NOT_ENOUGH_TASK_NUM == taskId)
+    {
+        //putstr("Task1 creation fail\n");
+    	debug_printf("Task1 creation fail\n");
+    }
+
+    taskId = Kernel_task_create(User_task2);
+    if (NOT_ENOUGH_TASK_NUM == taskId)
+    {
+        //putstr("Task2 creation fail\n");
+    	debug_printf("Task2 creation fail\n");
+    }
+
+
+}
+
 int main(void)
 {
 	HAL_Init();
-
 	SystemClock_Config();
 
 	Hal_gpio_init();
 	Hal_uart_init();
 	App_usb_Init();
 
+	Kernel_Init();
 	debug_printf("Navilos Start..\n");
-
-	uint8_t hidpack[8] = { 0 };
-
+	Kernel_start();
 
 	while (1)
 	{
+		/*
+		//uint8_t hidpack[8] = { 0 };
 		USBD_Delay(1000);
 		hidpack[2] = 4;
 		App_hid_send(hidpack, sizeof(hidpack));
@@ -39,6 +75,71 @@ int main(void)
 		USBD_Delay(1000);
 		hidpack[2] = 0;
 		App_hid_send(hidpack, sizeof(hidpack));
+		*/
+	}
+}
+
+
+void User_task0(void)
+{
+	int a = 1;
+	int b = 2;
+	int c = 0;
+
+	while (1)
+	{
+		debug_printf("Task0 before context switch : %x %x\n", &a, &b);
+
+		c = a + b;
+
+		Kernel_yield();
+
+		debug_printf("Task0 after context switch : %x\n", &c);
+
+		a++;
+		b++;
+	}
+}
+
+void User_task1(void)
+{
+	int a = 3;
+	int b = 4;
+	int c = 0;
+
+	while (1)
+	{
+		debug_printf("Task1 before context switch : %x %x\n", &a, &b);
+
+		c = a + b;
+
+		Kernel_yield();
+
+		debug_printf("Task1 after context switch : %x\n", &c);
+
+		a++;
+		b++;
+	}
+}
+
+void User_task2(void)
+{
+	int a = 5;
+	int b = 6;
+	int c = 0;
+
+	while (1)
+	{
+		debug_printf("Task2 before context switch : %x %x\n", &a, &b);
+
+		c = a + b;
+
+		Kernel_yield();
+
+		debug_printf("Task2 after context switch : %x\n", &c);
+
+		a++;
+		b++;
 	}
 }
 

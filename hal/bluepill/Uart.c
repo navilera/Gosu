@@ -48,6 +48,9 @@ uint8_t Hal_uart_get_char(void)
 
 void Hal_uart_isr(void)
 {
+	uint32_t stack = 0;
+	debug_printf("ISR stack=%x\n", &stack);
+
 	Hal_uart_put_char(Hal_uart_get_char());
 }
 

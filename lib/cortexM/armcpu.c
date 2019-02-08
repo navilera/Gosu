@@ -26,3 +26,8 @@ void disable_fiq(void)
 {
 
 }
+
+void set_CONTROL(uint32_t control)
+{
+  __asm__ ("MSR control, %0" : : "r" (control) : "memory");
+}

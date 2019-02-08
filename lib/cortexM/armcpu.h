@@ -8,11 +8,15 @@
 #ifndef LIB_ARMCPU_H_
 #define LIB_ARMCPU_H_
 
+#include "stdint.h"
+
 #define __CLZ             __builtin_clz
 
 void enable_irq(void);
 void enable_fiq(void);
 void disable_irq(void);
 void disable_fiq(void);
+void set_CONTROL(uint32_t control);
+
 
 #endif /* LIB_ARMCPU_H_ */
