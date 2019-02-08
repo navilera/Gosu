@@ -6,7 +6,7 @@ SOC = stm32f10c8
 BOARD = bluepill
 OUTNAME = gosu
 
-USR_DEFINE = -DSTM32F103xB -DUSE_HAL_DRIVER
+USR_DEFINE = -DSTM32F103xB -DUSE_HAL_DRIVER -DUSE_KEYMAPDL
 
 CC = arm-none-eabi-gcc
 AS = arm-none-eabi-as
@@ -30,6 +30,7 @@ VPATH = boot/$(BOARD) 			\
         lib						\
         lib/$(ARM_ARCH)			\
         app/$(BOARD)			\
+        app/kmapdl              \
         app/					\
         kernel
 
@@ -39,6 +40,7 @@ C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/hal/$(BOARD)/drivers/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/lib/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/lib/$(ARM_ARCH)/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/app/$(BOARD)/*.c))
+C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/app/kmapdl/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/app/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/kernel/*.c))
 C_OBJS = $(patsubst %.c, $(OUTPUT_DIR)/%.o, $(C_SRCS))
@@ -51,6 +53,7 @@ INC_DIRS  = -I boot/$(BOARD)    		\
             -I lib						\
             -I lib/$(ARM_ARCH)			\
             -I app/$(BOARD)				\
+            -I app/kmapdl               \
             -I app/						\
             -I kernel
 
