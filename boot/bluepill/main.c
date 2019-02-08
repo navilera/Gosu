@@ -6,7 +6,7 @@
 #include "stm32f1xx_hal.h"
 
 #include "usb_device.h"
-#include "usb_kmapdl.h"
+#include "app/kmapdl/usb_kmapdl.h"
 
 #include "HalGpio.h"
 #include "HalUart.h"

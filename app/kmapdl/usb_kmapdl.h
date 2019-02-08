@@ -3,14 +3,16 @@
  * auther: @eunchan
  *
  * description: Keymap file downloader via USB endpoint
+ *
+ * &copy; COPYRIGHT(c) 2019 Polypeak LLC,
 */
 
-#ifndef __usb_kmapdl_H
-#define __usb_kmapdl_H
+#ifndef APP_KMAPDL_USB_KMAPDL_H_
+#define APP_KMAPDL_USB_KMAPDL_H_
 
 /* Include HAL layer: `hal/bluepill/drivers/` */
-#include "stm32f1xx.h"
-#include "stm32f1xx_hal.h"
+#include "hal/bluepill/drivers/stm32f1xx.h"
+#include "hal/bluepill/drivers/stm32f1xx_hal.h"
 
 /* TODO: Derived from task function template */
 void kmapdl_task(void);
@@ -21,4 +23,4 @@ void kmapdl_init(void);
 /* TODO: Derived from task cleanup template */
 void kmapdl_cleanup(void);
 
-#endif /* __usb_kmapdl_H */
+#endif /* APP_KMAPDL_USB_KMAPDL_H_ */

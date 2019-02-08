@@ -34,6 +34,9 @@ VPATH = boot/$(BOARD) 			\
         app/					\
         kernel
 
+CC_SRCS = $(notdir $(wildcard $(PRJ_HOME)/app/kmapdl/*.cc))
+CC_OBJS = $(patsubst %.cc, $(OUTPUT_DIR)/%.oc, $(CC_SRC))
+
 C_SRCS  = $(notdir $(wildcard $(PRJ_HOME)/boot/$(BOARD)/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/hal/$(BOARD)/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/hal/$(BOARD)/drivers/*.c))
@@ -55,9 +58,15 @@ INC_DIRS  = -I boot/$(BOARD)    		\
             -I app/$(BOARD)				\
             -I app/kmapdl               \
             -I app/						\
+            -I .                        \
             -I kernel
 
 COMMON_FLG = -mcpu=$(MCPU) -m$(ARMTHMODE)
+
+CCFLAGS = -g
+CCFLAGS += -Os -Wall -fdata-sections -ffunction-sections
+CCFLAGS += $(USR_DEFINE) $(INC_DIRS)
+CCFLAGS += $(COMMON_FLG) 
 
 CFLAGS = -c -g -std=c11 
 CFLAGS += -Os -Wall -fdata-sections -ffunction-sections
@@ -82,10 +91,10 @@ clean:
 	@echo "Delete.. " $(OUTPUT_DIR) 
 	@rm -fr $(OUTPUT_DIR) 
 	
-$(navilos): $(ASM_OBJS) $(C_OBJS)
+$(navilos): $(ASM_OBJS) $(CC_OBJS) $(C_OBJS)
 	@echo "Linking.."
 	@echo "Generate binary.. " $(navilos_bin)
-	@$(LD) $(ASM_OBJS) $(C_OBJS) -o $(navilos) -n -T $(LINKER_SCRIPT) -Wl,-Map=$(MAP_FILE) $(LDFLAGS)
+	@$(LD) $(ASM_OBJS) $(CC_OBJS) $(C_OBJS) -o $(navilos) -n -T $(LINKER_SCRIPT) -Wl,-Map=$(MAP_FILE) $(LDFLAGS)
 	@$(OD) -t $(navilos) > $(SYM_FILE)
 	@$(OC) -O binary $(navilos) $(navilos_bin)
 	
@@ -95,6 +104,12 @@ $(OUTPUT_DIR)/%.os: %.S
 	@$(CC) $(CFLAGS) -o $@ $<
 	@$(OD) -d $@ > $@.dump
 	
+$(OUTPUT_DIR)/%.oc: %.cc
+	@echo "compile " $<
+	@mkdir -p $(shell dirname $@)
+	@$(CC) $(CCFLAGS) -o $@ $<
+	@$(OD) -d $@ > $@.dump
+
 $(OUTPUT_DIR)/%.o: %.c
 	@echo "compile " $<
 	@mkdir -p $(shell dirname $@)
