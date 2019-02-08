@@ -18,6 +18,7 @@
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+BootMode CheckBootMode(void);
 
 void User_task0(void);
 void User_task1(void);
@@ -141,7 +142,7 @@ void User_task0(void)
 	}
 }
 
-static BootMode CheckBootMode(void)
+BootMode CheckBootMode(void)
 {
 	// get Fn key pressed during keyboard power-up time.
 	// while user presses Fn key, FW enters a keymap download mode or FW update mode.
