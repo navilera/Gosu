@@ -24,7 +24,7 @@ void User_task0(void);
 void User_task1(void);
 void User_task2(void);
 
-static void Kernel_Init(void)
+static void Kernel_Init(BootMode mode)
 {
     uint32_t taskId;
 
@@ -51,7 +51,14 @@ static void Kernel_Init(void)
     	debug_printf("Task2 creation fail\n");
     }
 
+    if (mode != bootKeymapDl) return;
 
+    taskId = Kernel_task_create(kmapdl_task);
+    if (NOT_ENOUGH_TASK_NUM == taskId)
+    {
+        //putstr("Task2 creation fail\n");
+    	debug_printf("Keymap Dl creation fail\n");
+    }
 }
 
 int main(void)
@@ -62,7 +69,6 @@ int main(void)
 
 	Hal_gpio_init();
 	Hal_uart_init();
-  HAL_Init();
 
   bmode = CheckBootMode();
 
@@ -85,7 +91,7 @@ int main(void)
       break;
   }
 
-	Kernel_Init();
+	Kernel_Init(bmode);
 	debug_printf("Navilos Start..\n");
 	Kernel_start();
 
