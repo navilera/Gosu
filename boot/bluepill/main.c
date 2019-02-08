@@ -1,3 +1,4 @@
+#include "stdbool.h"
 #include "stdint.h"
 #include "stdio.h"
 #include "stdlib.h"
@@ -5,6 +6,7 @@
 #include "stm32f1xx_hal.h"
 
 #include "usb_device.h"
+#include "usb_kmapdl.h"
 
 #include "HalGpio.h"
 #include "HalUart.h"
@@ -107,13 +109,13 @@ void User_task1(void)
 	int b = 4;
 	int c = 0;
 
-	while (1)
+        while (1)
 	{
 		debug_printf("Task1 before context switch : %x %x\n", &a, &b);
 
 		c = a + b;
 
-		Kernel_yield();
+                Kernel_yield();
 
 		debug_printf("Task1 after context switch : %x\n", &c);
 
@@ -121,6 +123,7 @@ void User_task1(void)
 		b++;
 	}
 }
+
 
 void User_task2(void)
 {
