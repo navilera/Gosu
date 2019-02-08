@@ -153,7 +153,7 @@ BootMode CheckBootMode(void)
 {
     // get Fn key pressed during keyboard power-up time.
     // while user presses Fn key, FW enters a keymap download mode or FW update mode.
-    return bootKeymapDl;
+    return bootNormal;
 }
 
 void User_task1(void)
