@@ -58,10 +58,10 @@
 #include "stm32f1xx_hal.h"
 #include "usbd_def.h"
 
-extern USBD_HandleTypeDef hUsbDeviceFS;
-
 /* USB_Device init function */	
-void MX_USB_DEVICE_Init(void);
+void App_usb_Init(void);
+
+void App_hid_send(const void *data,const size_t size);
 
 #ifdef __cplusplus
 }

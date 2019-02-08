@@ -58,7 +58,7 @@
 USBD_HandleTypeDef hUsbDeviceFS;
 
 /* init function */				        
-void MX_USB_DEVICE_Init(void)
+void App_usb_Init(void)
 {
   /* Init Device Library,Add Supported Class and Start the library*/
   USBD_Init(&hUsbDeviceFS, &FS_Desc, DEVICE_FS);
@@ -68,12 +68,23 @@ void MX_USB_DEVICE_Init(void)
   USBD_Start(&hUsbDeviceFS);
 
 }
-/**
-  * @}
-  */
 
-/**
-  * @}
-  */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+void App_hid_send(const void *data,const size_t size)
+{
+  debug_printf("Sending: ");
+  for (int i=0; i<size; ++i)
+  {
+   debug_printf("%u ",((uint8_t*)data)[i]);
+  }
+  debug_printf("\n\r");
+  uint8_t status;
+  do
+  {
+    status = USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t *)data, size);
+    if (status==USBD_FAIL)
+    {
+      debug_printf("USB: fail\n\r");
+    }
+  }
+  while (status == USBD_BUSY);
+}

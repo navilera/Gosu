@@ -5,8 +5,6 @@
 #include "stm32f1xx_hal.h"
 
 #include "usb_device.h"
-#include "usbd_hid.h"
-#include "usbhid.h"
 
 #include "HalGpio.h"
 #include "HalUart.h"
@@ -17,26 +15,6 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 
-static inline void HID_Send(const void *data,const size_t size)
-{
-  debug_printf("Sending: ");
-  for (int i=0; i<size; ++i)
-  {
-   debug_printf("%u ",((uint8_t*)data)[i]);
-  }
-  debug_printf("\n\r");
-  uint8_t status;
-  do
-  {
-    status = USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t *)data, size);
-    if (status==USBD_FAIL)
-    {
-      debug_printf("USB: fail\n\r");
-    }
-  }
-  while (status == USBD_BUSY);
-}
-
 int main(void)
 {
 	HAL_Init();
@@ -45,27 +23,22 @@ int main(void)
 
 	Hal_gpio_init();
 	Hal_uart_init();
-
-	MX_USB_DEVICE_Init();
+	App_usb_Init();
 
 	debug_printf("Navilos Start..\n");
 
-	uint8_t hidpack[9] = { 0 };
-
-	hidpack[0] = 2;
-
-
+	uint8_t hidpack[8] = { 0 };
 
 
 	while (1)
 	{
-		USBD_LL_Delay(1000);
-		hidpack[3] = HIDKEY_A;
-		HID_Send(hidpack, 9);
+		USBD_Delay(1000);
+		hidpack[2] = 4;
+		App_hid_send(hidpack, sizeof(hidpack));
 
-		USBD_LL_Delay(1000);
-		hidpack[3] = 0;
-		HID_Send(hidpack, 9);
+		USBD_Delay(1000);
+		hidpack[2] = 0;
+		App_hid_send(hidpack, sizeof(hidpack));
 	}
 }
 
