@@ -12,6 +12,11 @@
 #include "app/kmapdl/usbd_desc.h"
 #include "app/kmapdl/usb_kmapdl.h"
 
+static int8_t kmapdl_cdc_init   (void);
+static int8_t kmapdl_cdc_deinit (void);
+static int8_t kmapdl_cdc_control(uint8_t, uint8_t*, uint16_t);
+static int8_t kmapdl_cdc_receive(uint8_t*, uint32_t*);
+
 USBD_CDC_ItfTypeDef USBD_KeymapDl_fops = {
     kmapdl_cdc_init, kmapdl_cdc_deinit, kmapdl_cdc_control, kmapdl_cdc_receive};
 

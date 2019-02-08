@@ -25,9 +25,5 @@ void kmapdl_task(void);
 
 void kmapdl_init   (void);
 void kmapdl_cleanup(void);
-static int8_t kmapdl_cdc_init   (void);
-static int8_t kmapdl_cdc_deinit (void);
-static int8_t kmapdl_cdc_control(uint8_t, uint8_t*, uint16_t);
-static int8_t kmapdl_cdc_receive(uint8_t*, uint32_t*);
 
 #endif /* APP_KMAPDL_USB_KMAPDL_H_ */
