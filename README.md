@@ -2,4 +2,5 @@
 
 Gosu is the USB HID keyboard firmware.
 
-- [GettingStarted](doc/GettingStarted.md)
+- [Getting Started](doc/GettingStarted.md)
+- [How to contribute](doc/Contribute.md)
