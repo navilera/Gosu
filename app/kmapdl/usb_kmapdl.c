@@ -7,15 +7,19 @@
  * &copy; COPYRIGHT(c) 2019 Polypeak LLC,
  */
 
-#include "usbd_core.h"
+#include "app/kmapdl/usb_kmapdl.h"
 #include "app/kmapdl/usbd_cdc.h"
 #include "app/kmapdl/usbd_desc.h"
-#include "app/kmapdl/usb_kmapdl.h"
+#include "lib/stdio.h"
+#include "usbd_core.h"
 
-static int8_t kmapdl_cdc_init   (void);
-static int8_t kmapdl_cdc_deinit (void);
-static int8_t kmapdl_cdc_control(uint8_t, uint8_t*, uint16_t);
-static int8_t kmapdl_cdc_receive(uint8_t*, uint32_t*);
+#define KMAPDL_RX_DATA_SIZE 2048
+#define KMAPDL_TX_DATA_SIZE 256 
+
+static int8_t kmapdl_cdc_init(void);
+static int8_t kmapdl_cdc_deinit(void);
+static int8_t kmapdl_cdc_control(uint8_t, uint8_t *, uint16_t);
+static int8_t kmapdl_cdc_receive(uint8_t *, uint32_t *);
 
 USBD_CDC_ItfTypeDef USBD_KeymapDl_fops = {
     kmapdl_cdc_init, kmapdl_cdc_deinit, kmapdl_cdc_control, kmapdl_cdc_receive};
@@ -27,6 +31,13 @@ USBD_CDC_LineCodingTypeDef linecoding = {
     0x08    /* nb. of bits 8*/
 };
 
+uint8_t UserRxBuffer[KMAPDL_RX_DATA_SIZE];
+uint8_t UserTxBuffer[KMAPDL_TX_DATA_SIZE];
+
+uint32_t BuffLength;
+uint32_t UserTxBufPtrIn = 0;
+uint32_t UserTxBufPtrOut = 0;
+
 USBD_HandleTypeDef hUsbKeymap;
 
 void kmapdl_task(void) {}
@@ -36,7 +47,7 @@ void kmapdl_init(void) {
   ** Then create interrupt event for incoming USB traffic of Endpoint 1
   ** Receiving data and checking signature are done in kmapdl_task function
   */
-  USBD_Init(&hUsbKeymap, &VCP_Desc , DEVICE_CDC);
+  USBD_Init(&hUsbKeymap, &VCP_Desc, DEVICE_CDC);
   USBD_RegisterClass(&hUsbKeymap, &USBD_CDC);
   USBD_CDC_RegisterInterface(&hUsbKeymap, &USBD_KeymapDl_fops);
 
@@ -46,11 +57,18 @@ void kmapdl_init(void) {
 void kmapdl_cleanup(void) {}
 
 static int8_t kmapdl_cdc_init(void) {
-  return 0;
+  debug_printf("Keymap Download USB Init...");
+
+  /* Set Buffer */
+  USBD_CDC_SetTxBuffer(&hUsbKeymap, UserTxBuffer, 0);
+  USBD_CDC_SetRxBuffer(&hUsbKeymap, UserRxBuffer);
+
+  return (USBD_OK);
 }
 
 static int8_t kmapdl_cdc_deinit(void) {
-  return 0;
+  debug_printf("Keymap Download USB Cleanup...");
+  return (USBD_OK);
 }
 
 static int8_t kmapdl_cdc_control(uint8_t cmd, uint8_t *pbuf, uint16_t length) {
@@ -112,4 +130,30 @@ static int8_t kmapdl_cdc_control(uint8_t cmd, uint8_t *pbuf, uint16_t length) {
   return (0);
 }
 
-static int8_t kmapdl_cdc_receive(uint8_t *buf, uint32_t *len) { return (0); }
+static int8_t kmapdl_cdc_receive(uint8_t *buf, uint32_t *len) { 
+  /* buf: buffer of data to be transmitted
+  ** len: number of data received in bytes
+  */
+  uint32_t idx;
+  uint8_t keymap, keycode;
+  /* keymap:
+        - Bit [7]:   1 for Fn Mode, 0 for Normal
+        - Bit [6:4]: row
+        - Bit [3:0]: column
+     keycode: Actual keycode to be sent to host when key pressed
+   */
+
+  
+  /* Convert buf to Keymap file */
+  debug_printf("Received Keymap buffer content");
+
+  for(idx = 0 ; idx < *len ; idx+=2) {
+    keymap = *(buf + idx);
+    keycode = *(buf +idx + 1);
+  }
+
+  /* Store Keymap struct to eFlash */
+
+
+  return (USBD_OK); 
+}
