@@ -78,7 +78,6 @@ int main(void)
     /* Initialization stage */
     if (bmode == bootNormal)
     {
-    	/*
     	App_usb_Init();
 
 		while (USBD_HID_Is_Configured() != true)
@@ -86,7 +85,6 @@ int main(void)
 			debug_printf("Waiting for USBHID configuration\n");
 			USBD_Delay(1000);
 		}
-		*/
     }
     else if (bmode == bootKeymapDl)
     {
