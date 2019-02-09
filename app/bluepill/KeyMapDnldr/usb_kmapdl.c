@@ -7,12 +7,11 @@
  * &copy; COPYRIGHT(c) 2019 Polypeak LLC,
  */
 
-#include "keymap.h"
+#include "app/bluepill/keymap.h"
 #include "usb_kmapdl.h"
 #include "usbd_cdc.h"
 #include "usbd_vcp_desc.h"
 #include "MemoryMap.h" /*eFlash Address */
-#include "stm32f1xx_hal_flash.h" /*eFlash Program*/
 #include "stdio.h"
 #include "usbd_core.h"
 
@@ -23,8 +22,6 @@ static int8_t kmapdl_cdc_init(void);
 static int8_t kmapdl_cdc_deinit(void);
 static int8_t kmapdl_cdc_control(uint8_t, uint8_t *, uint16_t);
 static int8_t kmapdl_cdc_receive(uint8_t *, uint32_t *);
-
-extern void FLASH_PageErase(uint32_t PageAddress);
 
 USBD_CDC_ItfTypeDef USBD_KeymapDl_fops = {
     kmapdl_cdc_init, kmapdl_cdc_deinit, kmapdl_cdc_control, kmapdl_cdc_receive};
@@ -140,28 +137,47 @@ static int8_t kmapdl_cdc_receive(uint8_t *buf, uint32_t *len) {
   ** len: number of data received in bytes
   */
   uint32_t idx;
-  uint16_t entry;
+  uint32_t checksum;
+  uint8_t  row, col;
 
-  HAL_StatusTypeDef status;
+  KeymapFile_t keyfile = {0};
+
   /* keymap:
         - Bit [7]:   1 for Fn Mode, 0 for Normal
         - Bit [6:4]: row
         - Bit [3:0]: column
      keycode: Actual keycode to be sent to host when key pressed
    */
-  
+  if (*len < (6+ (TOTAL_KEY_NUM*NUM_LAYERS))) {
+      debug_printf("Recevied size is smaller than Keymap");
+      return (USBD_OK);
+  }
+
+  checksum = (*buf) | (*(buf+1)<<8) | (*(buf+2)<<16) | (*(buf+3)<<24);
+  row      = *(buf+4);
+  col      = *(buf+5);
+
+  if ((row != KEYMAP_ROW_NUM) || (col != KEYMAP_COL_NUM)) {
+    /* Error. Recevied keymap doesn't match */
+    debug_printf("Received Keymap struct is not compatible: R(%d), C(%d)", row, col);
+    return (USBD_OK);
+  }
+
   /* Convert buf to Keymap file */
   debug_printf("Received Keymap buffer content");
+  keyfile.checksum = checksum;
+  keyfile.num_row = row;
+  keyfile.num_col = col;
+  for (idx = 0 ; idx < NUM_LAYERS ; idx++) {
+    memncpy((uint8_t*)(buf + 6 + (idx * TOTAL_KEY_NUM)),
+            (uint8_t*)keyfile.keymap[idx],
+            TOTAL_KEY_NUM);
+  }
 
   /* Store Keymap struct to eFlash */
-  FLASH_PageErase((uint32_t)KEYMAP_PAGENUM);
-
-  for(idx = 0 ; idx < *len ; idx += 2) {
-    entry = *(buf+idx) | (*(buf+idx+1) << 8);
-    status = HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, KEYMAP_BADDR + idx, entry);
-    if (status != HAL_OK) {
-      debug_printf("eFlash Program Error: %x", KEYMAP_BADDR + idx);
-    }
+  
+  if (true != WriteKeyMapToFlash(&keyfile, sizeof(KeymapFile_t))) {
+    debug_printf("Writing to eFlash failed...");
   }
 
   return (USBD_OK); 

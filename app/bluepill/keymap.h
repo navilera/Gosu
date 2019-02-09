@@ -11,6 +11,7 @@
 #define APP_CORE_KEYMAP_H_
 
 #include "stdint.h"
+#include "stdbool.h"
 
 /* Modifier: First byte in HID report */
 typedef enum HidMod {
@@ -296,6 +297,8 @@ typedef union Keyaddr
 typedef struct KeymapFile
 {
 	uint32_t	checksum;
+        uint8_t     num_row;
+        uint8_t     num_col;
 	uint8_t		keymap[NUM_LAYERS][TOTAL_KEY_NUM];
 } KeymapFile_t;
 
@@ -303,5 +306,6 @@ typedef struct KeymapFile
  * public functions
  */
 void LoadKeymap(void);
+bool WriteKeyMapToFlash(KeymapFile_t* keyfile, uint32_t size);
 
 #endif /*APP_CORE_KEYMAP_H_*/

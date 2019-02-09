@@ -6,8 +6,12 @@
  */
 
 #include "stdbool.h"
+#include "stdint.h"
 #include "stdlib.h"
 #include "keymap.h"
+#include "MemoryMap.h"
+
+extern void FLASH_PageErase(uint32_t PageAddress);
 
 /* Default Keymap
  *                                                    COL (input)
@@ -83,6 +87,26 @@ void LoadKeymap(void)
 
 	memncpy((uint8_t*)sKeymap_buffer_layer0, (uint8_t*)saved_keymap.keymap[0], TOTAL_KEY_NUM);
 	memncpy((uint8_t*)sKeymap_buffer_layer1, (uint8_t*)saved_keymap.keymap[1], TOTAL_KEY_NUM);
+}
+
+bool WriteKeyMapToFlash(KeymapFile_t* keyfile, uint32_t size) {
+  uint32_t idx;
+  uint16_t entry;
+
+  //HAL_StatusTypeDef status;
+  FLASH_PageErase((uint32_t)KEYMAP_PAGENUM);
+
+  memncpy((uint8_t*)KEYMAP_BADDR, (uint8_t*)keyfile, size);
+  //for(idx = 0 ; idx < size ; idx += 2) {
+  //  entry = *((uint8_t*)keyfile+idx) | (((uint8_t*)keyfile+idx+1) << 8);
+  //  status = HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, KEYMAP_BADDR + idx, entry);
+  //  if (status != HAL_OK) {
+  //    debug_printf("eFlash Program Error: %x", KEYMAP_BADDR + idx);
+  //    return false;
+  //  }
+  //}
+
+  return true;
 }
 
 static bool ReadKeyMapFromFlash(KeymapFile_t* keyfile, uint32_t size)
