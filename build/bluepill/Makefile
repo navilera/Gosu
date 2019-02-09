@@ -24,15 +24,15 @@ SYM_FILE = $(OUTPUT_DIR)/$(OUTNAME).sym
 ASM_SRCS = $(wildcard $(PRJ_HOME)/boot/$(BOARD)/*.S)
 ASM_OBJS = $(patsubst $(PRJ_HOME)/boot/$(BOARD)/%.S, $(OUTPUT_DIR)/%.os, $(ASM_SRCS))
 
-VPATH = boot/$(BOARD) 			\
-        hal/$(BOARD)	        \
-        hal/$(BOARD)/drivers    \
-        lib						\
-        lib/$(ARM_ARCH)			\
+VPATH = boot/$(BOARD) 				\
+        hal/$(BOARD)	        	\
+        hal/$(BOARD)/drivers    	\
+        lib							\
+        lib/$(ARM_ARCH)				\
         app/$(BOARD)/USB			\
         app/$(BOARD)/HID			\
 		app/$(BOARD)/KeyMapDnldr    \
-        app/	                \
+        app/	                	\
         kernel
 
 C_SRCS  = $(notdir $(wildcard $(PRJ_HOME)/boot/$(BOARD)/*.c))
@@ -40,10 +40,10 @@ C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/hal/$(BOARD)/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/hal/$(BOARD)/drivers/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/lib/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/lib/$(ARM_ARCH)/*.c))
-C_SRCS += $(wildcard $(PRJ_HOME)/app/$(BOARD)/USB/*.c)
-C_SRCS += $(wildcard $(PRJ_HOME)/app/$(BOARD)/HID/*.c)
-C_SRCS += $(wildcard $(PRJ_HOME)/app/$(BOARD)/KeyMapDnldr/*.c)
-C_SRCS += $(wildcard $(PRJ_HOME)/app/*.c)
+C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/app/$(BOARD)/USB/*.c))
+C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/app/$(BOARD)/HID/*.c))
+C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/app/$(BOARD)/KeyMapDnldr/*.c))
+C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/app/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/kernel/*.c))
 C_OBJS = $(patsubst %.c, $(OUTPUT_DIR)/%.o, $(C_SRCS))
 

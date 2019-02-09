@@ -18,10 +18,6 @@
 /* Private function prototypes -----------------------------------------------*/
 static void SystemClock_Config(void);
 
-void User_task0(void);
-void User_task1(void);
-void User_task2(void);
-
 typedef enum eBootMode {
     bootNormal,
     bootKeymapDl,
@@ -37,33 +33,38 @@ static BootMode CheckBootMode(void)
 
 static void Kernel_Init(BootMode mode)
 {
+	extern void Polling_task();
+	extern void Host_comm_task();
+	extern void Debug_cli_task();
+	extern void Keymap_dnldr_task();
+
     uint32_t taskId;
 
     Kernel_task_init();
 
-    taskId = Kernel_task_create(User_task0);
+    taskId = Kernel_task_create(Polling_task);
     if (NOT_ENOUGH_TASK_NUM == taskId)
     {
-        debug_printf("Task0 creation fail\n");
+        debug_printf("Polling_task creation fail\n");
     }
 
-    taskId = Kernel_task_create(User_task1);
+    taskId = Kernel_task_create(Host_comm_task);
     if (NOT_ENOUGH_TASK_NUM == taskId)
     {
-        debug_printf("Task1 creation fail\n");
+        debug_printf("Host_comm_task creation fail\n");
     }
 
-    taskId = Kernel_task_create(User_task2);
+    taskId = Kernel_task_create(Debug_cli_task);
     if (NOT_ENOUGH_TASK_NUM == taskId)
     {
-        debug_printf("Task2 creation fail\n");
+        debug_printf("Debug_cli_task creation fail\n");
     }
 
     if (mode == bootKeymapDl) {
-		taskId = Kernel_task_create(kmapdl_task);
+		taskId = Kernel_task_create(Keymap_dnldr_task);
 		if (NOT_ENOUGH_TASK_NUM == taskId)
 		{
-			debug_printf("Keymap Dl creation fail\n");
+			debug_printf("Keymap_dnldr_task creation fail\n");
 		}
     }
 }
@@ -137,77 +138,6 @@ int main(void)
       default:
         /* Error */
         break;
-    }
-}
-
-void User_task0(void)
-{
-    int a = 1;
-    int b = 2;
-    int c = 0;
-
-    debug_printf("Task0....\n");
-
-    while (1)
-    {
-    	//USBD_Delay(HID_FS_BINTERVAL);
-        debug_printf("Task0 before context switch : %x %x\n", &a, &b);
-
-        c = a + b;
-
-        Kernel_yield();
-
-        debug_printf("Task0 after context switch : %x -> %u\n", &c, HAL_GetTick());
-
-        a++;
-        b++;
-    }
-}
-
-void User_task1(void)
-{
-    int a = 3;
-    int b = 4;
-    int c = 0;
-
-    debug_printf("Task1....\n");
-
-    while (1)
-    {
-    	//USBD_Delay(HID_FS_BINTERVAL);
-        debug_printf("Task1 before context switch : %x %x\n", &a, &b);
-
-        c = a + b;
-
-        Kernel_yield();
-
-        debug_printf("Task1 after context switch : %x\n", &c);
-        a++;
-        b++;
-    }
-}
-
-void User_task2(void)
-{
-    int a = 5;
-    int b = 6;
-    int c = 0;
-
-    debug_printf("Task2....\n");
-
-    while (1)
-    {
-    	//USBD_Delay(HID_FS_BINTERVAL);
-        debug_printf("Task2 before context switch : %x %x\n", &a, &b);
-
-        c = a + b;
-
-        Kernel_yield();
-
-        debug_printf("Task2 after context switch : %x\n", &c);
-
-        a++;
-        b++;
     }
 }
 

@@ -21,8 +21,6 @@ extern USBD_CDC_ItfTypeDef  USBD_KeymapDl_fops;
 #define DEVICE_CDC 1
 
 /* TODO: Derived from task function template */
-void kmapdl_task(void);
-
 void kmapdl_init   (void);
 void kmapdl_cleanup(void);
 
