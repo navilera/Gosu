@@ -108,19 +108,7 @@ int main(void)
     debug_printf("Navilos Start..\n");
     Kernel_start();
 
-    while (1)
-    {
-        /*
-        //uint8_t hidpack[8] = { 0 };
-        USBD_Delay(1000);
-        hidpack[2] = 4;
-        App_hid_send(hidpack, sizeof(hidpack));
-
-        USBD_Delay(1000);
-        hidpack[2] = 0;
-        App_hid_send(hidpack, sizeof(hidpack));
-        */
-    }
+    while (1) { }
 
     /* Cleanup stage */
     switch(bmode) {
@@ -145,7 +133,6 @@ int main(void)
 */
 static void SystemClock_Config(void)
 {
-
     RCC_OscInitTypeDef RCC_OscInitStruct;
     RCC_ClkInitTypeDef RCC_ClkInitStruct;
     RCC_PeriphCLKInitTypeDef PeriphClkInit;

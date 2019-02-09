@@ -8,8 +8,14 @@
 #ifndef LIB_STDLIB_H_
 #define LIB_STDLIB_H_
 
-void delay(uint32_t ms);
-void memclr(void* dst, uint32_t count);
+#include "stdint.h"
+#include "stdbool.h"
+
+void 	 delay(uint32_t ms);
+void 	 memclr(void* dst, uint32_t count);
+uint32_t memfind(uint8_t* src, uint8_t byte, uint32_t count);
+bool	 memncmp(uint8_t* m1, uint8_t* m2, uint32_t count);
+
 void halt(char* filename, uint32_t line);
 
 #define HALT()	halt(__FILE__, __LINE__);

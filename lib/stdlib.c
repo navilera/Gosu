@@ -29,6 +29,31 @@ void memclr(void* dst, uint32_t count)
     }
 }
 
+uint32_t memfind(uint8_t* src, uint8_t byte, uint32_t count)
+{
+	for(uint32_t i = 0 ; i < count ; i++)
+	{
+		if (*src++ == byte)
+		{
+			return i;
+		}
+	}
+	return (count + 1);
+}
+
+bool memncmp(uint8_t* m1, uint8_t* m2, uint32_t count)
+{
+	for(uint32_t i = 0 ; i < count ; i++)
+	{
+		if (*m1++ != *m2++)
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
 void halt(char* filename, uint32_t line)
 {
 	debug_printf("HALT [%s] at (%u)\n", filename, line);

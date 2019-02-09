@@ -11,5 +11,8 @@
 
 void Keymap_dnldr_task(void)
 {
-
+	while(true)
+	{
+		Kernel_yield();
+	}
 }

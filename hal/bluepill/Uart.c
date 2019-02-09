@@ -10,7 +10,7 @@
 
 #include "stm32f1xx_hal.h"
 
-#include "HalUart.h"
+#include "Kernel.h"
 
 UART_HandleTypeDef huart1;
 
@@ -48,9 +48,22 @@ uint8_t Hal_uart_get_char(void)
 
 void Hal_uart_isr(void)
 {
-	uint32_t stack = 0;
-	debug_printf("ISR stack=%x\n", &stack);
+	uint8_t ch = Hal_uart_get_char();
 
-	Hal_uart_put_char(Hal_uart_get_char());
+	if (ch == '\r' || ch == '\n')
+	{
+		Hal_uart_put_char('\n');
+		Hal_uart_put_char('>');
+		Hal_uart_put_char(' ');
+
+		ch = '\0';
+		Kernel_send_msg(KernelMsgQ_DebugCmd, &ch, 1);
+	    Kernel_send_events(KernelEventFlag_CmdIn);
+	}
+	else
+	{
+		Hal_uart_put_char(ch);
+	    Kernel_send_msg(KernelMsgQ_DebugCmd, &ch, 1);
+	}
 }
 
