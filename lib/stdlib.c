@@ -43,7 +43,7 @@ uint32_t memfind(uint8_t* src, uint8_t byte, uint32_t count)
 
 bool memncmp(uint8_t* m1, uint8_t* m2, uint32_t count)
 {
-	for(uint32_t i = 0 ; i < count ; i++)
+	while(count--)
 	{
 		if (*m1++ != *m2++)
 		{
@@ -52,6 +52,14 @@ bool memncmp(uint8_t* m1, uint8_t* m2, uint32_t count)
 	}
 
 	return true;
+}
+
+void memncpy(uint8_t* dst, uint8_t* src, uint32_t count)
+{
+	while(count--)
+	{
+		*dst++ = *src++;
+	}
 }
 
 void halt(char* filename, uint32_t line)

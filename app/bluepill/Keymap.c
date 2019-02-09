@@ -5,6 +5,8 @@
  *      Author: maanu
  */
 
+#include "stdbool.h"
+#include "stdlib.h"
 #include "keymap.h"
 
 /* Default Keymap
@@ -42,8 +44,8 @@
  * PB10, PB11 - UART3 - Bluetooth
  */
 
-Scancode_t sDebault_keymap_layer0[KEYMAP_ROW_NUM][KEYMAP_COL_NUM] =
-{           /* Col#0	Col#1		Col#2		Col#3		Col#4	Col#5		Col#6		Col#7	Col#8	Col#9	Col#10		Col#11		Col#12		Col#13
+static Scancode_t sKeymap_buffer_layer0[KEYMAP_ROW_NUM][KEYMAP_COL_NUM] =
+{           /* Col#0	Col#1		Col#2		Col#3		Col#4	Col#5		Col#6		Col#7	Col#8	Col#9	Col#10		Col#11		Col#12		Col#13 */
 /* Row#0 */	{kFunction,	kEsc,		kF1,		kF2,		kF3,	kF4,		kF5,		kF6,	kF7,	kF8,	kF9,		kF10,		kF11,		kF12},
 /* Row#1 */	{kPageup,   kGrave,		k1,			k2,			k3,		k4,			k5,			k6,		k7,		k8,		k9,			k0,			kMinus,		kEqual},
 /* Row#2 */	{kPagedown, kTab,		kQ,			kW, 		kE, 	kR, 		kT, 		kY, 	kU, 	kI, 	kO, 		kP,			kLeftbrace,	kRightbrace},
@@ -52,8 +54,8 @@ Scancode_t sDebault_keymap_layer0[KEYMAP_ROW_NUM][KEYMAP_COL_NUM] =
 /* Row#5 */	{kEnd,		kLeftctrl,	kLeftmeta, 	kLeftalt,	kSpace,	kRightalt,	kRightctrl,	kLeft,	kDown,	kRight,	kUp,		kBackslash,	kNone,		kNone}
 };
 
-Scancode_t sDebault_keymap_layer1[KEYMAP_ROW_NUM][KEYMAP_COL_NUM] =
-{
+static Scancode_t sKeymap_buffer_layer1[KEYMAP_ROW_NUM][KEYMAP_COL_NUM] =
+{			/* Col#0	Col#1		Col#2		Col#3		Col#4	Col#5		Col#6		Col#7	Col#8	Col#9	Col#10		Col#11		Col#12		Col#13 */
 /* Row#0 */	{0},
 /* Row#1 */	{0},
 /* Row#2 */	{0},
@@ -61,3 +63,41 @@ Scancode_t sDebault_keymap_layer1[KEYMAP_ROW_NUM][KEYMAP_COL_NUM] =
 /* Row#4 */	{0},
 /* Row#5 */	{0}
 };
+
+static bool ReadKeyMapFromFlash(KeymapFile_t* keyfile, uint32_t size);
+static uint32_t GetChecksum(uint8_t* data, uint32_t count);
+
+void LoadKeymap(void)
+{
+	KeymapFile_t saved_keymap = {0};
+	if (ReadKeyMapFromFlash(&saved_keymap, sizeof(KeymapFile_t)) != true)
+	{
+		return;
+	}
+
+	uint32_t checksum = GetChecksum((uint8_t*)saved_keymap.keymap, sizeof(saved_keymap.keymap));
+	if (saved_keymap.checksum != checksum)
+	{
+		return;
+	}
+
+	memncpy((uint8_t*)sKeymap_buffer_layer0, (uint8_t*)saved_keymap.keymap[0], TOTAL_KEY_NUM);
+	memncpy((uint8_t*)sKeymap_buffer_layer1, (uint8_t*)saved_keymap.keymap[1], TOTAL_KEY_NUM);
+}
+
+static bool ReadKeyMapFromFlash(KeymapFile_t* keyfile, uint32_t size)
+{
+	return false;
+}
+
+static uint32_t GetChecksum(uint8_t* data, uint32_t count)
+{
+	uint32_t checksum = 0;
+	for (uint32_t i = 0 ; i < count ; i++)
+	{
+		checksum += *data;
+		data++;
+	}
+
+	return checksum;
+}

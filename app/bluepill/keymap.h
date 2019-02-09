@@ -281,6 +281,8 @@ typedef enum Scancode {
 #define KEYMAP_COL_NUM	14
 #define KEYMAP_ROW_NUM	6
 
+#define TOTAL_KEY_NUM	82
+
 typedef union Keyaddr
 {
 	uint8_t val;
@@ -290,5 +292,16 @@ typedef union Keyaddr
 		uint8_t fn:1;
 	} bit;
 } Keyaddr_t;
+
+typedef struct KeymapFile
+{
+	uint32_t	checksum;
+	uint8_t		keymap[NUM_LAYERS][TOTAL_KEY_NUM];
+} KeymapFile_t;
+
+/*
+ * public functions
+ */
+void LoadKeymap(void);
 
 #endif /*APP_CORE_KEYMAP_H_*/

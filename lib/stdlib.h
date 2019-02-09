@@ -15,6 +15,7 @@ void 	 delay(uint32_t ms);
 void 	 memclr(void* dst, uint32_t count);
 uint32_t memfind(uint8_t* src, uint8_t byte, uint32_t count);
 bool	 memncmp(uint8_t* m1, uint8_t* m2, uint32_t count);
+void	 memncpy(uint8_t* dst, uint8_t* src, uint32_t count);
 
 void halt(char* filename, uint32_t line);
 
