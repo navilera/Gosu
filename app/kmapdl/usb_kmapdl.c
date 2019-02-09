@@ -12,6 +12,8 @@
 #include "app/kmapdl/usbd_cdc.h"
 #include "app/kmapdl/usbd_desc.h"
 #include "hal/bluepill/MemoryMap.h" /*eFlash Address */
+#include "hal/bluepill/drivers/stm32f1xx_hal_flash.h" /*eFlash Program*/
+//#include "hal/bluepill/drivers/stm32f1xx_hal_flash_ex.h" /*eFlash Erase*/
 #include "lib/stdio.h"
 #include "usbd_core.h"
 
@@ -22,6 +24,8 @@ static int8_t kmapdl_cdc_init(void);
 static int8_t kmapdl_cdc_deinit(void);
 static int8_t kmapdl_cdc_control(uint8_t, uint8_t *, uint16_t);
 static int8_t kmapdl_cdc_receive(uint8_t *, uint32_t *);
+
+extern void FLASH_PageErase(uint32_t PageAddress);
 
 USBD_CDC_ItfTypeDef USBD_KeymapDl_fops = {
     kmapdl_cdc_init, kmapdl_cdc_deinit, kmapdl_cdc_control, kmapdl_cdc_receive};
@@ -137,28 +141,29 @@ static int8_t kmapdl_cdc_receive(uint8_t *buf, uint32_t *len) {
   ** len: number of data received in bytes
   */
   uint32_t idx;
-  uint8_t keymap, keycode;
+  uint16_t entry;
+
+  HAL_StatusTypeDef status;
   /* keymap:
         - Bit [7]:   1 for Fn Mode, 0 for Normal
         - Bit [6:4]: row
         - Bit [3:0]: column
      keycode: Actual keycode to be sent to host when key pressed
    */
-
   
   /* Convert buf to Keymap file */
   debug_printf("Received Keymap buffer content");
 
-  for(idx = 0 ; idx < *len ; idx+=2) {
-    keymap = *(buf + idx);
-    keycode = *(buf +idx + 1);
-  }
-
-  UNUSED(keymap);
-  UNUSED(keycode);
-
   /* Store Keymap struct to eFlash */
+  FLASH_PageErase((uint32_t)KEYMAP_PAGENUM);
 
+  for(idx = 0 ; idx < *len ; idx += 2) {
+    entry = *(buf+idx) | (*(buf+idx+1) << 8);
+    status = HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, KEYMAP_BADDR + idx, entry);
+    if (status != HAL_OK) {
+      debug_printf("eFlash Program Error: %x", KEYMAP_BADDR + idx);
+    }
+  }
 
   return (USBD_OK); 
 }
