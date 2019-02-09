@@ -12,4 +12,6 @@ void delay(uint32_t ms);
 void memclr(void* dst, uint32_t count);
 void halt(char* filename, uint32_t line);
 
+#define HALT()	halt(__FILE__, __LINE__);
+
 #endif /* LIB_STDLIB_H_ */

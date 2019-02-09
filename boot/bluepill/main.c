@@ -58,13 +58,13 @@ static void Kernel_Init(BootMode mode)
         debug_printf("Task2 creation fail\n");
     }
 
-    if (mode != bootKeymapDl) return;
-
-    taskId = Kernel_task_create(kmapdl_task);
-    if (NOT_ENOUGH_TASK_NUM == taskId)
-    {
-        //putstr("Task2 creation fail\n");
-        debug_printf("Keymap Dl creation fail\n");
+    if (mode == bootKeymapDl) {
+		taskId = Kernel_task_create(kmapdl_task);
+		if (NOT_ENOUGH_TASK_NUM == taskId)
+		{
+			//putstr("Task2 creation fail\n");
+			debug_printf("Keymap Dl creation fail\n");
+		}
     }
 }
 
@@ -80,25 +80,30 @@ int main(void)
     bmode = CheckBootMode();
 
     /* Initialization stage */
-    switch(bmode) {
-      case bootNormal:
-        App_usb_Init();
-        break;
+    if (bmode == bootNormal)
+    {
+    	App_usb_Init();
 
-      case bootKeymapDl:
-        kmapdl_init();
-        break;
+		while (USBD_HID_Is_Configured() != true)
+		{
+			debug_printf("Waiting for USBHID configuration\n");
+			USBD_Delay(1000);
+		}
+    }
+    else if (bmode == bootKeymapDl)
+    {
+    	kmapdl_init();
+    }
+    else if (bmode == bootDFU)
+    {
 
-      case bootDFU:
-        /* Do Nothing at this time */
-        break;
-
-      default:
-        /* Error */
-        break;
+    }
+    else
+    {
+    	HALT();
     }
 
-    //Kernel_Init(bmode);
+    Kernel_Init(bmode);
     debug_printf("Navilos Start..\n");
     //Kernel_start();
 
@@ -199,7 +204,7 @@ void User_task2(void)
 
 /** System Clock Configuration
 */
-void SystemClock_Config(void)
+static void SystemClock_Config(void)
 {
 
     RCC_OscInitTypeDef RCC_OscInitStruct;

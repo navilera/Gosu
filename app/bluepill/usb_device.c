@@ -88,3 +88,9 @@ void App_hid_send(const void *data,const size_t size)
   }
   while (status == USBD_BUSY);
 }
+
+bool USBD_HID_Is_Configured(void)
+{
+  return (hUsbDeviceFS.dev_state == USBD_STATE_CONFIGURED);
+}
+

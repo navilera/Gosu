@@ -58,22 +58,17 @@
 #include "stm32f1xx_hal.h"
 #include "usbd_def.h"
 
+#include "stdbool.h"
+
 /* USB_Device init function */	
 void App_usb_Init(void);
 
 void App_hid_send(const void *data,const size_t size);
+
+bool USBD_HID_Is_Configured(void);
 
 #ifdef __cplusplus
 }
 #endif
 #endif /*__usb_device_H */
 
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
