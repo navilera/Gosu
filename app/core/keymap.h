@@ -10,6 +10,8 @@
 #ifndef APP_CORE_KEYMAP_H_
 #define APP_CORE_KEYMAP_H_
 
+#include "include/stdint.h"
+
 #define NUM_LAYERS 2  /* Total two layers */
 
 /* Modifier: First byte in HID report */
@@ -277,7 +279,7 @@ typedef enum Scancode {
 
 typedef struct {
   uint8_t keymap;
-  uint8_t *keycodes; /* list of keycodes Each entry represent a layer */
+  uint8_t keycodes [NUM_LAYERS]; /* list of keycodes Each entry represent a layer */
 } Key_t;
 
 typedef struct {

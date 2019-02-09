@@ -7,9 +7,11 @@
  * &copy; COPYRIGHT(c) 2019 Polypeak LLC,
  */
 
+#include "app/core/keymap.h"
 #include "app/kmapdl/usb_kmapdl.h"
 #include "app/kmapdl/usbd_cdc.h"
 #include "app/kmapdl/usbd_desc.h"
+#include "hal/bluepill/MemoryMap.h" /*eFlash Address */
 #include "lib/stdio.h"
 #include "usbd_core.h"
 
