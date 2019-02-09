@@ -16,7 +16,10 @@ void enable_irq(void);
 void enable_fiq(void);
 void disable_irq(void);
 void disable_fiq(void);
-void set_CONTROL(uint32_t control);
 
+__inline void set_CONTROL(uint32_t control)
+{
+  __asm__ ("MSR control, %0" : : "r" (control) : "memory");
+}
 
 #endif /* LIB_ARMCPU_H_ */

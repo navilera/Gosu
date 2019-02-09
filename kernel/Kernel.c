@@ -9,11 +9,13 @@
 #include "stdint.h"
 #include "stdbool.h"
 
+#include "armcpu.h"
 #include "memio.h"
 #include "Kernel.h"
 
 void Kernel_start(void)
 {
+	enable_irq();
     Kernel_task_start();
 }
 

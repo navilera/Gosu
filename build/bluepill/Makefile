@@ -99,6 +99,7 @@ $(navilos): $(ASM_OBJS) $(CC_OBJS) $(C_OBJS)
 	@echo "Generate binary.. " $(navilos_bin)
 	@$(LD) $(ASM_OBJS) $(CC_OBJS) $(C_OBJS) -o $(navilos) -n -T $(LINKER_SCRIPT) -Wl,-Map=$(MAP_FILE) $(LDFLAGS)
 	@$(OD) -t $(navilos) > $(SYM_FILE)
+	@$(OD) -d $(navilos) > $(navilos).dump
 	@$(OC) -O binary $(navilos) $(navilos_bin)
 	
 $(OUTPUT_DIR)/%.os: %.S

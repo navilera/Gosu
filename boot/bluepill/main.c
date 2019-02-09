@@ -6,7 +6,8 @@
 #include "stm32f1xx_hal.h"
 
 #include "usb_device.h"
-#include "app/kmapdl/usb_kmapdl.h"
+#include "usbd_hid.h"
+#include "usb_kmapdl.h"
 
 #include "HalGpio.h"
 #include "HalUart.h"
@@ -18,7 +19,6 @@
 
 /* Private function prototypes -----------------------------------------------*/
 static void SystemClock_Config(void);
-static BootMode CheckBootMode(void);
 
 void User_task0(void);
 void User_task1(void);
@@ -40,21 +40,18 @@ static void Kernel_Init(BootMode mode)
     taskId = Kernel_task_create(User_task0);
     if (NOT_ENOUGH_TASK_NUM == taskId)
     {
-        //putstr("Task0 creation fail\n");
         debug_printf("Task0 creation fail\n");
     }
 
     taskId = Kernel_task_create(User_task1);
     if (NOT_ENOUGH_TASK_NUM == taskId)
     {
-        //putstr("Task1 creation fail\n");
         debug_printf("Task1 creation fail\n");
     }
 
     taskId = Kernel_task_create(User_task2);
     if (NOT_ENOUGH_TASK_NUM == taskId)
     {
-        //putstr("Task2 creation fail\n");
         debug_printf("Task2 creation fail\n");
     }
 
@@ -62,7 +59,6 @@ static void Kernel_Init(BootMode mode)
 		taskId = Kernel_task_create(kmapdl_task);
 		if (NOT_ENOUGH_TASK_NUM == taskId)
 		{
-			//putstr("Task2 creation fail\n");
 			debug_printf("Keymap Dl creation fail\n");
 		}
     }
@@ -82,6 +78,7 @@ int main(void)
     /* Initialization stage */
     if (bmode == bootNormal)
     {
+    	/*
     	App_usb_Init();
 
 		while (USBD_HID_Is_Configured() != true)
@@ -89,6 +86,7 @@ int main(void)
 			debug_printf("Waiting for USBHID configuration\n");
 			USBD_Delay(1000);
 		}
+		*/
     }
     else if (bmode == bootKeymapDl)
     {
@@ -105,7 +103,7 @@ int main(void)
 
     Kernel_Init(bmode);
     debug_printf("Navilos Start..\n");
-    //Kernel_start();
+    Kernel_start();
 
     while (1)
     {
@@ -146,15 +144,18 @@ void User_task0(void)
     int b = 2;
     int c = 0;
 
+    debug_printf("Task0....\n");
+
     while (1)
     {
+    	USBD_Delay(HID_FS_BINTERVAL);
         debug_printf("Task0 before context switch : %x %x\n", &a, &b);
 
         c = a + b;
 
         Kernel_yield();
 
-        debug_printf("Task0 after context switch : %x\n", &c);
+        debug_printf("Task0 after context switch : %x -> %u\n", &c, HAL_GetTick());
 
         a++;
         b++;
@@ -167,13 +168,16 @@ void User_task1(void)
     int b = 4;
     int c = 0;
 
+    debug_printf("Task1....\n");
+
     while (1)
     {
+    	USBD_Delay(HID_FS_BINTERVAL);
         debug_printf("Task1 before context switch : %x %x\n", &a, &b);
 
         c = a + b;
 
-                Kernel_yield();
+        Kernel_yield();
 
         debug_printf("Task1 after context switch : %x\n", &c);
         a++;
@@ -187,8 +191,11 @@ void User_task2(void)
     int b = 6;
     int c = 0;
 
+    debug_printf("Task2....\n");
+
     while (1)
     {
+    	USBD_Delay(HID_FS_BINTERVAL);
         debug_printf("Task2 before context switch : %x %x\n", &a, &b);
 
         c = a + b;

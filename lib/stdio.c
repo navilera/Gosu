@@ -6,12 +6,12 @@
  */
 
 #include "stdint.h"
-#include "HalUart.h"
 #include "stdio.h"
 
-#define PRINTF_BUF_LEN  1024
+#include "armcpu.h"
+#include "HalUart.h"
 
-static char sPrintf_buf[PRINTF_BUF_LEN];   // 1KB
+#define PRINTF_BUF_LEN  64
 
 uint32_t putstr(const char* s)
 {
@@ -26,12 +26,20 @@ uint32_t putstr(const char* s)
 
 uint32_t debug_printf(const char* format, ...)
 {
-    va_list args;
+	char printf_buf[PRINTF_BUF_LEN] = {0};
+
+	disable_irq();
+
+	va_list args;
     va_start(args, format);
-    vsprintf(sPrintf_buf, format, args);
+    vsprintf(printf_buf, format, args);
     va_end(args);
 
-    return putstr(sPrintf_buf);
+    uint32_t outnum = putstr(printf_buf);
+
+    enable_irq();
+
+    return outnum;
 }
 
 uint32_t vsprintf(char* buf, const char* format, va_list arg)
