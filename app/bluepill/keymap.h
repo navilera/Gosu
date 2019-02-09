@@ -10,7 +10,7 @@
 #ifndef APP_CORE_KEYMAP_H_
 #define APP_CORE_KEYMAP_H_
 
-#include "include/stdint.h"
+#include "stdint.h"
 
 #define NUM_LAYERS 2  /* Total two layers */
 
