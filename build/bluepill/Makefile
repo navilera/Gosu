@@ -29,6 +29,7 @@ VPATH = boot/$(BOARD) 				\
         hal/$(BOARD)/drivers    	\
         lib							\
         lib/$(ARM_ARCH)				\
+        app/$(BOARD)				\
         app/$(BOARD)/USB			\
         app/$(BOARD)/HID			\
 		app/$(BOARD)/KeyMapDnldr    \
@@ -40,6 +41,7 @@ C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/hal/$(BOARD)/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/hal/$(BOARD)/drivers/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/lib/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/lib/$(ARM_ARCH)/*.c))
+C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/app/$(BOARD)/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/app/$(BOARD)/USB/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/app/$(BOARD)/HID/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/app/$(BOARD)/KeyMapDnldr/*.c))

@@ -42,12 +42,3 @@
  * PB10, PB11 - UART3 - Bluetooth
  */
 
-typedef union KeyPolling
-{
-	uint8_t val;
-	struct {
-		uint8_t col:4;
-		uint8_t row:3;
-		uint8_t fn:1;
-	} bit;
-} KeyPolling_t;

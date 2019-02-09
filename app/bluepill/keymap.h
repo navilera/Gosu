@@ -286,4 +286,14 @@ typedef struct {
   Key_t *keys;
 } Keymap_t;
 
+typedef union KeyPolling
+{
+	uint8_t val;
+	struct {
+		uint8_t col:4;
+		uint8_t row:3;
+		uint8_t fn:1;
+	} bit;
+} KeyPolling_t;
+
 #endif /*APP_CORE_KEYMAP_H_*/
