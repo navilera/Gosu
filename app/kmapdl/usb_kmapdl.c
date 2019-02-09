@@ -154,6 +154,9 @@ static int8_t kmapdl_cdc_receive(uint8_t *buf, uint32_t *len) {
     keycode = *(buf +idx + 1);
   }
 
+  UNUSED(keymap);
+  UNUSED(keycode);
+
   /* Store Keymap struct to eFlash */
 
 

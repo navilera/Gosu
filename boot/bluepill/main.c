@@ -17,12 +17,19 @@
 #define SYSTEM_US_TICKS (SystemCoreClock / 1000000) // cycles per microsecond
 
 /* Private function prototypes -----------------------------------------------*/
-void SystemClock_Config(void);
-BootMode CheckBootMode(void);
+static void SystemClock_Config(void);
+static BootMode CheckBootMode(void);
 
 void User_task0(void);
 void User_task1(void);
 void User_task2(void);
+
+static BootMode CheckBootMode(void)
+{
+    // get Fn key pressed during keyboard power-up time.
+    // while user presses Fn key, FW enters a keymap download mode or FW update mode.
+    return bootNormal;
+}
 
 static void Kernel_Init(BootMode mode)
 {
@@ -91,9 +98,9 @@ int main(void)
         break;
     }
 
-    Kernel_Init(bmode);
+    //Kernel_Init(bmode);
     debug_printf("Navilos Start..\n");
-    Kernel_start();
+    //Kernel_start();
 
     while (1)
     {
@@ -149,20 +156,13 @@ void User_task0(void)
     }
 }
 
-BootMode CheckBootMode(void)
-{
-    // get Fn key pressed during keyboard power-up time.
-    // while user presses Fn key, FW enters a keymap download mode or FW update mode.
-    return bootNormal;
-}
-
 void User_task1(void)
 {
     int a = 3;
     int b = 4;
     int c = 0;
 
-        while (1)
+    while (1)
     {
         debug_printf("Task1 before context switch : %x %x\n", &a, &b);
 
