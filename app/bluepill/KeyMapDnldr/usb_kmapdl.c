@@ -7,14 +7,13 @@
  * &copy; COPYRIGHT(c) 2019 Polypeak LLC,
  */
 
-#include "app/core/keymap.h"
-#include "app/kmapdl/usb_kmapdl.h"
-#include "app/kmapdl/usbd_cdc.h"
-#include "app/kmapdl/usbd_desc.h"
-#include "hal/bluepill/MemoryMap.h" /*eFlash Address */
-#include "hal/bluepill/drivers/stm32f1xx_hal_flash.h" /*eFlash Program*/
-//#include "hal/bluepill/drivers/stm32f1xx_hal_flash_ex.h" /*eFlash Erase*/
-#include "lib/stdio.h"
+#include "keymap.h"
+#include "usb_kmapdl.h"
+#include "usbd_cdc.h"
+#include "usbd_vcp_desc.h"
+#include "MemoryMap.h" /*eFlash Address */
+#include "stm32f1xx_hal_flash.h" /*eFlash Program*/
+#include "stdio.h"
 #include "usbd_core.h"
 
 #define KMAPDL_RX_DATA_SIZE 2048

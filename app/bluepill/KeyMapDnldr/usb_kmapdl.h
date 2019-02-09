@@ -11,10 +11,10 @@
 #define APP_KMAPDL_USB_KMAPDL_H_
 
 /* Include HAL layer: `hal/bluepill/drivers/` */
-#include "hal/bluepill/drivers/stm32f1xx.h"
-#include "hal/bluepill/drivers/stm32f1xx_hal.h"
+#include "stm32f1xx.h"
+#include "stm32f1xx_hal.h"
 
-#include "app/kmapdl/usbd_cdc.h"
+#include "usbd_cdc.h"
 
 extern USBD_CDC_ItfTypeDef  USBD_KeymapDl_fops;
 

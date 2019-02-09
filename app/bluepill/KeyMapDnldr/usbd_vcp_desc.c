@@ -46,8 +46,9 @@
   */
 
 /* Includes ------------------------------------------------------------------ */
+#include "usbd_vcp_desc.h"
+
 #include "usbd_core.h"
-#include "usbd_desc.h"
 #include "usbd_conf.h"
 
 /* Private typedef ----------------------------------------------------------- */
