@@ -61,7 +61,7 @@
 #include "stdbool.h"
 
 /* USB_Device init function */	
-void App_usb_Init(void);
+void App_hid_Init(void);
 
 void App_hid_send(const void *data,const size_t size);
 

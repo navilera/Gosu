@@ -49,16 +49,17 @@
 
 /* Includes ------------------------------------------------------------------*/
 
-#include "usb_device.h"
+#include "usb_hid_keyboard.h"
+
 #include "usbd_core.h"
-#include "usbd_desc.h"
 #include "usbd_hid.h"
+#include "usbd_hid_desc.h"
 
 /* USB Device Core handle declaration */
 USBD_HandleTypeDef hUsbDeviceFS;
 
 /* init function */				        
-void App_usb_Init(void)
+void App_hid_Init(void)
 {
   /* Init Device Library,Add Supported Class and Start the library*/
   USBD_Init(&hUsbDeviceFS, &FS_Desc, DEVICE_FS);

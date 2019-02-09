@@ -5,15 +5,13 @@
 
 #include "stm32f1xx_hal.h"
 
-#include "usb_device.h"
-#include "usbd_hid.h"
+#include "usb_hid_keyboard.h"
 #include "usb_kmapdl.h"
 
 #include "HalGpio.h"
 #include "HalUart.h"
 
 #include "Kernel.h"
-#include "bluepill_def.h" /* boot/bluepill/bluepill_def.h */
 
 #define SYSTEM_US_TICKS (SystemCoreClock / 1000000) // cycles per microsecond
 
@@ -23,6 +21,12 @@ static void SystemClock_Config(void);
 void User_task0(void);
 void User_task1(void);
 void User_task2(void);
+
+typedef enum eBootMode {
+    bootNormal,
+    bootKeymapDl,
+    bootDFU
+} BootMode;
 
 static BootMode CheckBootMode(void)
 {
@@ -78,7 +82,7 @@ int main(void)
     /* Initialization stage */
     if (bmode == bootNormal)
     {
-    	App_usb_Init();
+    	App_hid_Init();
 
 		while (USBD_HID_Is_Configured() != true)
 		{
@@ -146,7 +150,7 @@ void User_task0(void)
 
     while (1)
     {
-    	USBD_Delay(HID_FS_BINTERVAL);
+    	//USBD_Delay(HID_FS_BINTERVAL);
         debug_printf("Task0 before context switch : %x %x\n", &a, &b);
 
         c = a + b;
@@ -170,7 +174,7 @@ void User_task1(void)
 
     while (1)
     {
-    	USBD_Delay(HID_FS_BINTERVAL);
+    	//USBD_Delay(HID_FS_BINTERVAL);
         debug_printf("Task1 before context switch : %x %x\n", &a, &b);
 
         c = a + b;
@@ -193,7 +197,7 @@ void User_task2(void)
 
     while (1)
     {
-    	USBD_Delay(HID_FS_BINTERVAL);
+    	//USBD_Delay(HID_FS_BINTERVAL);
         debug_printf("Task2 before context switch : %x %x\n", &a, &b);
 
         c = a + b;
