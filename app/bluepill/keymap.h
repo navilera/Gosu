@@ -12,8 +12,6 @@
 
 #include "stdint.h"
 
-#define NUM_LAYERS 2  /* Total two layers */
-
 /* Modifier: First byte in HID report */
 typedef enum HidMod {
   kModLctrl  = 0x01,
@@ -274,19 +272,16 @@ typedef enum Scancode {
   kMsleep = 0xf8,
   kMcoffee = 0xf9,
   kMrefresh = 0xfa,
-  kMcalc = 0xfb
+  kMcalc = 0xfb,
+  kFunction = 0xff			/* Gosu defined scan code for Fn key */
 } Scancode_t;
 
-typedef struct {
-  uint8_t keymap;
-  uint8_t keycodes [NUM_LAYERS]; /* list of keycodes Each entry represent a layer */
-} Key_t;
+#define NUM_LAYERS 2  /* Total two layers */
 
-typedef struct {
-  Key_t *keys;
-} Keymap_t;
+#define KEYMAP_COL_NUM	14
+#define KEYMAP_ROW_NUM	6
 
-typedef union KeyPolling
+typedef union Keyaddr
 {
 	uint8_t val;
 	struct {
@@ -294,6 +289,6 @@ typedef union KeyPolling
 		uint8_t row:3;
 		uint8_t fn:1;
 	} bit;
-} KeyPolling_t;
+} Keyaddr_t;
 
 #endif /*APP_CORE_KEYMAP_H_*/

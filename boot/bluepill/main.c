@@ -109,24 +109,6 @@ int main(void)
     Kernel_start();
 
     while (1) { }
-
-    /* Cleanup stage */
-    switch(bmode) {
-      case bootNormal:
-        break;
-
-      case bootKeymapDl:
-        kmapdl_cleanup();
-        break;
-
-      case bootDFU:
-        /* Do Nothing at this time */
-        break;
-
-      default:
-        /* Error */
-        break;
-    }
 }
 
 /** System Clock Configuration

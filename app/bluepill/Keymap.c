@@ -42,3 +42,22 @@
  * PB10, PB11 - UART3 - Bluetooth
  */
 
+Scancode_t sDebault_keymap_layer0[KEYMAP_ROW_NUM][KEYMAP_COL_NUM] =
+{           /* Col#0	Col#1		Col#2		Col#3		Col#4	Col#5		Col#6		Col#7	Col#8	Col#9	Col#10		Col#11		Col#12		Col#13
+/* Row#0 */	{kFunction,	kEsc,		kF1,		kF2,		kF3,	kF4,		kF5,		kF6,	kF7,	kF8,	kF9,		kF10,		kF11,		kF12},
+/* Row#1 */	{kPageup,   kGrave,		k1,			k2,			k3,		k4,			k5,			k6,		k7,		k8,		k9,			k0,			kMinus,		kEqual},
+/* Row#2 */	{kPagedown, kTab,		kQ,			kW, 		kE, 	kR, 		kT, 		kY, 	kU, 	kI, 	kO, 		kP,			kLeftbrace,	kRightbrace},
+/* Row#3 */	{kInsert,	kA,			kS,			kD,			kF,		kG,			kH,			kJ,		kK,		kL,		kSemicolon,	kApostrophe,kEnter,		kBackspace},
+/* Row#4 */	{kHome,		kLeftshift,	kZ,			kX,			kC,		kV,			kB,			kN,		kM,		kComma,	kDot,		kSlash,		kRightshift,kDelete},
+/* Row#5 */	{kEnd,		kLeftctrl,	kLeftmeta, 	kLeftalt,	kSpace,	kRightalt,	kRightctrl,	kLeft,	kDown,	kRight,	kUp,		kBackslash,	kNone,		kNone}
+};
+
+Scancode_t sDebault_keymap_layer1[KEYMAP_ROW_NUM][KEYMAP_COL_NUM] =
+{
+/* Row#0 */	{0},
+/* Row#1 */	{0},
+/* Row#2 */	{0},
+/* Row#3 */	{0},
+/* Row#4 */	{0},
+/* Row#5 */	{0}
+};
