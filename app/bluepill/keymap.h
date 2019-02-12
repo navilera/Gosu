@@ -13,6 +13,8 @@
 #include "stdint.h"
 #include "stdbool.h"
 
+#include "KeyHw.h"
+
 /* Modifier: First byte in HID report */
 typedef enum HidMod {
   kModLctrl  = 0x01,
@@ -284,21 +286,11 @@ typedef enum Scancode {
 
 #define TOTAL_KEY_NUM	82
 
-typedef union Keyaddr
-{
-	uint8_t val;
-	struct {
-		uint8_t col:4;
-		uint8_t row:3;
-		uint8_t fn:1;
-	} bit;
-} Keyaddr_t;
-
 typedef struct KeymapFile
 {
 	uint32_t	checksum;
-        uint8_t     num_row;
-        uint8_t     num_col;
+    uint8_t     num_row;
+    uint8_t     num_col;
 	uint8_t		keymap[NUM_LAYERS][TOTAL_KEY_NUM];
 } KeymapFile_t;
 
@@ -307,5 +299,8 @@ typedef struct KeymapFile
  */
 void LoadKeymap(void);
 bool WriteKeyMapToFlash(KeymapFile_t* keyfile, uint32_t size);
+
+bool KeyMap_checkFnKey(KeyHwAddr_t* hwPollingAddrs, uint32_t pollingCount);
+void KeyMap_getReport(bool isPressedFnKey, uint8_t* hidKeyboardReport, KeyHwAddr_t* hwPollingAddrs, uint32_t pollingCount);
 
 #endif /*APP_CORE_KEYMAP_H_*/

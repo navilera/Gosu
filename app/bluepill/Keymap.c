@@ -70,6 +70,7 @@ static Scancode_t sKeymap_buffer_layer1[KEYMAP_ROW_NUM][KEYMAP_COL_NUM] =
 
 static bool ReadKeyMapFromFlash(KeymapFile_t* keyfile, uint32_t size);
 static uint32_t GetChecksum(uint8_t* data, uint32_t count);
+static uint8_t GetModifierKeyBitmap(uint8_t scancode);
 
 void LoadKeymap(void)
 {
@@ -90,8 +91,8 @@ void LoadKeymap(void)
 }
 
 bool WriteKeyMapToFlash(KeymapFile_t* keyfile, uint32_t size) {
-  uint32_t idx;
-  uint16_t entry;
+  //uint32_t idx;
+  //uint16_t entry;
 
   //HAL_StatusTypeDef status;
   FLASH_PageErase((uint32_t)KEYMAP_PAGENUM);
@@ -109,6 +110,63 @@ bool WriteKeyMapToFlash(KeymapFile_t* keyfile, uint32_t size) {
   return true;
 }
 
+bool KeyMap_checkFnKey(KeyHwAddr_t* hwPollingAddrs, uint32_t pollingCount)
+{
+	uint32_t row = 0;
+	uint32_t col = 0;
+
+	while (pollingCount--)
+	{
+		row = hwPollingAddrs->bit.row;
+		col = hwPollingAddrs->bit.col;
+
+		if (sKeymap_buffer_layer0[row][col] == kFunction)
+		{
+			hwPollingAddrs->bit.fn = 1;
+			return true;
+		}
+		hwPollingAddrs++;
+	}
+
+	return false;
+}
+
+void KeyMap_getReport(bool isPressedFnKey, uint8_t* hidKeyboardReport, KeyHwAddr_t* hwPollingAddrs, uint32_t pollingCount)
+{
+	Scancode_t** targetKeyMap = (Scancode_t**)((isPressedFnKey) ? sKeymap_buffer_layer1 : sKeymap_buffer_layer0);
+
+	uint32_t idx = 2;
+	uint32_t row = 0;
+	uint32_t col = 0;
+
+	uint8_t modifierKeyBitmap = 0;
+	uint8_t scancode = 0;
+
+	while (pollingCount--)
+	{
+		row = hwPollingAddrs->bit.row;
+		col = hwPollingAddrs->bit.col;
+		hwPollingAddrs++;
+
+		scancode = targetKeyMap[row][col];
+		modifierKeyBitmap = GetModifierKeyBitmap(scancode);
+
+		if (modifierKeyBitmap == 0)	// Not modifier key pressed
+		{
+			hidKeyboardReport[idx++] = scancode;
+
+			if (idx >= HID_KBD_REPORT_BYTE)
+			{
+				return;
+			}
+		}
+		else
+		{
+			hidKeyboardReport[0] |= modifierKeyBitmap;
+		}
+	}
+}
+
 static bool ReadKeyMapFromFlash(KeymapFile_t* keyfile, uint32_t size)
 {
 	return false;
@@ -124,4 +182,38 @@ static uint32_t GetChecksum(uint8_t* data, uint32_t count)
 	}
 
 	return checksum;
+}
+
+static uint8_t GetModifierKeyBitmap(uint8_t scancode)
+{
+	/*
+	  kLeftctrl = 0xe0,   // Keyboard Left Control
+  	  kLeftshift = 0xe1,  // Keyboard Left Shift
+  	  kLeftalt = 0xe2,    // Keyboard Left Alt
+  	  kLeftmeta = 0xe3,   // Keyboard Left GUI
+  	  kRightctrl = 0xe4,  // Keyboard Right Control
+  	  kRightshift = 0xe5, // Keyboard Right Shift
+  	  kRightalt = 0xe6,   // Keyboard Right Alt
+  	  kRightmeta = 0xe7,  // Keyboard Right GUI
+	 */
+
+	/*
+	  kModLctrl  = 0x01,
+  	  kModLshift = 0x02,
+  	  kModLalt   = 0x04,
+  	  kModLmeta  = 0x08,
+  	  kModRctrl  = 0x10,
+  	  kModRshift = 0x20,
+  	  kModRalt   = 0x40,
+  	  kModRmeta  = 0x80
+	 */
+
+	uint8_t modifierKeyBitmap = 0;
+
+	if (kLeftctrl <= scancode && scancode >= kRightmeta)
+	{
+		modifierKeyBitmap = 1 << (scancode & 0xF);
+	}
+
+	return modifierKeyBitmap;
 }

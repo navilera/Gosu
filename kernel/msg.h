@@ -12,7 +12,7 @@
 
 typedef enum KernelMsgQ_t
 {
-    KernelMsgQ_Task0,
+    KernelMsgQ_D2hData,
     KernelMsgQ_DebugCmd,
     KernelMsgQ_Task2,
 

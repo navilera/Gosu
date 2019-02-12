@@ -6,7 +6,11 @@
  */
 
 #include "stdio.h"
+#include "stdlib.h"
+
 #include "usbd_hid.h"
+
+#include "KeyHw.h"
 #include "keymap.h"
 
 #include "Kernel.h"
@@ -15,15 +19,34 @@ void Polling_task(void)
 {
     debug_printf("Polling Task....\n");
 
+    bool pressedFnKey = false;
+    uint32_t pollingCount = 0;
+
+    KeyHwAddr_t hwPollingAddrs[MAX_MULTIPLE_INPUT];
+
+    uint8_t HIDKeyboardReport[HID_KBD_REPORT_BYTE];
+    uint8_t HIDKeyboardReportOld[HID_KBD_REPORT_BYTE];
+
     while (true)
     {
     	USBD_Delay(HID_FS_BINTERVAL);
-        //debug_printf("Polling Task before context switch : %x %x\n", &a, &b);
 
+    	memclr(hwPollingAddrs, MAX_MULTIPLE_INPUT);
+    	memclr(HIDKeyboardReport, HID_KBD_REPORT_BYTE);
+
+    	pollingCount = KeyHw_polling(hwPollingAddrs, MAX_MULTIPLE_INPUT);
+
+		pressedFnKey = KeyMap_checkFnKey(hwPollingAddrs, pollingCount);
+		KeyMap_getReport(pressedFnKey, HIDKeyboardReport, hwPollingAddrs, pollingCount);
+
+		if (memncmp(HIDKeyboardReportOld, HIDKeyboardReport, HID_KBD_REPORT_BYTE) == false)
+		{
+			Kernel_send_msg(KernelMsgQ_D2hData, HIDKeyboardReport, HID_KBD_REPORT_BYTE);
+			Kernel_send_events(KernelEventFlag_SendD2H);
+
+			memncpy(HIDKeyboardReportOld, HIDKeyboardReport, HID_KBD_REPORT_BYTE);
+		}
 
         Kernel_yield();
-
-        //debug_printf("Polling Task after context switch : %x -> %u\n", &c, HAL_GetTick());
-
     }
 }
