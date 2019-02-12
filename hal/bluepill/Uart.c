@@ -53,8 +53,6 @@ void Hal_uart_isr(void)
 	if (ch == '\r' || ch == '\n')
 	{
 		Hal_uart_put_char('\n');
-		Hal_uart_put_char('>');
-		Hal_uart_put_char(' ');
 
 		ch = '\0';
 		Kernel_send_msg(KernelMsgQ_DebugCmd, &ch, 1);

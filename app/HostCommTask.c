@@ -6,8 +6,16 @@
  */
 
 #include "stdio.h"
+#include "stdlib.h"
+
+#include "usb_hid_keyboard.h"
+
+#include "KeyHw.h"
+#include "keymap.h"
 
 #include "Kernel.h"
+
+static void SendUSBHID(void);
 
 void Host_comm_task(void)
 {
@@ -15,22 +23,20 @@ void Host_comm_task(void)
 
     while (true)
     {
-    	//USBD_Delay(HID_FS_BINTERVAL);
-        //debug_printf("Host_comm_task before context switch : %x %x\n", &a, &b);
-
+        KernelEventFlag_t handle_event = Kernel_wait_events(KernelEventFlag_SendD2H);
+        if (handle_event == KernelEventFlag_SendD2H)
+        {
+        	SendUSBHID();
+        }
         Kernel_yield();
-
-        //debug_printf("Host_comm_task after context switch : %x\n", &c);
-
-        /*
-               //uint8_t hidpack[8] = { 0 };
-               USBD_Delay(1000);
-               hidpack[2] = 4;
-               App_hid_send(hidpack, sizeof(hidpack));
-
-               USBD_Delay(1000);
-               hidpack[2] = 0;
-               App_hid_send(hidpack, sizeof(hidpack));
-               */
     }
+}
+
+static void SendUSBHID(void)
+{
+	uint8_t HIDKeyboardReport[HID_KBD_REPORT_BYTE];
+
+	Kernel_recv_msg(KernelMsgQ_D2hData, HIDKeyboardReport, HID_KBD_REPORT_BYTE);
+
+	App_hid_send(HIDKeyboardReport, HID_KBD_REPORT_BYTE);
 }

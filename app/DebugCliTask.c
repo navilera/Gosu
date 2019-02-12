@@ -8,6 +8,8 @@
 #include "stdio.h"
 #include "stdlib.h"
 
+#include "usbd_hid.h"
+
 #include "Kernel.h"
 
 #define MAX_CMD_LEN	16
@@ -25,10 +27,12 @@ typedef struct cmdTable
 static void HandleDebugCommand(void);
 
 static void HandleCmdHelp(char* param);
+static void HandleHid(char* param);
 
 static CmdTable_t sCmdTable[] =
 {
 		{4, "help",		"show this information", 	HandleCmdHelp},
+		{3, "hid",		"send hid keyboard report",	HandleHid},
 		{0, NULL,NULL,NULL}
 };
 
@@ -106,4 +110,25 @@ static void HandleCmdHelp(char* param)
 		debug_printf("%s          %s\n", pCmdTblRow->cmd, pCmdTblRow->desc);
 		pCmdTblRow++;
 	}
+}
+
+static void HandleHid(char* param)
+{
+	uint8_t hid_key_report[8] = {0};
+
+	if (param != NULL)
+	{
+		hid_key_report[0] = 0x02; // shift
+	}
+	hid_key_report[2] = 0x11;	// 'n'
+	Kernel_send_msg(KernelMsgQ_D2hData, hid_key_report, 8);
+	Kernel_send_events(KernelEventFlag_SendD2H);
+
+	Kernel_yield();
+	USBD_Delay(200);
+
+	hid_key_report[0] = 0;
+	hid_key_report[2] = 0;	// clear
+	Kernel_send_msg(KernelMsgQ_D2hData, hid_key_report, 8);
+	Kernel_send_events(KernelEventFlag_SendD2H);
 }
