@@ -20,12 +20,12 @@ extern void FLASH_PageErase(uint32_t PageAddress);
  *      +--------+------+-------+-----+-----+-------+-----+------+-----+-----+-----+-----+------+-------+-------+
  *      |R# |    | PA6  | PA7   | PB0 | PB1 | PB3   | PB4 | PB5  | PB6 | PB7 | PB8 | PB9 | PB12 | PB13  | PB14  |
  *      +---+----+------+-------+-----+-----+-------+-----+------+-----+-----+-----+-----+------+-------+-------+
- *      | 0 |PA0 | Fn   | ESC   | F1  | F2  | F3    | F4  | F5   | F6  | F7  | F8  | F9  | F10  | F11   |  F12  |
+ *      | 0 |PA0 | ESC  | F1    | F2  | F3  | F4    | F5  | F6   | F7  | F8  | F9  | F10 | F11  |  F12  | back  |
  *      | 1 |PA1 | PgUp | ~     | 1   | 2   | 3     | 4   | 5    | 6   | 7   | 8   | 9   | 0    | -     |  +    |
  * ROW  | 2 |PA2 | PgDn | Tab   | Q   | W   | E     | R   | T    | Y   | U   | I   | O   | P    | [     |  ]    |
- *(out) | 3 |PA3 | Inst | A     | S   | D   | F     | G   | H    | J   | K   | L   | ;   | '    | Enter |  back |
- *      | 4 |PA4 | Home | shift | Z   | X   | C     | V   | B    | N   | M   | <   | >   | ?    | shift |  del  |
- *      | 5 |PA5 | End  | ctrl  | Win | alt | space | alt | ctrl | ←   | ↓   | →   | ↑   | \    |       |       |
+ *(out) | 3 |PA3 | Inst | Fn    | A   | S   | D     | F   | G    | H   | J   | K   | L   | ;    | '     | Enter |
+ *      | 4 |PA4 | Home | shift | Z   | X   | C     | V   | B    | N   | M   | <   | >   | ?    | shift |  ↑    |
+ *      | 5 |PA5 | End  | ctrl  | Win | alt | space | alt | ctrl | ←   | ↓   | →   | \   | del  |       |       |
  *      +-- +---------------------------------------------------------------------------------------------------+
  *
  *  key_polling_code
@@ -50,12 +50,12 @@ extern void FLASH_PageErase(uint32_t PageAddress);
 
 static Scancode_t sKeymap_buffer_layer0[KEYMAP_ROW_NUM][KEYMAP_COL_NUM] =
 {           /* Col#0	Col#1		Col#2		Col#3		Col#4	Col#5		Col#6		Col#7	Col#8	Col#9	Col#10		Col#11		Col#12		Col#13 */
-/* Row#0 */	{kFunction,	kEsc,		kF1,		kF2,		kF3,	kF4,		kF5,		kF6,	kF7,	kF8,	kF9,		kF10,		kF11,		kF12},
+/* Row#0 */	{kEsc,		kF1,		kF2,		kF3,	kF4,		kF5,		kF6,	kF7,	kF8,	kF9,		kF10,		kF11,		kF12,		kBackspace},
 /* Row#1 */	{kPageup,   kGrave,		k1,			k2,			k3,		k4,			k5,			k6,		k7,		k8,		k9,			k0,			kMinus,		kEqual},
 /* Row#2 */	{kPagedown, kTab,		kQ,			kW, 		kE, 	kR, 		kT, 		kY, 	kU, 	kI, 	kO, 		kP,			kLeftbrace,	kRightbrace},
-/* Row#3 */	{kInsert,	kA,			kS,			kD,			kF,		kG,			kH,			kJ,		kK,		kL,		kSemicolon,	kApostrophe,kEnter,		kBackspace},
-/* Row#4 */	{kHome,		kLeftshift,	kZ,			kX,			kC,		kV,			kB,			kN,		kM,		kComma,	kDot,		kSlash,		kRightshift,kDelete},
-/* Row#5 */	{kEnd,		kLeftctrl,	kLeftmeta, 	kLeftalt,	kSpace,	kRightalt,	kRightctrl,	kLeft,	kDown,	kRight,	kUp,		kBackslash,	kNone,		kNone}
+/* Row#3 */	{kInsert,	kFunction,	kA,			kS,			kD,		kF,			kG,			kH,		kJ,		kK,		kL,			kSemicolon,	kApostrophe,kEnter},
+/* Row#4 */	{kHome,		kLeftshift,	kZ,			kX,			kC,		kV,			kB,			kN,		kM,		kComma,	kDot,		kSlash,		kRightshift,kUp},
+/* Row#5 */	{kEnd,		kLeftctrl,	kLeftmeta, 	kLeftalt,	kSpace,	kRightalt,	kRightctrl,	kLeft,	kDown,	kRight,	kBackslash,	kDelete,	kNone,		kNone}
 };
 
 static Scancode_t sKeymap_buffer_layer1[KEYMAP_ROW_NUM][KEYMAP_COL_NUM] =
