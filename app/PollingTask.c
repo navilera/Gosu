@@ -36,8 +36,8 @@ void Polling_task(void)
 
     	pollingCount = KeyHw_polling(hwPollingAddrs, MAX_MULTIPLE_INPUT);
 
-		pressedFnKey = KeyMap_checkFnKey(hwPollingAddrs, pollingCount);
-		KeyMap_getReport(pressedFnKey, HIDKeyboardReport, hwPollingAddrs, pollingCount);
+    	pressedFnKey = KeyMap_checkFnKey(hwPollingAddrs, pollingCount);
+    	KeyMap_getReport(pressedFnKey, HIDKeyboardReport, hwPollingAddrs, pollingCount);
 
 		if (memncmp(HIDKeyboardReportOld, HIDKeyboardReport, HID_KBD_REPORT_BYTE) == false)
 		{
