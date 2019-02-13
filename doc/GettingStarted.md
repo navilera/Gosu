@@ -55,3 +55,7 @@ stm32flash` in linux and `brew install stm32flash` in macOS.
 ### Entering to DFU mode
 
 ### Download
+
+## Changing Keymap
+
+- Refer [Keymap](Keymap.md)
