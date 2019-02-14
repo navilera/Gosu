@@ -52,6 +52,7 @@ static Scancode_t sKeymap_buffer_layer1[KEYMAP_ROW_NUM][KEYMAP_COL_NUM] =
 static bool ReadKeyMapFromFlash(KeymapFile_t* keyfile, uint32_t size);
 static uint32_t GetChecksum(uint8_t* data, uint32_t count);
 static uint8_t GetModifierKeyBitmap(uint8_t scancode);
+static void	SortReport(uint8_t* hidKeyboardReport);
 
 void LoadKeymap(void)
 {
@@ -114,7 +115,7 @@ bool KeyMap_checkFnKey(KeyHwAddr_t* hwPollingAddrs, uint32_t pollingCount)
 
 void KeyMap_getReport(bool isPressedFnKey, uint8_t* hidKeyboardReport, KeyHwAddr_t* hwPollingAddrs, uint32_t pollingCount)
 {
-	uint32_t idx = 2;
+	uint32_t idx = HID_KEY_START_IDX;
 	uint32_t row = 0;
 	uint32_t col = 0;
 
@@ -144,14 +145,16 @@ void KeyMap_getReport(bool isPressedFnKey, uint8_t* hidKeyboardReport, KeyHwAddr
 
 			if (idx >= HID_KBD_REPORT_BYTE)
 			{
-				return;
+				break;
 			}
 		}
 		else
 		{
-			hidKeyboardReport[0] |= modifierKeyBitmap;
+			hidKeyboardReport[HID_MODIKEY_IDX] |= modifierKeyBitmap;
 		}
 	}
+
+	SortReport(hidKeyboardReport);
 }
 
 static bool ReadKeyMapFromFlash(KeymapFile_t* keyfile, uint32_t size)
@@ -203,4 +206,32 @@ static uint8_t GetModifierKeyBitmap(uint8_t scancode)
 	}
 
 	return modifierKeyBitmap;
+}
+
+static void	SortReport(uint8_t* hidKeyboardReport)
+{
+	uint8_t temp = 0;
+
+	for (uint32_t idx = HID_KEY_START_IDX ; idx < HID_KBD_REPORT_BYTE ; idx++)
+	{
+		if (hidKeyboardReport[idx] == 0)
+		{
+			continue;
+		}
+
+		for (uint32_t p = (idx+1) ; p < HID_KBD_REPORT_BYTE ; p++)
+		{
+			if (hidKeyboardReport[p] == 0)
+			{
+				continue;
+			}
+
+			if (hidKeyboardReport[idx] > hidKeyboardReport[p])
+			{
+				temp = hidKeyboardReport[idx];
+				hidKeyboardReport[idx] = hidKeyboardReport[p];
+				hidKeyboardReport[p] = temp;
+			}
+		}
+	}
 }

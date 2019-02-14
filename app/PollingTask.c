@@ -22,7 +22,7 @@ void Polling_task(void)
     bool pressedFnKey = false;
     uint32_t pollingCount = 0;
 
-    KeyHwAddr_t hwPollingAddrs[MAX_MULTIPLE_INPUT];
+    KeyHwAddr_t hwPollingAddrs[HID_MAX_MULTIPLE_INPUT];
 
     uint8_t HIDKeyboardReport[HID_KBD_REPORT_BYTE];
     uint8_t HIDKeyboardReportOld[HID_KBD_REPORT_BYTE];
@@ -31,10 +31,10 @@ void Polling_task(void)
     {
     	USBD_Delay(HID_FS_BINTERVAL);
 
-    	memclr(hwPollingAddrs, MAX_MULTIPLE_INPUT);
+    	memclr(hwPollingAddrs, HID_MAX_MULTIPLE_INPUT);
     	memclr(HIDKeyboardReport, HID_KBD_REPORT_BYTE);
 
-    	pollingCount = KeyHw_polling(hwPollingAddrs, MAX_MULTIPLE_INPUT);
+    	pollingCount = KeyHw_polling(hwPollingAddrs, HID_MAX_MULTIPLE_INPUT);
 
     	pressedFnKey = KeyMap_checkFnKey(hwPollingAddrs, pollingCount);
     	KeyMap_getReport(pressedFnKey, HIDKeyboardReport, hwPollingAddrs, pollingCount);

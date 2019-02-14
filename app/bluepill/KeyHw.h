@@ -10,9 +10,6 @@
 
 #include "stdint.h"
 
-#define HID_KBD_REPORT_BYTE 8
-#define MAX_MULTIPLE_INPUT	7		// 1 modi key + 6 char key
-
 typedef union KeyHwAddr
 {
 	uint8_t val;
