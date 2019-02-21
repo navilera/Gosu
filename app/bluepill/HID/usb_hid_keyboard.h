@@ -47,11 +47,8 @@
   ******************************************************************************
 */
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __usb_device_H
-#define __usb_device_H
-#ifdef __cplusplus
- extern "C" {
-#endif
+#ifndef __usb_hid_device_H
+#define __usb_hid_device_H
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f1xx.h"
@@ -67,8 +64,5 @@ void App_hid_send(const void *data,const size_t size);
 
 bool USBD_HID_Is_Configured(void);
 
-#ifdef __cplusplus
-}
-#endif
 #endif /*__usb_device_H */
 

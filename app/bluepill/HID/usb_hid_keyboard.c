@@ -55,18 +55,22 @@
 #include "usbd_hid.h"
 #include "usbd_hid_desc.h"
 
+extern USBD_DescriptorsTypeDef HID_Desc;
+
 /* USB Device Core handle declaration */
-USBD_HandleTypeDef hUsbDeviceFS;
+static USBD_HandleTypeDef hUsbHidDeviceFS;
 
 /* init function */				        
 void App_hid_Init(void)
 {
   /* Init Device Library,Add Supported Class and Start the library*/
-  USBD_Init(&hUsbDeviceFS, &FS_Desc, DEVICE_FS);
+  USBD_Init(&hUsbHidDeviceFS, &HID_Desc, DEVICE_FS);
 
-  USBD_RegisterClass(&hUsbDeviceFS, &USBD_HID);
+  HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)hUsbHidDeviceFS.pData , HID_EPIN_ADDR , PCD_SNG_BUF, 0x100);
 
-  USBD_Start(&hUsbDeviceFS);
+  USBD_RegisterClass(&hUsbHidDeviceFS, &USBD_HID);
+
+  USBD_Start(&hUsbHidDeviceFS);
 
 }
 
@@ -83,7 +87,7 @@ void App_hid_send(const void *data,const size_t size)
 
 	uint8_t status;
 	do {
-		status = USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t *) data, size);
+		status = USBD_HID_SendReport(&hUsbHidDeviceFS, (uint8_t *) data, size);
 		if (status == USBD_FAIL) {
 			debug_printf("USB: fail\n\r");
 		}
@@ -92,6 +96,6 @@ void App_hid_send(const void *data,const size_t size)
 
 bool USBD_HID_Is_Configured(void)
 {
-  return (hUsbDeviceFS.dev_state == USBD_STATE_CONFIGURED);
+  return (hUsbHidDeviceFS.dev_state == USBD_STATE_CONFIGURED);
 }
 

@@ -6,7 +6,7 @@
 #include "stm32f1xx_hal.h"
 
 #include "usb_hid_keyboard.h"
-#include "usb_kmapdl.h"
+#include "usb_msc_device.h"
 
 #include "HalGpio.h"
 #include "HalUart.h"
@@ -18,20 +18,14 @@
 /* Private function prototypes -----------------------------------------------*/
 static void SystemClock_Config(void);
 
-typedef enum eBootMode {
-    bootNormal,
-    bootKeymapDl,
-    bootDFU
-} BootMode;
-
-static BootMode CheckBootMode(void)
+static bool CheckBootMode(void)
 {
     // get Fn key pressed during keyboard power-up time.
     // while user presses Fn key, FW enters a keymap download mode or FW update mode.
-    return bootNormal;
+    return false;
 }
 
-static void Kernel_Init(BootMode mode)
+static void Kernel_Init(void)
 {
 	extern void Polling_task();
 	extern void Host_comm_task();
@@ -59,29 +53,21 @@ static void Kernel_Init(BootMode mode)
     {
         debug_printf("Debug_cli_task creation fail\n");
     }
-
-    if (mode == bootKeymapDl) {
-		taskId = Kernel_task_create(Keymap_dnldr_task);
-		if (NOT_ENOUGH_TASK_NUM == taskId)
-		{
-			debug_printf("Keymap_dnldr_task creation fail\n");
-		}
-    }
 }
 
 int main(void)
 {
-    BootMode bmode;
     HAL_Init();
     SystemClock_Config();
 
     Hal_gpio_init();
     Hal_uart_init();
 
-    bmode = CheckBootMode();
-
-    /* Initialization stage */
-    if (bmode == bootNormal)
+    if (CheckBootMode())
+    {
+    	App_msc_Init();
+    }
+    else
     {
     	App_hid_Init();
 
@@ -90,23 +76,12 @@ int main(void)
 			debug_printf("Waiting for USBHID configuration\n");
 			USBD_Delay(1000);
 		}
-    }
-    else if (bmode == bootKeymapDl)
-    {
-    	kmapdl_init();
-    }
-    else if (bmode == bootDFU)
-    {
 
-    }
-    else
-    {
-    	HALT();
+	    Kernel_Init();
+	    debug_printf("Navilos Start..\n");
+	    Kernel_start();
     }
 
-    Kernel_Init(bmode);
-    debug_printf("Navilos Start..\n");
-    Kernel_start();
 
     while (1) { }
 }

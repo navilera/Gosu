@@ -1,8 +1,8 @@
 /**
   ******************************************************************************
-  * @file           : usbd_desc.h
+  * @file           : USB_DEVICE  
   * @version        : v2.0_Cube
-  * @brief          : Header for usbd_desc file.
+  * @brief          : This file implements the USB Device 
   ******************************************************************************
   * This notice applies to any and all portions of this file
   * that are not between comment pairs USER CODE BEGIN and
@@ -10,7 +10,7 @@
   * inserted by the user or by software development tools
   * are owned by their respective copyright owners.
   *
-  * Copyright (c) 2017 STMicroelectronics International N.V. 
+  * Copyright (c) 2018 STMicroelectronics International N.V. 
   * All rights reserved.
   *
   * Redistribution and use in source and binary forms, with or without 
@@ -47,10 +47,46 @@
   ******************************************************************************
 */
 
-#ifndef __USBD_HID_DESC__H__
-#define __USBD_HID_DESC__H__
+/* Includes ------------------------------------------------------------------*/
 
+#include "usb_msc_device.h"
+
+#include "stm32f1xx.h"
+#include "stm32f1xx_hal.h"
 #include "usbd_def.h"
 
-#endif /* __USBD_DESC_H */
+#include "usbd_core.h"
+#include "usbd_msc_desc.h"
+#include "usbd_msc.h"
+#include "usbd_storage_if.h"
 
+extern USBD_DescriptorsTypeDef MSC_Desc;
+
+/* USB Device Core handle declaration */
+static USBD_HandleTypeDef hUsbMscDeviceFS;
+
+/* init function */				        
+void App_msc_Init(void)
+{
+  /* Init Device Library,Add Supported Class and Start the library*/
+  USBD_Init(&hUsbMscDeviceFS, &MSC_Desc, DEVICE_FS);
+
+  HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)hUsbMscDeviceFS.pData , MSC_EPIN_ADDR , PCD_SNG_BUF, 0x98);
+  HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)hUsbMscDeviceFS.pData , MSC_EPOUT_ADDR , PCD_SNG_BUF, 0xD8);
+
+  USBD_RegisterClass(&hUsbMscDeviceFS, &USBD_MSC);
+
+  USBD_MSC_RegisterStorage(&hUsbMscDeviceFS, &USBD_Storage_Interface_fops_FS);
+
+  USBD_Start(&hUsbMscDeviceFS);
+
+}
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

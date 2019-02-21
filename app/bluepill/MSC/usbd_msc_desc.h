@@ -10,7 +10,7 @@
   * inserted by the user or by software development tools
   * are owned by their respective copyright owners.
   *
-  * Copyright (c) 2017 STMicroelectronics International N.V. 
+  * Copyright (c) 2018 STMicroelectronics International N.V. 
   * All rights reserved.
   *
   * Redistribution and use in source and binary forms, with or without 
@@ -47,10 +47,20 @@
   ******************************************************************************
 */
 
-#ifndef __USBD_HID_DESC__H__
-#define __USBD_HID_DESC__H__
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef __USBD_MSC_DESC__H__
+#define __USBD_MSC_DESC__H__
 
 #include "usbd_def.h"
 
+
 #endif /* __USBD_DESC_H */
 
+/**
+  * @}
+  */ 
+
+/**
+* @}
+*/ 
+/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

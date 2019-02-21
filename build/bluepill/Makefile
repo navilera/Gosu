@@ -32,7 +32,7 @@ VPATH = boot/$(BOARD) 				\
         app/$(BOARD)				\
         app/$(BOARD)/USB			\
         app/$(BOARD)/HID			\
-		app/$(BOARD)/KeyMapDnldr    \
+		app/$(BOARD)/MSC    		\
         app/	                	\
         kernel
 
@@ -44,7 +44,7 @@ C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/lib/$(ARM_ARCH)/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/app/$(BOARD)/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/app/$(BOARD)/USB/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/app/$(BOARD)/HID/*.c))
-C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/app/$(BOARD)/KeyMapDnldr/*.c))
+C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/app/$(BOARD)/MSC/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/app/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/kernel/*.c))
 C_OBJS = $(patsubst %.c, $(OUTPUT_DIR)/%.o, $(C_SRCS))
@@ -59,7 +59,7 @@ INC_DIRS  = -I boot/$(BOARD)    		\
             -I app/$(BOARD) 			\
             -I app/$(BOARD)/USB			\
             -I app/$(BOARD)/HID			\
-            -I app/$(BOARD)/KeyMapDnldr \
+            -I app/$(BOARD)/MSC 		\
             -I app/						\
             -I .                        \
             -I kernel

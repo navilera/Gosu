@@ -1,8 +1,8 @@
 /**
   ******************************************************************************
-  * @file           : usbd_desc.h
+  * @file           : USB_DEVICE
   * @version        : v2.0_Cube
-  * @brief          : Header for usbd_desc file.
+  * @brief          : Header for usb_device file.
   ******************************************************************************
   * This notice applies to any and all portions of this file
   * that are not between comment pairs USER CODE BEGIN and
@@ -10,7 +10,7 @@
   * inserted by the user or by software development tools
   * are owned by their respective copyright owners.
   *
-  * Copyright (c) 2017 STMicroelectronics International N.V. 
+  * Copyright (c) 2018 STMicroelectronics International N.V. 
   * All rights reserved.
   *
   * Redistribution and use in source and binary forms, with or without 
@@ -46,11 +46,22 @@
   *
   ******************************************************************************
 */
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef __usb_msc_device_H
+#define __usb_msc_device_H
 
-#ifndef __USBD_HID_DESC__H__
-#define __USBD_HID_DESC__H__
 
-#include "usbd_def.h"
+/* USB_Device init function */	
+void App_msc_Init(void);
 
-#endif /* __USBD_DESC_H */
+#endif /*__usb_device_H */
 
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
