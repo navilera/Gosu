@@ -52,6 +52,7 @@
 #include "usbd_def.h"
 #include "usbd_core.h"
 #include "usbd_hid.h"
+#include "usbd_msc.h"
 
 #include "stdlib.h"
 /* Private typedef -----------------------------------------------------------*/
@@ -709,6 +710,8 @@ void  USBD_LL_Delay (uint32_t Delay)
   HAL_Delay(Delay);  
 }
 
+#define MAX_USBD_MALLOC_SIZE (sizeof (USBD_MSC_BOT_HandleTypeDef))	// Gosu uses USBD_HID_HandleTypeDef and USBD_MSC_BOT_HandleTypeDef. Malloc size should be big one
+
 /**
   * @brief  static single allocation.
   * @param  size: size of allocated memory
@@ -716,7 +719,7 @@ void  USBD_LL_Delay (uint32_t Delay)
   */
 void *USBD_static_malloc(uint32_t size)
 {
-  static uint32_t mem[(sizeof(USBD_HID_HandleTypeDef)/4)+1];/* On 32-bit boundary */
+  static uint32_t mem[(MAX_USBD_MALLOC_SIZE/4)+1];/* On 32-bit boundary */
   return mem;
 }
 

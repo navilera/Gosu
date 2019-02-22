@@ -57,6 +57,9 @@ static void	SortReport(uint8_t* hidKeyboardReport);
 void LoadKeymap(void)
 {
 	KeymapFile_t saved_keymap = {0};
+
+	debug_printf("Keymap size: %u bytes\n", sizeof(sKeymap_buffer_layer0));
+
 	if (ReadKeyMapFromFlash(&saved_keymap, sizeof(KeymapFile_t)) != true)
 	{
 		return;

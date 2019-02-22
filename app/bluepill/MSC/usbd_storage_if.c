@@ -53,9 +53,6 @@
 #define STORAGE_BLK_NBR                  0x10000  
 #define STORAGE_BLK_SIZ                  0x200
 
-/* USER CODE BEGIN PRIVATE_DEFINES */
-#define BLOCK_SIZE			512
-/* USER CODE END PRIVATE_DEFINES */
   
 /**
   * @}
@@ -174,8 +171,8 @@ int8_t STORAGE_Init_FS (uint8_t lun)
 *******************************************************************************/
 int8_t STORAGE_GetCapacity_FS (uint8_t lun, uint32_t *block_num, uint16_t *block_size)
 {
-	*block_num  = 1;
-	*block_size = BLOCK_SIZE;
+	*block_num  = STORAGE_BLK_NBR;
+	*block_size = STORAGE_BLK_SIZ;
   return (USBD_OK);
   /* USER CODE END 3 */ 
 }
