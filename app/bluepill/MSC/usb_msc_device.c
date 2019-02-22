@@ -53,14 +53,13 @@
 
 #include "stm32f1xx.h"
 #include "stm32f1xx_hal.h"
-#include "usbd_def.h"
 
+#include "usbd_def.h"
 #include "usbd_core.h"
-#include "usbd_msc_desc.h"
 #include "usbd_msc.h"
-#include "usbd_storage_if.h"
 
 extern USBD_DescriptorsTypeDef MSC_Desc;
+extern USBD_StorageTypeDef  USBD_Storage_Interface_fops_FS;
 
 /* USB Device Core handle declaration */
 static USBD_HandleTypeDef hUsbMscDeviceFS;
