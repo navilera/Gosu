@@ -33,50 +33,6 @@
 
 
 
-/** @addtogroup STM32_USB_DEVICE_LIBRARY
-  * @{
-  */
-
-
-/** @defgroup MSC_SCSI 
-  * @brief Mass storage SCSI layer module
-  * @{
-  */ 
-
-/** @defgroup MSC_SCSI_Private_TypesDefinitions
-  * @{
-  */ 
-/**
-  * @}
-  */ 
-
-
-/** @defgroup MSC_SCSI_Private_Defines
-  * @{
-  */ 
-
-/**
-  * @}
-  */ 
-
-
-/** @defgroup MSC_SCSI_Private_Macros
-  * @{
-  */ 
-/**
-  * @}
-  */ 
-
-
-/** @defgroup MSC_SCSI_Private_Variables
-  * @{
-  */ 
-
-/**
-  * @}
-  */ 
-
-
 /** @defgroup MSC_SCSI_Private_FunctionPrototypes
   * @{
   */ 
@@ -672,6 +628,8 @@ static int8_t SCSI_ProcessRead (USBD_HandleTypeDef  *pdev, uint8_t lun)
   
   len = MIN(hmsc->scsi_blk_len , MSC_MEDIA_PACKET); 
   
+  debug_printf("SCSI: %x %x %x\n", hmsc->scsi_blk_addr, hmsc->scsi_blk_len, hmsc->scsi_blk_size);
+
   if( ((USBD_StorageTypeDef *)pdev->pUserData)->Read(lun ,
                               hmsc->bot_data, 
                               hmsc->scsi_blk_addr / hmsc->scsi_blk_size, 
@@ -753,18 +711,3 @@ static int8_t SCSI_ProcessWrite (USBD_HandleTypeDef  *pdev, uint8_t lun)
   
   return 0;
 }
-/**
-  * @}
-  */ 
-
-
-/**
-  * @}
-  */ 
-
-
-/**
-  * @}
-  */ 
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

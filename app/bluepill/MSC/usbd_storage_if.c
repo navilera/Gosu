@@ -74,40 +74,40 @@ const uint8_t FAT16_BootSector[FATBootSize]=
     0x3C,           /*01 - BS_jmpBoot */
     0x90,           /*02 - BS_jmpBoot */
     'M','S','D','O','S','5','.','0',    /* 03-10 - BS_OEMName */
-    0x00,           /*11 - BPB_BytesPerSec = 2048 */
-    0x08,           /*11 - BPB_BytesPerSec = 2048 */
-    0x04,           /*13 - BPB_Sec_PerClus = 2K*4 = 8K*/
-    2,              /*14 - BPB_RsvdSecCnt = 2 */
-    0,              /*15 - BPB_RsvdSecCnt = 2 */
-    2,              /*16 - BPB_NumFATs = 2 */
-    0x0,            /*17 - BPB_RootEntCnt = 512 */
-    0x2,            /*18 - BPB_RootEntCnt = 512 */
-    0,              /*19 - BPB_TotSec16 = 0 */
-    0,              /*20 - BPB_TotSec16 = 0 */
-    0xF8,           /*21 - BPB_Media = 0xF8 */
-    0x0D,           /*22 - BPBFATSz16 = 0x000D */
-    0,              /*23 - BPBFATSz16 = 0x000D */
-    0x3F,           /*24 - BPB_SecPerTrk = 0x003F */
-    0,              /*25 - BPB_SecPerTrk = 0x003F */
-    0xFF,           /*26 - BPB_NumHeads = 255 */
-    0,              /*27 - BPB_NumHeads = 255 */
-    0,              /*28 - BPB_HiddSec = 0 */
-    0,              /*29 - BPB_HiddSec = 0 */
-    0,              /*30 - BPB_HiddSec = 0 */
-    0,              /*31 - BPB_HiddSec = 0 */
-    0x00,           /*32 - BPB_TotSec32 = */
-    0xC8,           /*33 - BPB_TotSec32 = 0x0000C800 100Mb*/
-    0x00,           /*34 - BPB_TotSec32 = */
-    0x00,           /*35 - BPB_TotSec32 = */
-    0x80,           /*36 - BS_DrvNum = 0x80 */
-    0,              /*37 - BS_Reserved1 = 0 , dirty bit = 0*/ /* Updated from FSL*/
-    0x29,           /*38 - BS_BootSig = 0x29 */
-    0xBD,           /*39 - BS_VolID = 0x02DDA5BD */
-    0xA5,           /*40 - BS_VolID = 0x02DDA5BD */
-    0xDD,           /*41 - BS_VolID = 0x02DDA5BD */
-    0x02,           /*42 - BS_VolID = 0x02DDA5BD */
+    0x00,           /*11(0B) - BPB_BytesPerSec = 512 */
+    0x02,           /*12(0C) - BPB_BytesPerSec =  */
+    0x08,           /*13(0D) - BPB_Sec_PerClus = 8 sec (512 * 8 =  4K)*/
+    2,              /*14(0E) - BPB_RsvdSecCnt = 2 */
+    0,              /*15(0F) - BPB_RsvdSecCnt =  */
+    2,              /*16(10) - BPB_NumFATs = 2 */
+    0xFF,           /*17(11) - BPB_RootEntCnt = 256 */
+    0x0,            /*18(12) - BPB_RootEntCnt =  */
+    0,              /*19(13) - BPB_TotSec16 = 0 */
+    0,              /*20(14) - BPB_TotSec16 = 0 */
+    0xF8,           /*21(15) - BPB_Media = 0xF8 */
+    0x0D,           /*22(16) - BPBFATSz16 = 0x000D */
+    0,              /*23(17) - BPBFATSz16 = 0x000D */
+    0x3F,           /*24(18) - BPB_SecPerTrk = 0x003F */
+    0,              /*25(19) - BPB_SecPerTrk = 0x003F */
+    0xFF,           /*26(1A) - BPB_NumHeads = 255 */
+    0,              /*27(1B) - BPB_NumHeads = 255 */
+    0,              /*28(1C) - BPB_HiddSec = 0 */
+    0,              /*29(1D) - BPB_HiddSec = 0 */
+    0,              /*30(1E) - BPB_HiddSec = 0 */
+    0,              /*31(1F) - BPB_HiddSec = 0 */
+    0x00,           /*32(20) - BPB_TotSec32 = */
+    0xC8,           /*33(21) - BPB_TotSec32 = 0x0000C800 25MB*/
+    0x00,           /*34(22) - BPB_TotSec32 = */
+    0x00,           /*35(23) - BPB_TotSec32 = */
+    0x80,           /*36(24) - BS_DrvNum = 0x80 */
+    0,              /*37(25) - BS_Reserved1 = 0 , dirty bit = 0*/ /* Updated from FSL*/
+    0x29,           /*38(26) - BS_BootSig = 0x29 */
+    0xBD,           /*39(27) - BS_VolID = 0x02DDA5BD */
+    0xA5,           /*40(28) - BS_VolID = 0x02DDA5BD */
+    0xDD,           /*41(29) - BS_VolID = 0x02DDA5BD */
+    0x02,           /*42(2A) - BS_VolID = 0x02DDA5BD */
     'N','O',' ','N','A','M','E',' ',' ',' ',' ',  /*43-53 - BS_VolLab */
-    'F','A','T','1','6',' ',' ',' '   /*54-61 - BS_FilSysType */
+    'F','A','T','1','6',' ',' ',' '   /*54-61 (36-3D) - BS_FilSysType */
 };
 
 const uint8_t FAT16_TableSector0[FATTableSize]=
@@ -171,6 +171,10 @@ static int8_t STORAGE_Read_FS (uint8_t lun, uint8_t *buf, uint32_t blk_addr, uin
 static int8_t STORAGE_Write_FS (uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len);
 static int8_t STORAGE_GetMaxLun_FS (void);
 
+static uint32_t FATSetStatusFileName(const char * name);
+static uint32_t FAT_RootDirWriteRequest(uint32_t FAT_LBA,uint8_t* data, uint32_t len);
+static uint32_t FAT_DataSectorWriteRequest(uint32_t FAT_LBA,uint8_t* data, uint32_t len);
+
 USBD_StorageTypeDef USBD_Storage_Interface_fops_FS =
 {
   STORAGE_Init_FS,
@@ -209,15 +213,193 @@ int8_t  STORAGE_IsWriteProtected_FS (uint8_t lun)
 
 int8_t STORAGE_Read_FS (uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len)
 {
-  return (USBD_OK);
+	debug_printf("R:%x %x\n", blk_addr, blk_len);
+
+    int32_t i = 0;
+    switch (blk_addr)
+    {
+        /* Boot Sector */
+        case 0:
+            /* Write Boot Sector info */
+            for(i=0;i<FATBootSize;i++)
+            {
+                *buf++ = FAT16_BootSector[i];
+            } /* EndFor */
+            /* Rest of sector empty except last two bytes */
+            //i += 2;
+            while (i++ < 448)
+            {
+                *buf++ = 0;
+            } /* EndWhile */
+
+            /* Boot Sector requires these 2 bytes at end */
+            *buf++ = 0x55;
+            *buf++ = 0xAA;
+
+            //while(i++ < 2048)
+            //{
+            //    *buf++ = 0;
+            //}
+
+            break;
+        /* FAT Table Sector */
+        case 1: //FAT0
+        case 0xD800: //FAT1
+            /* Write FAT Table Sector */
+            for(i=0;i<FATTableSize;i++)
+            {
+                *buf++ = FAT16_TableSector0[i];
+            } /* EndFor */
+            /* Rest of sector empty */
+            while (i++ < FATBytesPerSec)
+            {
+                *buf++ = 0;
+            } /*ENdWhile */
+            break;
+
+        /* Root Directory Sector */
+        case 0xE000: //16K
+
+            for(i=0;i<FATFileNameSize;i++)
+            {
+                *buf++ = FAT16_ReadyFileName[i];
+            } /* EndFor */
+
+            /* Write rest of file FAT structure */
+            for(i=0;i<FATDirSize;i++)
+            {
+                *buf++ = FAT16_RootDirSector[i];
+            } /* EndFor */
+
+            /* Rest of sector empty to signify no more files */
+            i += FATFileNameSize;
+            while (i++ < FATBytesPerSec)
+            {
+                *buf++ = 0;
+            } /* EndWhile */
+            break;
+
+          /* All other sectors empty */
+        default:
+            i = 0;
+            while (i++ < FATBytesPerSec)
+            {
+                *buf++ = 0;
+            } /* EndWhile */
+            break;
+    } /* EndSwitch */
+
+    return (USBD_OK);
 }
 
 int8_t STORAGE_Write_FS (uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len)
 {
-  return (USBD_OK);
+    switch(blk_addr)
+    {
+        case 0x0000: // 4K   Boot Sector
+        case 0x1000: // 26K  FAT0
+        case 0xD800: // 26K  FAT1
+             break;
+        case 0xE000: // 16K  Root Directory
+             FAT_RootDirWriteRequest(blk_addr, buf, blk_len);
+             break;
+        default:
+             {
+                if(blk_addr >= 0x12000)
+                {
+                    FAT_DataSectorWriteRequest(blk_addr, buf, blk_len);
+                }
+             }
+             break;
+    }
+
+    return (USBD_OK);
 }
 
 int8_t STORAGE_GetMaxLun_FS (void)
 {
   return (STORAGE_LUN_NBR - 1);
+}
+
+
+static uint32_t FATSetStatusFileName(const char * name)
+{
+    uint8_t i;
+    uint8_t len = (uint8_t)strlen(name);
+
+    for(i=0; i<8 && i<len; i++)
+    {
+        FAT16_ReadyFileName[i] = name[i];
+    }
+
+    for(; i < 8; i++)
+    {
+        FAT16_ReadyFileName[i] = ' ';
+    }
+
+    return i;
+}
+
+static uint32_t FAT_RootDirWriteRequest(uint32_t FAT_LBA,uint8_t* data, uint32_t len)
+{
+    FAT_DIR_t* pFile = (FAT_DIR_t*) data;
+    uint32_t   index = 2;
+
+    pFile++; // Skip Root Dir
+    pFile++; // Skip Status File
+
+    while((pFile->DIR_Attr != 0x20) && (index++ < 512))
+    {
+        pFile++;
+    }
+
+    // Find it
+    if(index <= 512)
+    {
+        memcpy(&FileAttr, pFile, 32);
+        FileAttr.DIR_WriteTime = 0;
+        FileAttr.DIR_WriteDate = 0;
+    }
+    else
+    {
+        memset(&FileAttr, (int)0, 32);
+    }
+
+    return len;
+}
+
+static uint32_t FAT_DataSectorWriteRequest(uint32_t FAT_LBA,uint8_t* data, uint32_t len)
+{
+    int32_t filesize_total = (int32_t)FileAttr.DIR_FileSize;
+    int32_t* filesize_write = (int32_t*)&(FileAttr.DIR_WriteTime);
+
+    if (!memcmp(&(FileAttr.DIR_Name[8]), "BIN", 3))
+    {
+        uint16_t flash_cnt = *(volatile uint16_t *) 0x1FFFF7E0;
+        uint32_t freeflash  =  flash_cnt * FLASH_PAGE_SIZE;
+
+        if(freeflash >= FileAttr.DIR_FileSize)
+        {
+            // Flash MCU
+            //STMFLASH_Write(FLASH_START_ADDR + FAT_LBA - FileAttr.DIR_ClusLow * 8192,(u16*)data, len/2);
+            *filesize_write += len;
+            if(*filesize_write >= filesize_total)
+            {
+                *filesize_write = 0;
+                FATSetStatusFileName("SUCCESS");
+            }
+        }
+        else
+        {
+            FATSetStatusFileName("LARGE");
+        }
+    }
+    else
+    {
+        // Can't Recognize it
+        // Cancel and Reset USB
+        FATSetStatusFileName("UNKOWN");
+    }
+
+    return len;
 }
