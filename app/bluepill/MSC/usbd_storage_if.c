@@ -62,9 +62,9 @@ const int8_t  STORAGE_Inquirydata_FS[] = {/* 36 */
   0x00,
   0x00,	
   0x00,
-  'C', 'P', ' ', 't', 'e', 'c', 'h', ' ', /* Manufacturer : 8 bytes */
-  'M', 'y', ' ', 'm', 'a', 's', 's', ' ', /* Product      : 16 Bytes */
-  's', 't', 'o', 'r', 'a', 'g', 'e', ' ',
+  'G', 'o', 's', 'u', ' ', 'F', 'W', ' ', /* Manufacturer : 8 bytes */
+  'K', 'e', 'y', 'b', 'o', 'a', 'r', 'd', /* Product      : 16 Bytes */
+  ' ', 'D', 'n', 'l', 'd', 'M', 'o', 'd',
   '1', '.', '0' ,'0',                     /* Version      : 4 Bytes */
 };
 
@@ -85,8 +85,8 @@ const uint8_t FAT16_BootSector[FATBootSize]=
     0,              /*19(13) - BPB_TotSec16 = 0 */
     0,              /*20(14) - BPB_TotSec16 = 0 */
     0xF8,           /*21(15) - BPB_Media = 0xF8 */
-    0x01,           /*22(16) - BPBFATSz16 = 0x000D */
-    0,              /*23(17) - BPBFATSz16 = 0x000D */
+    0x01,           /*22(16) - BPBFATSz16 = 0x0001 */
+    0,              /*23(17) - BPBFATSz16 =  */
     0x3F,           /*24(18) - BPB_SecPerTrk = 0x003F */
     0,              /*25(19) - BPB_SecPerTrk = 0x003F */
     0xFF,           /*26(1A) - BPB_NumHeads = 255 */
@@ -115,7 +115,7 @@ const uint8_t FAT16_TableSector0[FATTableSize]=
     0xF8,0xFF,0xFF,0xFF
 };
 
-uint8_t FAT16_ReadyFileName[FATFileNameSize]=
+static uint8_t FAT16_ReadyFileName[FATFileNameSize]=
 {
     'R','E','A','D','Y',' ',' ',' ','T','X','T'    /*00-10 - Short File Name */
 };
@@ -143,7 +143,7 @@ const uint8_t FAT16_RootDirSector[FATDirSize]=
     0x00,           /*29 - File Size */
     0x00,           /*30 - File Size */
     0x00,           /*31 - File Size */
-    'B','O','O','T','L','O','A','D','E','R',' ',  /*32-42 - Volume label */
+    'G','O','S','U','F','W','_','K','B','D',' ',  /*32-42 - Volume label */
     0x08,           /*43 - File attribute = Volume label */
     0x00,           /*44 - Reserved */
     0x00,           /*45 - Create Time Tenth */
@@ -161,7 +161,10 @@ const uint8_t FAT16_RootDirSector[FATDirSize]=
     0x38,           /*57 - Write Date */
 };
 
-FAT_DIR_t FileAttr;
+static FAT_DIR_t FileAttr;
+static uint32_t filesize_total = 0;
+static uint8_t sectorBuffer[1024];
+static uint32_t sectorBuffIdx = 0;
 
 static int8_t STORAGE_Init_FS (uint8_t lun);
 static int8_t STORAGE_GetCapacity_FS (uint8_t lun, uint32_t *block_num, uint16_t *block_size);
@@ -187,18 +190,18 @@ USBD_StorageTypeDef USBD_Storage_Interface_fops_FS =
   (int8_t *)STORAGE_Inquirydata_FS,
 };
 
-
-
 int8_t STORAGE_Init_FS (uint8_t lun)
 {
-  return (USBD_OK);
+	filesize_total = 0;
+	sectorBuffIdx = 0;
+	return (USBD_OK);
 }
 
 int8_t STORAGE_GetCapacity_FS (uint8_t lun, uint32_t *block_num, uint16_t *block_size)
 {
 	*block_num  = STORAGE_BLK_NBR;
 	*block_size = STORAGE_BLK_SIZ;
-  return (USBD_OK);
+	return (USBD_OK);
 }
 
 int8_t  STORAGE_IsReady_FS (uint8_t lun)
@@ -213,8 +216,6 @@ int8_t  STORAGE_IsWriteProtected_FS (uint8_t lun)
 
 int8_t STORAGE_Read_FS (uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len)
 {
-	debug_printf("R:%x %x\n", blk_addr, blk_len);
-
 	memclr(buf, FATBytesPerSec);
 
     int32_t i = 0;
@@ -244,7 +245,6 @@ int8_t STORAGE_Read_FS (uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t b
 
         /* Root Directory Sector */
         case 3:
-
             for(i=0;i<FATFileNameSize;i++)
             {
                 *buf++ = FAT16_ReadyFileName[i];
@@ -255,13 +255,6 @@ int8_t STORAGE_Read_FS (uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t b
             {
                 *buf++ = FAT16_RootDirSector[i];
             } /* EndFor */
-
-            /* Rest of sector empty to signify no more files */
-            i += FATFileNameSize;
-            while (i++ < FATBytesPerSec)
-            {
-                *buf++ = 0;
-            } /* EndWhile */
             break;
 
           /* All other sectors empty */
@@ -278,16 +271,16 @@ int8_t STORAGE_Write_FS (uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t 
 
     switch(blk_addr)
     {
-        case 0x0000: // 4K   Boot Sector
-        case 0x1000: // 26K  FAT0
-        case 0xD800: // 26K  FAT1
+        case 0: // Boot Sector
+        case 1: // FAT0
+        case 2: // FAT1
              break;
-        case 0xE000: // 16K  Root Directory
+        case 3: // 16K  Root Directory
              FAT_RootDirWriteRequest(blk_addr, buf, blk_len);
              break;
         default:
              {
-                if(blk_addr >= 0x12000)
+                //if(blk_addr >= 0x12000)
                 {
                     FAT_DataSectorWriteRequest(blk_addr, buf, blk_len);
                 }
@@ -338,13 +331,25 @@ static uint32_t FAT_RootDirWriteRequest(uint32_t FAT_LBA,uint8_t* data, uint32_t
     // Find it
     if(index <= 512)
     {
-        memcpy(&FileAttr, pFile, 32);
+    	memncpy((uint8_t*)&FileAttr, (uint8_t*)pFile, 32);
         FileAttr.DIR_WriteTime = 0;
         FileAttr.DIR_WriteDate = 0;
+
+        debug_printf("--> %s [%x]\n", FileAttr.DIR_Name, FileAttr.DIR_FileSize);
+        //if (!memncmp((uint8_t*)FileAttr.DIR_Name, (uint8_t*)"KEYMAP", 6))
+        // copy temporary data into the keymap Flash page
+        //if dir_name is "FW"
+        // copy temporary data into the eflash starting page (0x8000)
+
+        /*
+         * FATSetStatusFileName("SUCCESS");
+         * FATSetStatusFileName("LARGE");
+         * FATSetStatusFileName("UNKOWN");
+         */
     }
     else
     {
-        memset(&FileAttr, (int)0, 32);
+    	memclr(&FileAttr, 32);
     }
 
     return len;
@@ -352,35 +357,34 @@ static uint32_t FAT_RootDirWriteRequest(uint32_t FAT_LBA,uint8_t* data, uint32_t
 
 static uint32_t FAT_DataSectorWriteRequest(uint32_t FAT_LBA,uint8_t* data, uint32_t len)
 {
-    int32_t filesize_total = (int32_t)FileAttr.DIR_FileSize;
-    int32_t* filesize_write = (int32_t*)&(FileAttr.DIR_WriteTime);
+    debug_printf("DW:%x [%x %x %x %x] %x\n", FAT_LBA, data[0], data[1], data[2], data[3], len);
 
-    if (!memcmp(&(FileAttr.DIR_Name[8]), "BIN", 3))
+    // 0x2A = RootDirSectors (32) + FAT1 sectors(1) + FAT2 sectors(1) + FirstClusterSectors(8) = 42 (0x2A)
+    if (FAT_LBA > 0x2A)
     {
-        uint16_t flash_cnt = *(volatile uint16_t *) 0x1FFFF7E0;
-        uint32_t freeflash  =  flash_cnt * FLASH_PAGE_SIZE;
+        //uint16_t flashStartAddr = *(volatile uint16_t *) 0x1FFFF7E0;
+        uint32_t flashMaxLen  =  30 * FLASH_PAGE_SIZE; //30KB
 
-        if(freeflash >= FileAttr.DIR_FileSize)
+        filesize_total += len;
+
+        if (filesize_total > flashMaxLen)
         {
-            // Flash MCU
-            //STMFLASH_Write(FLASH_START_ADDR + FAT_LBA - FileAttr.DIR_ClusLow * 8192,(u16*)data, len/2);
-            *filesize_write += len;
-            if(*filesize_write >= filesize_total)
-            {
-                *filesize_write = 0;
-                FATSetStatusFileName("SUCCESS");
-            }
+        	FATSetStatusFileName("LARGE");
+        	return len;
+        }
+
+        if (sectorBuffIdx == 0)
+        {
+        	memncpy(sectorBuffer, data, len);
+        	sectorBuffIdx = len;
         }
         else
         {
-            FATSetStatusFileName("LARGE");
+        	memncpy(&sectorBuffer[sectorBuffIdx], data, len);
+			sectorBuffIdx = 0;
+
+			// FlashPageWrite(sectorBuffer);
         }
-    }
-    else
-    {
-        // Can't Recognize it
-        // Cancel and Reset USB
-        FATSetStatusFileName("UNKOWN");
     }
 
     return len;
