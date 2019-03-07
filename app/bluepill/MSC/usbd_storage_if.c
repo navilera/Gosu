@@ -77,15 +77,15 @@ const uint8_t FAT16_BootSector[FATBootSize]=
     0x00,           /*11(0B) - BPB_BytesPerSec = 512 */
     0x02,           /*12(0C) - BPB_BytesPerSec =  */
     0x08,           /*13(0D) - BPB_Sec_PerClus = 8 sec (512 * 8 =  4K)*/
-    2,              /*14(0E) - BPB_RsvdSecCnt = 2 */
+    1,              /*14(0E) - BPB_RsvdSecCnt = 1 */
     0,              /*15(0F) - BPB_RsvdSecCnt =  */
     2,              /*16(10) - BPB_NumFATs = 2 */
-    0xFF,           /*17(11) - BPB_RootEntCnt = 256 */
-    0x0,            /*18(12) - BPB_RootEntCnt =  */
+    0x00,           /*17(11) - BPB_RootEntCnt = 512 */
+    0x02,           /*18(12) - BPB_RootEntCnt =  */
     0,              /*19(13) - BPB_TotSec16 = 0 */
     0,              /*20(14) - BPB_TotSec16 = 0 */
     0xF8,           /*21(15) - BPB_Media = 0xF8 */
-    0x0D,           /*22(16) - BPBFATSz16 = 0x000D */
+    0x01,           /*22(16) - BPBFATSz16 = 0x000D */
     0,              /*23(17) - BPBFATSz16 = 0x000D */
     0x3F,           /*24(18) - BPB_SecPerTrk = 0x003F */
     0,              /*25(19) - BPB_SecPerTrk = 0x003F */
@@ -215,50 +215,35 @@ int8_t STORAGE_Read_FS (uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t b
 {
 	debug_printf("R:%x %x\n", blk_addr, blk_len);
 
+	memclr(buf, FATBytesPerSec);
+
     int32_t i = 0;
     switch (blk_addr)
     {
-        /* Boot Sector */
+    	/* FAT Boot Sector */
         case 0:
-            /* Write Boot Sector info */
             for(i=0;i<FATBootSize;i++)
             {
                 *buf++ = FAT16_BootSector[i];
             } /* EndFor */
-            /* Rest of sector empty except last two bytes */
-            //i += 2;
-            while (i++ < 448)
-            {
-                *buf++ = 0;
-            } /* EndWhile */
 
             /* Boot Sector requires these 2 bytes at end */
-            *buf++ = 0x55;
-            *buf++ = 0xAA;
-
-            //while(i++ < 2048)
-            //{
-            //    *buf++ = 0;
-            //}
-
+            buf[FATBytesPerSec - 2] = 0x55;
+            buf[FATBytesPerSec - 1] = 0xAA;
             break;
+
         /* FAT Table Sector */
         case 1: //FAT0
-        case 0xD800: //FAT1
+        case 2: //FAT1
             /* Write FAT Table Sector */
             for(i=0;i<FATTableSize;i++)
             {
                 *buf++ = FAT16_TableSector0[i];
             } /* EndFor */
-            /* Rest of sector empty */
-            while (i++ < FATBytesPerSec)
-            {
-                *buf++ = 0;
-            } /*ENdWhile */
             break;
 
         /* Root Directory Sector */
-        case 0xE000: //16K
+        case 3:
 
             for(i=0;i<FATFileNameSize;i++)
             {
@@ -281,11 +266,6 @@ int8_t STORAGE_Read_FS (uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t b
 
           /* All other sectors empty */
         default:
-            i = 0;
-            while (i++ < FATBytesPerSec)
-            {
-                *buf++ = 0;
-            } /* EndWhile */
             break;
     } /* EndSwitch */
 
@@ -294,6 +274,8 @@ int8_t STORAGE_Read_FS (uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t b
 
 int8_t STORAGE_Write_FS (uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len)
 {
+	debug_printf("W:%x %x\n", blk_addr, blk_len);
+
     switch(blk_addr)
     {
         case 0x0000: // 4K   Boot Sector
