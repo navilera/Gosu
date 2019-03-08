@@ -54,11 +54,6 @@
 #include "usbd_msc.h"
 
 #define FATBytesPerSec  MSC_MEDIA_PACKET
-#define FATBootSec        0
-#define FATTable0Sec0     2
-#define FATTable1Sec0   245
-#define FATRootDirSec0  488
-#define FATDataSec0     520
 
 #define FATFileNameSize  11
 #define FATDirSize       47

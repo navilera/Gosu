@@ -63,7 +63,7 @@
 #define MSC_EPOUT_ADDR               0x01 
 
 
-#define MSC_MEDIA_PACKET     512
+#define MSC_MEDIA_PACKET     1024
 /**
   * @}
   */ 
