@@ -164,6 +164,7 @@ const uint8_t FAT16_RootDirSector[FATDirSize]=
 
 static uint32_t filesize_total = 0;
 static bool copyDone = false;
+static FAT_DIR_t FileAttr;
 
 static int8_t STORAGE_Init_FS (uint8_t lun);
 static int8_t STORAGE_GetCapacity_FS (uint8_t lun, uint32_t *block_num, uint16_t *block_size);
@@ -176,6 +177,7 @@ static int8_t STORAGE_GetMaxLun_FS (void);
 static uint32_t FATSetStatusFileName(const char * name);
 static uint32_t FAT_RootDirWriteRequest(uint32_t FAT_LBA,uint8_t* data, uint32_t len);
 static uint32_t FAT_DataSectorWriteRequest(uint32_t FAT_LBA,uint8_t* data, uint32_t len);
+static void CopyTempDataToTargetAddress(void);
 
 USBD_StorageTypeDef USBD_Storage_Interface_fops_FS =
 {
@@ -311,6 +313,25 @@ static uint32_t FATSetStatusFileName(const char * name)
     return i;
 }
 
+static void CopyTempDataToTargetAddress(void)
+{
+	if (memncmp((uint8_t*)FileAttr.DIR_Name, (uint8_t*)"KEYMAP", 6)) {
+		// copy temporary data into the keymap Flash page
+		FATSetStatusFileName("SUCCESS ");
+	}
+	else if (memncmp((uint8_t*)FileAttr.DIR_Name, (uint8_t*)"GOSU", 4)) {
+		// copy temporary data into the eflash starting page (0x8000)
+		FATSetStatusFileName("SUCCESS ");
+	}
+	else
+	{
+		FATSetStatusFileName("UNKOWN  ");
+	}
+
+	debug_printf(">>> Done\n");
+	copyDone = true;
+}
+
 static uint32_t FAT_RootDirWriteRequest(uint32_t FAT_LBA,uint8_t* data, uint32_t len)
 {
     FAT_DIR_t* pFile = (FAT_DIR_t*) data;
@@ -327,32 +348,24 @@ static uint32_t FAT_RootDirWriteRequest(uint32_t FAT_LBA,uint8_t* data, uint32_t
     // Find it
     if(index <= 512)
     {
-    	FAT_DIR_t FileAttr;
     	memncpy((uint8_t*)&FileAttr, (uint8_t*)pFile, 32);
         FileAttr.DIR_WriteTime = 0;
         FileAttr.DIR_WriteDate = 0;
 
         debug_printf("--> %s [%x]\n", FileAttr.DIR_Name, FileAttr.DIR_FileSize);
 
+        if (FileAttr.DIR_FileSize == 0)
+        {
+        	filesize_total = 0;
+        	copyDone = false;
+        	return len;
+        }
+
         if (copyDone == false)
         {
-			if (filesize_total > FileAttr.DIR_FileSize)
+			if (filesize_total >= FileAttr.DIR_FileSize)
 			{
-				if (memncmp((uint8_t*)FileAttr.DIR_Name, (uint8_t*)"KEYMAP", 6)) {
-					// copy temporary data into the keymap Flash page
-					FATSetStatusFileName("SUCCESS ");
-				}
-				else if (memncmp((uint8_t*)FileAttr.DIR_Name, (uint8_t*)"GOSU", 4)) {
-			        // copy temporary data into the eflash starting page (0x8000)
-					FATSetStatusFileName("SUCCESS ");
-				}
-				else
-				{
-					FATSetStatusFileName("UNKOWN  ");
-				}
-
-				debug_printf(">>> Done\n");
-				copyDone = true;
+				CopyTempDataToTargetAddress();
 			}
         }
     }
@@ -381,6 +394,13 @@ static uint32_t FAT_DataSectorWriteRequest(uint32_t FAT_LBA,uint8_t* data, uint3
         }
 
 		// FlashPageWrite(data);
+
+        if ((FileAttr.DIR_FileSize != 0) && (filesize_total >= FileAttr.DIR_FileSize))
+        {
+        	debug_printf("--> Windows Operation\n");
+        	CopyTempDataToTargetAddress();
+			return len;
+        }
     }
 
     return len;
