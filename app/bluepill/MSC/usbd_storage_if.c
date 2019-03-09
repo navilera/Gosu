@@ -49,6 +49,10 @@
 #include "usbd_storage_if.h"
 #include "stdbool.h"
 
+#include "MemoryMap.h"
+#include "keymap.h"
+#include "Flash.h"
+
 #define STORAGE_LUN_NBR                  1  
 #define STORAGE_BLK_NBR                  0x10000  
 #define STORAGE_BLK_SIZ                  FATBytesPerSec
@@ -317,6 +321,7 @@ static void CopyTempDataToTargetAddress(void)
 {
 	if (memncmp((uint8_t*)FileAttr.DIR_Name, (uint8_t*)"KEYMAP", 6)) {
 		// copy temporary data into the keymap Flash page
+		WriteKeyMapToFlash((uint8_t*)TEMP_FLASH_BADDR, FLASH_PAGE_SIZE);
 		FATSetStatusFileName("SUCCESS ");
 	}
 	else if (memncmp((uint8_t*)FileAttr.DIR_Name, (uint8_t*)"GOSU", 4)) {
@@ -373,19 +378,19 @@ static uint32_t FAT_RootDirWriteRequest(uint32_t FAT_LBA,uint8_t* data, uint32_t
     return len;
 }
 
+static uint32_t tempflashStartPage = TEMP_FLASH_PAGENUM;
 static uint32_t FAT_DataSectorWriteRequest(uint32_t FAT_LBA,uint8_t* data, uint32_t len)
 {
+	uint32_t tempflashMaxLen  =  TEMP_FLASH_SIZE * FLASH_PAGE_SIZE; //30KB
+
     debug_printf("DW:%x [%x %x %x %x] %x - %x\n", FAT_LBA, data[0], data[1], data[2], data[3], len, filesize_total);
 
     // 0x2A = RootDirSectors (16) + FAT1 sectors(1) + FAT2 sectors(1) + FirstClusterSectors(8) = 26 (0x1A)
     if (FAT_LBA > 0x1A)
     {
-        //uint16_t flashStartAddr = *(volatile uint16_t *) 0x1FFFF7E0;
-        uint32_t flashMaxLen  =  30 * FLASH_PAGE_SIZE; //30KB
-
         filesize_total += (len * FATBytesPerSec);
 
-        if (filesize_total > flashMaxLen)
+        if (filesize_total > tempflashMaxLen)
         {
         	debug_printf(">>> Large\n");
         	FATSetStatusFileName("LARGE   ");
@@ -393,7 +398,8 @@ static uint32_t FAT_DataSectorWriteRequest(uint32_t FAT_LBA,uint8_t* data, uint3
         	return len;
         }
 
-		// FlashPageWrite(data);
+        Flash_write_page(data, tempflashStartPage);
+        tempflashStartPage++;
 
         if ((FileAttr.DIR_FileSize != 0) && (filesize_total >= FileAttr.DIR_FileSize))
         {
