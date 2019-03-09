@@ -27,6 +27,8 @@ void Polling_task(void)
     uint8_t HIDKeyboardReport[HID_KBD_REPORT_BYTE];
     uint8_t HIDKeyboardReportOld[HID_KBD_REPORT_BYTE];
 
+    LoadKeymap();
+
     while (true)
     {
     	USBD_Delay(HID_FS_BINTERVAL);

@@ -284,7 +284,7 @@ typedef enum Scancode {
 #define KEYMAP_COL_NUM	14
 #define KEYMAP_ROW_NUM	6
 
-#define TOTAL_KEY_NUM	82
+#define TOTAL_KEY_MAP_SIZE		84
 
 #define HID_KBD_REPORT_BYTE 	8
 #define HID_MAX_MULTIPLE_INPUT	7		// 1 modi key + 6 char key
@@ -293,10 +293,8 @@ typedef enum Scancode {
 
 typedef struct KeymapFile
 {
-	uint32_t	checksum;
-    uint8_t     num_row;
-    uint8_t     num_col;
-	uint8_t		keymap[NUM_LAYERS][TOTAL_KEY_NUM];
+	uint32_t	crc;
+	uint8_t		keymap[NUM_LAYERS][TOTAL_KEY_MAP_SIZE];
 } KeymapFile_t;
 
 /*
