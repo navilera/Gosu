@@ -1106,27 +1106,22 @@ static uint8_t FLASH_OB_GetUser(void)
   */
 void FLASH_PageErase(uint32_t PageAddress)
 {
-  /* Clean the error context */
-  pFlash.ErrorCode = HAL_FLASH_ERROR_NONE;
+	/* Clean the error context */
+	pFlash.ErrorCode = HAL_FLASH_ERROR_NONE;
 
-#if defined(FLASH_BANK2_END)
-  if(PageAddress > FLASH_BANK1_END)
-  { 
-    /* Proceed to erase the page */
-    SET_BIT(FLASH->CR2, FLASH_CR2_PER);
-    WRITE_REG(FLASH->AR2, PageAddress);
-    SET_BIT(FLASH->CR2, FLASH_CR2_STRT);
-  }
-  else
-  {
-#endif /* FLASH_BANK2_END */
-    /* Proceed to erase the page */
-    SET_BIT(FLASH->CR, FLASH_CR_PER);
-    WRITE_REG(FLASH->AR, PageAddress);
-    SET_BIT(FLASH->CR, FLASH_CR_STRT);
-#if defined(FLASH_BANK2_END)
-  }
-#endif /* FLASH_BANK2_END */
+	/* Proceed to erase the page */
+	__HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_EOP);
+	__HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_PGERR);
+	__HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_WRPERR);
+	CLEAR_BIT(FLASH->CR, (FLASH_CR_PER));
+
+	SET_BIT(FLASH->CR, FLASH_CR_PER);
+	WRITE_REG(FLASH->AR, PageAddress);
+	SET_BIT(FLASH->CR, FLASH_CR_STRT);
+
+	FLASH_WaitForLastOperation(FLASH_TIMEOUT_VALUE);
+
+	CLEAR_BIT(FLASH->CR, (FLASH_CR_PER));
 }
 
 /**
