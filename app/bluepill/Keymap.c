@@ -61,6 +61,7 @@ void LoadKeymap(void)
 	if (ReadKeyMapFromFlash(&saved_keymap, sizeof(KeymapFile_t)))
 	{
 		crc = GetCrc32((uint8_t*)saved_keymap.keymap, sizeof(saved_keymap.keymap));
+		debug_printf("CRC(%x -- %x)\n", saved_keymap.crc, crc);
 		if (saved_keymap.crc == crc)
 		{
 			memncpy((uint8_t*)sKeymap_buffer_layer0, (uint8_t*)saved_keymap.keymap[0], TOTAL_KEY_MAP_SIZE);
@@ -68,6 +69,7 @@ void LoadKeymap(void)
 		}
 	}
 
+	/*
 	// dump keymap
 	debug_printf("LAYER0 : ");
 	uint8_t* pkeycode = (uint8_t*)sKeymap_buffer_layer0;
@@ -84,6 +86,7 @@ void LoadKeymap(void)
 		debug_printf("%x ", *pkeycode++);
 	}
 	debug_printf("\n");
+	*/
 }
 
 bool WriteKeyMapToFlash(uint8_t* keyfile, uint32_t size) {
@@ -158,16 +161,17 @@ void KeyMap_getReport(bool isPressedFnKey, uint8_t* hidKeyboardReport, KeyHwAddr
 
 static bool ReadKeyMapFromFlash(KeymapFile_t* keyfile, uint32_t size)
 {
-	uint8_t* pKeyFlashAddr = (uint8_t*)KEYMAP_BADDR;
+	bool isOkay = false;
 
-	debug_printf("KEYMAP Flash: ");
-	while(size--)
+	memncpy((uint8_t*)keyfile, (uint8_t*)KEYMAP_BADDR, size);
+
+	uint32_t* firstWord = (uint32_t*)keyfile;
+	if (*firstWord != 0xffffffff)
 	{
-		debug_printf("%x ", *pKeyFlashAddr++);
+		isOkay = true;
 	}
-	debug_printf("\n");
 
-	return false;
+	return isOkay;
 }
 
 static uint8_t GetModifierKeyBitmap(uint8_t scancode)
