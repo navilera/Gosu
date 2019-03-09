@@ -6,7 +6,7 @@ SOC = stm32f10c8
 BOARD = bluepill
 OUTNAME = gosu
 
-USR_DEFINE = -DSTM32F103xB -DUSE_HAL_DRIVER -DUSE_KEYMAPDL
+USR_DEFINE = -DSTM32F103xB -DUSE_KEYMAPDL
 
 CC = arm-none-eabi-gcc
 AS = arm-none-eabi-as
