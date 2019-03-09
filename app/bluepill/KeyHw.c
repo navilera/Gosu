@@ -4,6 +4,7 @@
  *  Created on: Feb 11, 2019
  *      Author: maanu
  */
+#include "stdbool.h"
 
 #include "KeyHw.h"
 #include "keymap.h"
@@ -109,6 +110,12 @@ uint32_t KeyHw_polling(KeyHwAddr_t* keyHwAddrBuff, uint32_t max_count)
 	}
 
 	return cnt;
+}
+
+bool KeyHw_IsPressed(uint32_t col, uint32_t row)
+{
+	SetRowToHigh(row);
+	return GetColInput(col);
 }
 
 static void SetAllRowToLow(void)

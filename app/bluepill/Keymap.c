@@ -29,7 +29,7 @@ extern void FLASH_PageErase(uint32_t PageAddress);
  *
  */
 
-static Scancode_t sKeymap_buffer_layer0[KEYMAP_ROW_NUM][KEYMAP_COL_NUM] =
+static uint8_t sKeymap_buffer_layer0[KEYMAP_ROW_NUM][KEYMAP_COL_NUM] =
 {           /* Col#0	Col#1		Col#2		Col#3		Col#4	Col#5		Col#6		Col#7	Col#8	Col#9	Col#10		Col#11		Col#12		Col#13 */
 /* Row#0 */	{kEsc,		kF1,		kF2,		kF3,		kF4,	kF5,		kF6,		kF7,	kF8,	kF9,	kF10,		kF11,		kF12,		kBackspace},
 /* Row#1 */	{kPageup,   kGrave,		k1,			k2,			k3,		k4,			k5,			k6,		k7,		k8,		k9,			k0,			kMinus,		kEqual},
@@ -39,7 +39,7 @@ static Scancode_t sKeymap_buffer_layer0[KEYMAP_ROW_NUM][KEYMAP_COL_NUM] =
 /* Row#5 */	{kEnd,		kLeftctrl,	kLeftmeta, 	kLeftalt,	kSpace,	kRightalt,	kRightctrl,	kLeft,	kDown,	kRight,	kBackslash,	kDelete,	kNone,		kNone}
 };
 
-static Scancode_t sKeymap_buffer_layer1[KEYMAP_ROW_NUM][KEYMAP_COL_NUM] =
+static uint8_t sKeymap_buffer_layer1[KEYMAP_ROW_NUM][KEYMAP_COL_NUM] =
 {			/* Col#0	Col#1		Col#2		Col#3		Col#4	Col#5		Col#6		Col#7	Col#8	Col#9	Col#10		Col#11		Col#12		Col#13 */
 /* Row#0 */	{0},
 /* Row#1 */	{0},
@@ -57,8 +57,6 @@ static void	SortReport(uint8_t* hidKeyboardReport);
 void LoadKeymap(void)
 {
 	KeymapFile_t saved_keymap = {0};
-
-	debug_printf("Keymap size: %u bytes\n", sizeof(sKeymap_buffer_layer0));
 
 	if (ReadKeyMapFromFlash(&saved_keymap, sizeof(KeymapFile_t)) != true)
 	{

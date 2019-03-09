@@ -21,5 +21,6 @@ typedef union KeyHwAddr
 } KeyHwAddr_t;
 
 uint32_t KeyHw_polling(KeyHwAddr_t* keyHwAddrBuff, uint32_t max_count);
+bool	 KeyHw_IsPressed(uint32_t col, uint32_t row);
 
 #endif /* APP_KEYHW_H_ */

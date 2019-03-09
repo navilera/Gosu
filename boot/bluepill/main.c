@@ -11,6 +11,8 @@
 #include "HalGpio.h"
 #include "HalUart.h"
 
+#include "KeyHw.h"
+
 #include "Kernel.h"
 
 #define SYSTEM_US_TICKS (SystemCoreClock / 1000000) // cycles per microsecond
@@ -20,9 +22,10 @@ static void SystemClock_Config(void);
 
 static bool CheckBootMode(void)
 {
-    // get Fn key pressed during keyboard power-up time.
-    // while user presses Fn key, FW enters a keymap download mode or FW update mode.
-    return true;
+    // get HW (0,0) key pressed during keyboard power-up time.
+    // while user presses HW (0,0) key, FW enters a keymap download mode or FW update mode.
+	// no matter what key code mapped into the (0,0). It just check matrix (0,0).
+    return KeyHw_IsPressed(0, 0);
 }
 
 static void Kernel_Init(void)
