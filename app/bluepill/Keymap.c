@@ -11,8 +11,7 @@
 #include "stdlib.h"
 #include "keymap.h"
 #include "MemoryMap.h"
-
-extern void FLASH_PageErase(uint32_t PageAddress);
+#include "Flash.h"
 
 /* Default Keymap
  *                                                    COL (input)
@@ -85,29 +84,11 @@ void LoadKeymap(void)
 		debug_printf("%x ", *pkeycode++);
 	}
 	debug_printf("\n");
-
-	crc = GetCrc32((uint8_t*)sKeymap_buffer_layer0, TOTAL_KEY_MAP_SIZE);
-	debug_printf("CRC: %x\n", crc);
 }
 
-bool WriteKeyMapToFlash(KeymapFile_t* keyfile, uint32_t size) {
-  //uint32_t idx;
-  //uint16_t entry;
-
-  //HAL_StatusTypeDef status;
-  FLASH_PageErase((uint32_t)KEYMAP_PAGENUM);
-
-  memncpy((uint8_t*)KEYMAP_BADDR, (uint8_t*)keyfile, size);
-  //for(idx = 0 ; idx < size ; idx += 2) {
-  //  entry = *((uint8_t*)keyfile+idx) | (((uint8_t*)keyfile+idx+1) << 8);
-  //  status = HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, KEYMAP_BADDR + idx, entry);
-  //  if (status != HAL_OK) {
-  //    debug_printf("eFlash Program Error: %x", KEYMAP_BADDR + idx);
-  //    return false;
-  //  }
-  //}
-
-  return true;
+bool WriteKeyMapToFlash(uint8_t* keyfile, uint32_t size) {
+	Flash_write_page(keyfile, KEYMAP_PAGENUM);
+  	return true;
 }
 
 bool KeyMap_checkFnKey(KeyHwAddr_t* hwPollingAddrs, uint32_t pollingCount)
@@ -177,6 +158,15 @@ void KeyMap_getReport(bool isPressedFnKey, uint8_t* hidKeyboardReport, KeyHwAddr
 
 static bool ReadKeyMapFromFlash(KeymapFile_t* keyfile, uint32_t size)
 {
+	uint8_t* pKeyFlashAddr = (uint8_t*)KEYMAP_BADDR;
+
+	debug_printf("KEYMAP Flash: ");
+	while(size--)
+	{
+		debug_printf("%x ", *pKeyFlashAddr++);
+	}
+	debug_printf("\n");
+
 	return false;
 }
 
@@ -294,11 +284,6 @@ static uint32_t GetCrc32(uint8_t* data, uint32_t count)
 	while (count--) {
 		crc = (crc >> 8) ^ crc32_tab[(crc ^ *data) & 255];
 		data++;
-	}
-
-	count = TOTAL_KEY_MAP_SIZE;
-	while (count--) {
-		crc = (crc >> 8) ^ crc32_tab[(crc ^ 0) & 255];
 	}
 
 	return (crc ^ 0xffffffff);

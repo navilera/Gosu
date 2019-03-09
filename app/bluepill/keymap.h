@@ -301,7 +301,7 @@ typedef struct KeymapFile
  * public functions
  */
 void LoadKeymap(void);
-bool WriteKeyMapToFlash(KeymapFile_t* keyfile, uint32_t size);
+bool WriteKeyMapToFlash(uint8_t* keyfile, uint32_t size);
 
 bool KeyMap_checkFnKey(KeyHwAddr_t* hwPollingAddrs, uint32_t pollingCount);
 void KeyMap_getReport(bool isPressedFnKey, uint8_t* hidKeyboardReport, KeyHwAddr_t* hwPollingAddrs, uint32_t pollingCount);
