@@ -114,8 +114,16 @@ uint32_t KeyHw_polling(KeyHwAddr_t* keyHwAddrBuff, uint32_t max_count)
 
 bool KeyHw_IsPressed(uint32_t col, uint32_t row)
 {
+	bool isPressed = false;
+
+	SetAllRowToLow();
+	SetAllColToInput();
+
 	SetRowToHigh(row);
-	return GetColInput(col);
+	HAL_Delay(1);
+	isPressed = GetColInput(col);
+
+	return isPressed;
 }
 
 static void SetAllRowToLow(void)
