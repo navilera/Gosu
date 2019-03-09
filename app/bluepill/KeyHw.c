@@ -15,7 +15,7 @@
  *      +--------+----------------------------------------------------------------------------------------------+
  *      | Col#   |  0   |  1    |  2  | 3   |  4    |  5  | 6    | 7   | 8   |  9  | 10  |  11  | 12    |   13  |
  *      +--------+------+-------+-----+-----+-------+-----+------+-----+-----+-----+-----+------+-------+-------+
- *      |R# |    | PA6  | PA7   | PB0 | PB1 | PB3   | PB4 | PB5  | PB6 | PB7 | PB8 | PB9 | PB12 | PB13  | PB14  |
+ *      |R# |    | PA6  | PA7   | PB0 | PB1 | PB3   | PB4 | PB5  | PB6 | PB7 | PB8 | PB9 | PB13 | PB14  | PB15  |
  *      +---+----+------+-------+-----+-----+-------+-----+------+-----+-----+-----+-----+------+-------+-------+
  *      | 0 |PA0 |                                                                                              |
  *      | 1 |PA1 |                                                                                              |
@@ -64,7 +64,7 @@ Keypin_t sColPin[KEYMAP_COL_NUM] = {
 		{(uint32_t)GPIOA, GPIO_PIN_6},  {(uint32_t)GPIOA, GPIO_PIN_7},
 		{(uint32_t)GPIOB, GPIO_PIN_0},  {(uint32_t)GPIOB, GPIO_PIN_1},
 		{(uint32_t)GPIOB, GPIO_PIN_3},  {(uint32_t)GPIOB, GPIO_PIN_4},  {(uint32_t)GPIOB, GPIO_PIN_5}, {(uint32_t)GPIOB, GPIO_PIN_6}, {(uint32_t)GPIOB, GPIO_PIN_7}, {(uint32_t)GPIOB, GPIO_PIN_8}, {(uint32_t)GPIOB, GPIO_PIN_9},
-		{(uint32_t)GPIOB, GPIO_PIN_12}, {(uint32_t)GPIOB, GPIO_PIN_13}, {(uint32_t)GPIOB, GPIO_PIN_14}
+		{(uint32_t)GPIOB, GPIO_PIN_13}, {(uint32_t)GPIOB, GPIO_PIN_14}, {(uint32_t)GPIOB, GPIO_PIN_15}
 };
 
 static void SetAllRowToLow(void);
