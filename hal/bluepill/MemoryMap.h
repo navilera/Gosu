@@ -12,7 +12,12 @@ extern uint32_t __bss_end__;
 #define EFLASH_PAGESIZE     0x400
 #define EFLASH_BADDR(X)     (EFLASH_START + EFLASH_PAGESIZE * (X))
 
-#define KEYMAP_PAGENUM      (EFLASH_TOTALNUM - 1)  /* last page of eFlash */
+#define KEYMAP_PAGENUM      (EFLASH_TOTALNUM - 1)  	/* last page of eFlash */
 #define KEYMAP_BADDR        EFLASH_BADDR(KEYMAP_PAGENUM)
+
+#define TEMP_FLASH_SIZE		30
+#define TEMP_FLASH_PAGENUM	(KEYMAP_PAGENUM - TEMP_FLASH_SIZE)	/* 30 pages upper of keymap page */
+#define TEMP_FLASH_BADDR    EFLASH_BADDR(TEMP_FLASH_PAGENUM)
+
 
 #endif /*_HAL_MEMORYMAP_H_ */
