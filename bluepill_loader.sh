@@ -1,4 +1,8 @@
 #!/bin/bash
 
+if [ -z $1 ]
+then
 ./bluepill.sh clean
-./bluepill.sh LOADER=1
+fi
+
+./bluepill.sh LOADER=1 $1

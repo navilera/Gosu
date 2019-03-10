@@ -73,10 +73,12 @@ int main(void)
 #ifdef LOADER
     if (CheckBootMode())
     {
+    	debug_printf("BootLoader..\n");
     	App_msc_Init();
     }
     else
     {
+    	debug_printf("Jump to the MainFW..\n");
     	// TODO: Jump to Main FW entry point
     }
 #else
