@@ -75,7 +75,7 @@
   */
 
 #include "stm32f1xx.h"
-
+#include "MemoryMap.h"
 /**
   * @}
   */
@@ -110,8 +110,13 @@
 /*!< Uncomment the following line if you need to relocate your vector Table in
      Internal SRAM. */ 
 /* #define VECT_TAB_SRAM */
+
+#ifdef LOADER
 #define VECT_TAB_OFFSET  0x00000000U /*!< Vector Table base offset field. 
                                   This value must be a multiple of 0x200. */
+#else
+#define VECT_TAB_OFFSET  MAIN_FW_ENTRY_OFFSET
+#endif
 
 
 /**
