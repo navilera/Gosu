@@ -4,18 +4,9 @@ ARM_ARCH = cortexM
 
 SOC = stm32f10c8
 BOARD = bluepill
-
-ifdef LOADER
 OUTNAME = loader
-else
-OUTNAME = gosu
-endif
 
-USR_DEFINE = -DSTM32F103xB
-
-ifdef LOADER
-USR_DEFINE += -DLOADER
-endif
+USR_DEFINE = -DSTM32F103xB -DLOADER
 
 CC = arm-none-eabi-gcc
 AS = arm-none-eabi-as
@@ -40,25 +31,16 @@ VPATH = boot/$(BOARD) 				\
         lib/$(ARM_ARCH)				\
         app/$(BOARD)				\
         app/$(BOARD)/USB			\
-        app/$(BOARD)/HID			\
-		app/$(BOARD)/MSC    		\
-        app/	                	\
-        kernel
+		app/$(BOARD)/MSC
 
 C_SRCS  = $(notdir $(wildcard $(PRJ_HOME)/boot/$(BOARD)/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/hal/$(BOARD)/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/hal/$(BOARD)/drivers/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/lib/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/lib/$(ARM_ARCH)/*.c))
-C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/app/$(BOARD)/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/app/$(BOARD)/USB/*.c))
-ifdef LOADER
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/app/$(BOARD)/MSC/*.c))
-else
-C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/app/$(BOARD)/HID/*.c))
-C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/app/*.c))
-C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/kernel/*.c))
-endif
+C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/app/$(BOARD)/*.c))
 
 C_OBJS = $(patsubst %.c, $(OUTPUT_DIR)/%.o, $(C_SRCS))
 

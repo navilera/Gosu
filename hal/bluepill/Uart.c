@@ -48,6 +48,7 @@ uint8_t Hal_uart_get_char(void)
 
 void Hal_uart_isr(void)
 {
+#ifndef LOADER
 	uint8_t ch = Hal_uart_get_char();
 
 	if (ch == '\r' || ch == '\n')
@@ -63,5 +64,6 @@ void Hal_uart_isr(void)
 		Hal_uart_put_char(ch);
 	    Kernel_send_msg(KernelMsgQ_DebugCmd, &ch, 1);
 	}
+#endif
 }
 

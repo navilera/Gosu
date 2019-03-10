@@ -20,6 +20,7 @@
 /* Private function prototypes -----------------------------------------------*/
 static void SystemClock_Config(void);
 
+#ifdef LOADER
 static bool CheckBootMode(void)
 {
     // get HW (0,0) key pressed during keyboard power-up time.
@@ -27,6 +28,8 @@ static bool CheckBootMode(void)
 	// no matter what key code mapped into the (0,0). It just check matrix (0,0).
     return KeyHw_IsPressed(0, 0);
 }
+
+#else
 
 static void Kernel_Init(void)
 {
@@ -57,6 +60,7 @@ static void Kernel_Init(void)
         debug_printf("Debug_cli_task creation fail\n");
     }
 }
+#endif
 
 int main(void)
 {
@@ -66,12 +70,16 @@ int main(void)
     Hal_gpio_init();
     Hal_uart_init();
 
+#ifdef LOADER
     if (CheckBootMode())
     {
     	App_msc_Init();
     }
     else
     {
+    	// TODO: Jump to Main FW entry point
+    }
+#else
     	App_hid_Init();
 
 		while (USBD_HID_Is_Configured() != true)
@@ -83,8 +91,7 @@ int main(void)
 	    Kernel_Init();
 	    debug_printf("Navilos Start..\n");
 	    Kernel_start();
-    }
-
+#endif
 
     while (1) { }
 }
