@@ -14,6 +14,7 @@
 #include "KeyHw.h"
 
 #include "Kernel.h"
+#include "MemoryMap.h"
 
 #define SYSTEM_US_TICKS (SystemCoreClock / 1000000) // cycles per microsecond
 
@@ -27,6 +28,37 @@ static bool CheckBootMode(void)
     // while user presses HW (0,0) key, FW enters a keymap download mode or FW update mode.
 	// no matter what key code mapped into the (0,0). It just check matrix (0,0).
     return KeyHw_IsPressed(0, 0);
+}
+
+static void Jump(uint32_t address)
+{
+    typedef void (*pFunction)(void);
+
+    pFunction Jump_To_Application;
+
+    // variable that will be loaded with the start address of the application
+    uint32_t* JumpAddress;
+    const uint32_t* ApplicationAddress = (uint32_t *)address;
+
+    // get jump address from application vector table
+    JumpAddress = (uint32_t *)ApplicationAddress[1];
+
+    // load this address into function pointer
+    Jump_To_Application = (pFunction)JumpAddress;
+
+    // Disable all interrupts
+    for (int i = 0; i < 8; i++) {
+        NVIC->ICER[i] = NVIC->IABR[i];
+    }
+
+    // Set interrupt vector table
+    SCB->VTOR = address; /* Vector Table Relocation in Internal FLASH. */
+
+    // Set stack pointer as in application's vector table
+    __set_MSP((uint32_t)(ApplicationAddress[0]));
+
+    // Go
+    Jump_To_Application();
 }
 
 #else
@@ -79,7 +111,7 @@ int main(void)
     else
     {
     	debug_printf("Jump to the MainFW..\n");
-    	// TODO: Jump to Main FW entry point
+    	Jump(MAIN_FW_BADDR);
     }
 #else
     	App_hid_Init();

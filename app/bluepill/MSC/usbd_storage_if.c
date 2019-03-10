@@ -325,7 +325,9 @@ static void CopyTempDataToTargetAddress(void)
 		FATSetStatusFileName("SUCCESS ");
 	}
 	else if (memncmp((uint8_t*)FileAttr.DIR_Name, (uint8_t*)"GOSU", 4)) {
-		// copy temporary data into the eflash starting page (0x8000)
+		// copy temporary data into the eflash starting address (0x80000000)
+		Flash_erase_page_mainfw();
+		Flash_write_mainfw((uint8_t*)TEMP_FLASH_BADDR, FileAttr.DIR_FileSize);
 		FATSetStatusFileName("SUCCESS ");
 	}
 	else
