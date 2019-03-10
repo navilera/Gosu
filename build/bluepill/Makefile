@@ -26,7 +26,12 @@ OD = arm-none-eabi-objdump
 PRJ_HOME = .
 OUTPUT_DIR = $(PRJ_HOME)/out
 
+ifdef LOADER
+LINKER_SCRIPT = $(PRJ_HOME)/build/$(BOARD)/loader.ld
+else
 LINKER_SCRIPT = $(PRJ_HOME)/build/$(BOARD)/$(SOC).ld
+endif
+
 MAP_FILE = $(OUTPUT_DIR)/$(OUTNAME).map
 SYM_FILE = $(OUTPUT_DIR)/$(OUTNAME).sym
 
