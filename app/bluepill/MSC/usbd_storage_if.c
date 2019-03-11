@@ -361,8 +361,6 @@ static uint32_t FAT_DataSectorWriteRequest(uint32_t FAT_LBA,uint8_t* data, uint3
     // 0x1A = RootDirSectors (16) + FAT1 sectors(1) + FAT2 sectors(1) + FirstClusterSectors(8) = 26 (0x1A)
     if (FAT_LBA > 0x1A)
     {
-        filesize_total += (len * FATBytesPerSec);
-
         if (filesize_total > tempflashMaxLen)
         {
         	debug_printf(">>> Large\n");
@@ -398,7 +396,9 @@ static uint32_t FAT_DataSectorWriteRequest(uint32_t FAT_LBA,uint8_t* data, uint3
         if (tempflashStartPage != 0)
         {
         	Flash_write_page(data, tempflashStartPage);
+
         	tempflashStartPage++;
+        	filesize_total += FATBytesPerSec;
         }
 
 		if ((FileAttr.DIR_FileSize != 0) && (filesize_total >= FileAttr.DIR_FileSize))
