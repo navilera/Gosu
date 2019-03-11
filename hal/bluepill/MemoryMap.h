@@ -5,10 +5,8 @@
  * eFlash
  *
  * 0  ~ 19 page (20KB) : Loader		-> 0x08000000 ~ 0x08004FFF
- * 20 ~ 39 page (20KB) : Main FW	-> 0x08005000 ~
- * 40 ~ 42 page (3KB)  : Not used
- * 43 ~ 62 page (20KB) : MSC temporary buffer
- * 63 page      (1KB)  : Keymap
+ * 20 ~ 62 page (43KB) : Main FW	-> 0x08005000 ~ 0x0800FBFF
+ * 63 page      (1KB)  : Keymap		-> 0x0800FC00
  */
 
 extern uint32_t __bss_end__;
@@ -23,16 +21,11 @@ extern uint32_t __bss_end__;
 #define EFLASH_BADDR(X)     (EFLASH_START + EFLASH_PAGESIZE * (X))
 
 #define MAIN_FW_PAGENUM	 	 20
-#define MAIN_FW_FLASH_SIZE	 20
+#define MAIN_FW_FLASH_SIZE	 43
 #define MAIN_FW_ENTRY_OFFSET (MAIN_FW_PAGENUM * EFLASH_PAGESIZE)
 #define MAIN_FW_BADDR        EFLASH_BADDR(MAIN_FW_PAGENUM)
 
 #define KEYMAP_PAGENUM      (EFLASH_TOTALNUM - 1)  				/* last page of eFlash */
 #define KEYMAP_BADDR        EFLASH_BADDR(KEYMAP_PAGENUM)
-
-#define TEMP_FLASH_SIZE		20
-#define TEMP_FLASH_PAGENUM	(KEYMAP_PAGENUM - TEMP_FLASH_SIZE)	/* 20 pages upper of keymap page */
-#define TEMP_FLASH_BADDR    EFLASH_BADDR(TEMP_FLASH_PAGENUM)
-
 
 #endif /*_HAL_MEMORYMAP_H_ */
