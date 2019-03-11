@@ -123,11 +123,15 @@
             $("#keymap-download").click(function(ev, ui) {
                 if (check_fnkey(keymaps) == 0) {return;}
                 // download hex file
+                var KEYMAP_MAGIC_H_WORD = 0xC0FFEED0;
+                var KEYMAP_MAGIC_L_WORD = 0xBEEFC0DE;
                 var keymap_data = hex_output(keymaps);
                 var arr_bin = new Uint8Array(keymap_data);
                 var crc32 = b_crc32(arr_bin);
                 var crc32_arr = new Uint8Array(Uint32ToByteArray(crc32));
-                var blob = new Blob([crc32_arr, arr_bin], {type: "application/octet-stream"});
+                var magic_h = new Uint8Array(Uint32ToByteArray(KEYMAP_MAGIC_H_WORD));
+                var magic_l = new Uint8Array(Uint32ToByteArray(KEYMAP_MAGIC_L_WORD));
+                var blob = new Blob([magic_h, magic_l, crc32_arr, arr_bin], {type: "application/octet-stream"});
                 var hex_link = $("#hex-download");
                 hex_link.attr('href', window.URL.createObjectURL(blob));
                 hex_link.attr('download', "KEYMAP.bin");

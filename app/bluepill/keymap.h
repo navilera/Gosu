@@ -291,8 +291,13 @@ typedef enum Scancode {
 #define HID_MODIKEY_IDX			0
 #define HID_KEY_START_IDX		2
 
+#define KEYMAP_MAGIC_H_WORD		0xC0FFEED0
+#define KEYMAP_MAGIC_L_WORD		0xBEEFC0DE
+
 typedef struct KeymapFile
 {
+	uint32_t	magic_high;
+	uint32_t 	magic_low;
 	uint32_t	crc;
 	uint8_t		keymap[NUM_LAYERS][TOTAL_KEY_MAP_SIZE];
 } KeymapFile_t;
