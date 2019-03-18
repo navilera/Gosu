@@ -130,6 +130,11 @@ void KeyMap_getReport(bool isPressedFnKey, uint8_t* hidKeyboardReport, KeyHwAddr
 		col = hwPollingAddrs->bit.col;
 		hwPollingAddrs++;
 
+		if (hwPollingAddrs->bit.fn == 1)	// NOT report Fn key code
+		{
+			continue;
+		}
+
 		if (!isPressedFnKey)
 		{
 			scancode = sKeymap_buffer_layer0[row][col];
