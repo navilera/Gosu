@@ -121,6 +121,7 @@ static void HandleHid(char* param)
 		hid_key_report[0] = 0x02; // shift
 	}
 	hid_key_report[2] = 0x11;	// 'n'
+	hid_key_report[3] = 0x1b;	// 'x'
 	Kernel_send_msg(KernelMsgQ_D2hData, hid_key_report, 8);
 	Kernel_send_events(KernelEventFlag_SendD2H);
 
@@ -129,6 +130,7 @@ static void HandleHid(char* param)
 
 	hid_key_report[0] = 0;
 	hid_key_report[2] = 0;	// clear
+	hid_key_report[3] = 0;	// clear
 	Kernel_send_msg(KernelMsgQ_D2hData, hid_key_report, 8);
 	Kernel_send_events(KernelEventFlag_SendD2H);
 }
