@@ -62,6 +62,35 @@ void memncpy(uint8_t* dst, uint8_t* src, uint32_t count)
 	}
 }
 
+uint32_t htou(char* ascii, uint32_t count)
+{
+	uint32_t ret = 0;
+	while(count--)
+	{
+		uint32_t digit = 0;
+		if ('0' <= *ascii && *ascii <= '9')
+		{
+			digit = *ascii - '0';
+		}
+		else if ('a' <= *ascii && *ascii <= 'f')
+		{
+			digit = *ascii - 'a' + 10;
+		}
+		else if ('A' <= *ascii && *ascii <= 'F')
+		{
+			digit = *ascii - 'A' + 10;
+		}
+		else
+		{
+			return 0;
+		}
+		ascii++;
+		ret += digit * (1 << (count*4));
+	}
+
+	return ret;
+}
+
 void halt(char* filename, uint32_t line)
 {
 	debug_printf("HALT [%s] at (%u)\n", filename, line);

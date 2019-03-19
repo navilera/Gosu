@@ -28,13 +28,18 @@ static void HandleDebugCommand(void);
 
 static void HandleCmdHelp(char* param);
 static void HandleHid(char* param);
+static void HandleReadMem(char* param);
 
 static CmdTable_t sCmdTable[] =
 {
 		{4, "help",		"show this information", 	HandleCmdHelp},
 		{3, "hid",		"send hid keyboard report",	HandleHid},
+		{2, "RM",		"Read memory",				HandleReadMem},
 		{0, NULL,NULL,NULL}
 };
+
+static char* no_param = "NEP";
+#define NEP()	debug_printf("%s\n", no_param);
 
 void Debug_cli_task(void)
 {
@@ -133,4 +138,18 @@ static void HandleHid(char* param)
 	hid_key_report[3] = 0;	// clear
 	Kernel_send_msg(KernelMsgQ_D2hData, hid_key_report, 8);
 	Kernel_send_events(KernelEventFlag_SendD2H);
+}
+
+static void HandleReadMem(char* param)
+{
+	if (param == NULL)
+	{
+		NEP();
+		return;
+	}
+
+	uint32_t* addr = (uint32_t*)htou(param, strnlen(param, 8));
+	uint32_t data = *addr;
+
+	debug_printf("[%x] %x\n",param, addr, data);
 }
