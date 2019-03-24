@@ -81,6 +81,8 @@ uint32_t KeyHw_polling(KeyHwAddr_t* keyHwAddrBuff, uint32_t max_count)
 	SetAllRowToLow();
 	SetAllColToInput();
 
+	HAL_Delay(1);
+
 	bool pressed = false;
 
 	for (uint32_t row = 0 ; row < KEYMAP_ROW_NUM ; row++)
@@ -103,10 +105,13 @@ uint32_t KeyHw_polling(KeyHwAddr_t* keyHwAddrBuff, uint32_t max_count)
 				keyHwAddrBuff->bit.row = (uint8_t)row;
 				keyHwAddrBuff->bit.col = (uint8_t)col;
 				keyHwAddrBuff++;
+
+				debug_printf("HW Polling (R:%u C:%u)\n", row, col);
 			}
 		}
 
 		SetRowToLow(row);
+		HAL_Delay(1);
 	}
 
 	return cnt;
