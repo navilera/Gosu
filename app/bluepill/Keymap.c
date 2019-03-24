@@ -146,6 +146,8 @@ void KeyMap_getReport(bool isPressedFnKey, uint8_t* hidKeyboardReport, KeyHwAddr
 
 		modifierKeyBitmap = GetModifierKeyBitmap(scancode);
 
+		debug_printf("MODI:%x SCANCODE:%x\n", modifierKeyBitmap, scancode);
+
 		if (modifierKeyBitmap == 0)	// Not modifier key pressed
 		{
 			hidKeyboardReport[idx++] = scancode;
@@ -205,7 +207,7 @@ static uint8_t GetModifierKeyBitmap(uint8_t scancode)
 
 	uint8_t modifierKeyBitmap = 0;
 
-	if (kLeftctrl <= scancode && scancode >= kRightmeta)
+	if ((kLeftctrl <= scancode) && (scancode <= kRightmeta))
 	{
 		modifierKeyBitmap = 1 << (scancode & 0xF);
 	}
