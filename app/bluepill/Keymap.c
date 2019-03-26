@@ -144,6 +144,11 @@ void KeyMap_getReport(bool isPressedFnKey, uint8_t* hidKeyboardReport, KeyHwAddr
 			scancode = sKeymap_buffer_layer1[row][col];
 		}
 
+		if (scancode == 0)
+		{
+			continue;
+		}
+
 		modifierKeyBitmap = GetModifierKeyBitmap(scancode);
 
 		debug_printf("MODI:%x SCANCODE:%x\n", modifierKeyBitmap, scancode);

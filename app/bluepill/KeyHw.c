@@ -88,6 +88,7 @@ uint32_t KeyHw_polling(KeyHwAddr_t* keyHwAddrBuff, uint32_t max_count)
 	for (uint32_t row = 0 ; row < KEYMAP_ROW_NUM ; row++)
 	{
 		SetRowToHigh(row);
+		HAL_Delay(1);
 
 		for (uint32_t col = 0 ; col < KEYMAP_COL_NUM ; col++)
 		{
@@ -95,23 +96,33 @@ uint32_t KeyHw_polling(KeyHwAddr_t* keyHwAddrBuff, uint32_t max_count)
 
 			if (pressed)
 			{
+				if (cnt > 0)
+				{
+					if (keyHwAddrBuff->bit.row == (uint8_t)row && keyHwAddrBuff->bit.col == (uint8_t)col)
+					{
+						continue;
+					}
+					else
+					{
+						keyHwAddrBuff++;
+					}
+				}
+
+				keyHwAddrBuff->bit.row = (uint8_t)row;
+				keyHwAddrBuff->bit.col = (uint8_t)col;
+
+				debug_printf("HW Polling (R:%u C:%u) %u\n", row, col, cnt);
+
 				cnt++;
 
 				if (cnt > max_count)
 				{
 					return cnt;
 				}
-
-				keyHwAddrBuff->bit.row = (uint8_t)row;
-				keyHwAddrBuff->bit.col = (uint8_t)col;
-				keyHwAddrBuff++;
-
-				debug_printf("HW Polling (R:%u C:%u)\n", row, col);
 			}
 		}
 
 		SetRowToLow(row);
-		HAL_Delay(1);
 	}
 
 	return cnt;
