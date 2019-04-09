@@ -39,4 +39,7 @@ static void SendUSBHID(void)
 	Kernel_recv_msg(KernelMsgQ_D2hData, HIDKeyboardReport, HID_KBD_REPORT_BYTE);
 
 	App_hid_send(HIDKeyboardReport, HID_KBD_REPORT_BYTE);
+
+	// ignore unexpected data
+	Kernel_flush_msg(KernelMsgQ_D2hData);
 }

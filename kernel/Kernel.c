@@ -31,7 +31,7 @@ void Kernel_send_events(uint32_t event_list)
     for (uint32_t i = 0 ; i < 32 ; i++)
     {
         if ((event_list >> i) & 1)
-        {            
+        {
             SET_BIT(sending_event, i);
             Kernel_event_flag_set(sending_event);
         }
@@ -45,7 +45,7 @@ KernelEventFlag_t Kernel_wait_events(uint32_t waiting_list)
     for (uint32_t i = 0 ; i < 32 ; i++)
     {
         if ((waiting_list >> i) & 1)
-        {        
+        {
             SET_BIT(waiting_event, i);
 
             if (Kernel_event_flag_check(waiting_event))
@@ -93,6 +93,19 @@ uint32_t Kernel_recv_msg(KernelMsgQ_t Qname, void* out_data, uint32_t count)
     }
 
     return count;
+}
+
+void Kernel_flush_msg(KernelMsgQ_t Qname)
+{
+	uint8_t d = 0;
+
+	while(true)
+	{
+		if (false == Kernel_msgQ_dequeue(Qname, &d))
+		{
+			break;
+		}
+	}
 }
 
 void Kernel_lock_sem(void)
