@@ -354,7 +354,7 @@ static uint32_t FAT_DataSectorWriteRequest(uint32_t FAT_LBA,uint8_t* data, uint3
 {
 	extern uint32_t _estack;
 	uint32_t firstWordOfMainFw = (uint32_t)&_estack;
-	uint32_t tempflashMaxLen  =  MAIN_FW_FLASH_SIZE * FLASH_PAGE_SIZE; //30KB
+	uint32_t tempflashMaxLen  =  MAIN_FW_FLASH_SIZE * FLASH_PAGE_SIZE; //43KB
 
     debug_printf("DW:%x %x - %x %x\n", FAT_LBA, len, filesize_total, firstWordOfMainFw);
 
