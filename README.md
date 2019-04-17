@@ -33,6 +33,7 @@ It generates /out/gosu.bin file. Please disconnect USB cable from bluepill or bl
 
 User can make a their own custom keymap using the keymap editor. The keymap editor implemented by HTML so, User can use the keymap editor by run web browser.
 
+## Documents
 
 - [Getting Started](doc/GettingStarted.md)
 - [How to contribute](doc/Contribute.md)
