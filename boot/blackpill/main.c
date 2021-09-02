@@ -77,19 +77,19 @@ static void Kernel_Init(void)
     taskId = Kernel_task_create(Polling_task);
     if (NOT_ENOUGH_TASK_NUM == taskId)
     {
-        debug_printf("Polling_task creation fail\n");
+        DBG_PRINT("Polling_task creation fail\n");
     }
 
     taskId = Kernel_task_create(Host_comm_task);
     if (NOT_ENOUGH_TASK_NUM == taskId)
     {
-        debug_printf("Host_comm_task creation fail\n");
+        DBG_PRINT("Host_comm_task creation fail\n");
     }
 
     taskId = Kernel_task_create(Debug_cli_task);
     if (NOT_ENOUGH_TASK_NUM == taskId)
     {
-        debug_printf("Debug_cli_task creation fail\n");
+        DBG_PRINT("Debug_cli_task creation fail\n");
     }
 }
 #endif
@@ -105,12 +105,12 @@ int main(void)
 #ifdef LOADER
     if (CheckBootMode())
     {
-    	debug_printf("BootLoader..\n");
+    	DBG_PRINT("BootLoader..\n");
     	App_msc_Init();
     }
     else
     {
-    	debug_printf("Jump to the MainFW..\n");
+    	DBG_PRINT("Jump to the MainFW..\n");
     	Jump(MAIN_FW_BADDR);
     }
 #else
@@ -118,12 +118,12 @@ int main(void)
 
 		while (USBD_HID_Is_Configured() != true)
 		{
-			debug_printf("Waiting for USBHID configuration\n");
+			DBG_PRINT("Waiting for USBHID configuration\n");
 			USBD_Delay(1000);
 		}
 
 	    Kernel_Init();
-	    debug_printf("Navilos Start..\n");
+	    DBG_PRINT("Navilos Start..\n");
 	    Kernel_start();
 #endif
 

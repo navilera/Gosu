@@ -19,7 +19,7 @@ static void SendUSBHID(void);
 
 void Host_comm_task(void)
 {
-    debug_printf("Host_comm_task....\n");
+    DBG_PRINT("Host_comm_task....\n");
 
     while (true)
     {

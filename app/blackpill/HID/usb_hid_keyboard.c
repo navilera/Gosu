@@ -77,19 +77,19 @@ void App_hid_Init(void)
 void App_hid_send(const void *data,const size_t size)
 {
 	/*
-	 debug_printf("Sending: ");
+	 DBG_PRINT("Sending: ");
 	 for (int i=0; i<size; ++i)
 	 {
-	 debug_printf("%u ",((uint8_t*)data)[i]);
+	 DBG_PRINT("%u ",((uint8_t*)data)[i]);
 	 }
-	 debug_printf("\n\r");
+	 DBG_PRINT("\n\r");
 	 */
 
 	uint8_t status;
 	do {
 		status = USBD_HID_SendReport(&hUsbHidDeviceFS, (uint8_t *) data, size);
 		if (status == USBD_FAIL) {
-			debug_printf("USB: fail\n\r");
+			DBG_PRINT("USB: fail\n\r");
 		}
 	} while (status == USBD_BUSY);
 }

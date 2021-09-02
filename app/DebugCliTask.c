@@ -39,11 +39,11 @@ static CmdTable_t sCmdTable[] =
 };
 
 static char* no_param = "NEP";
-#define NEP()	debug_printf("%s\n", no_param);
+#define NEP()	DBG_PRINT("%s\n", no_param);
 
 void Debug_cli_task(void)
 {
-    debug_printf("Debug_cli_task....\n");
+    DBG_PRINT("Debug_cli_task....\n");
 
     while (true)
     {
@@ -112,7 +112,7 @@ static void HandleCmdHelp(char* param)
 	CmdTable_t* pCmdTblRow = sCmdTable;
 	while(pCmdTblRow->cmdLen != 0)
 	{
-		debug_printf("%s          %s\n", pCmdTblRow->cmd, pCmdTblRow->desc);
+		DBG_PRINT("%s          %s\n", pCmdTblRow->cmd, pCmdTblRow->desc);
 		pCmdTblRow++;
 	}
 }
@@ -151,5 +151,5 @@ static void HandleReadMem(char* param)
 	uint32_t* addr = (uint32_t*)htou(param, strncnt(param, 8));
 	uint32_t data = *addr;
 
-	debug_printf("[%x] %x\n",param, addr, data);
+	DBG_PRINT("[%x] %x\n",param, addr, data);
 }

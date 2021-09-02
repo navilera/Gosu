@@ -216,7 +216,7 @@ int8_t  STORAGE_IsWriteProtected_FS (uint8_t lun)
 
 int8_t STORAGE_Read_FS (uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len)
 {
-	//debug_printf("R:%x %x\n", blk_addr, blk_len);
+	//DBG_PRINT("R:%x %x\n", blk_addr, blk_len);
 
 	memclr(buf, FATBytesPerSec);
 
@@ -269,7 +269,7 @@ int8_t STORAGE_Read_FS (uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t b
 
 int8_t STORAGE_Write_FS (uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len)
 {
-	debug_printf("W:%x %x\n", blk_addr, blk_len);
+	DBG_PRINT("W:%x %x\n", blk_addr, blk_len);
 
     switch(blk_addr)
     {
@@ -335,13 +335,13 @@ static uint32_t FAT_RootDirWriteRequest(uint32_t FAT_LBA,uint8_t* data, uint32_t
         FileAttr.DIR_WriteTime = 0;
         FileAttr.DIR_WriteDate = 0;
 
-        debug_printf("--> %s [%x][%x]\n", FileAttr.DIR_Name, FileAttr.DIR_FileSize, filesize_total);
+        DBG_PRINT("--> %s [%x][%x]\n", FileAttr.DIR_Name, FileAttr.DIR_FileSize, filesize_total);
 
         if (startCopy == true)
         {
 			if (filesize_total >= FileAttr.DIR_FileSize)
 			{
-				debug_printf("--> Linux Operation Done\n");
+				DBG_PRINT("--> Linux Operation Done\n");
 				FATSetStatusFileName("SUCCESS ");
 			}
         }
@@ -356,33 +356,32 @@ static uint32_t FAT_DataSectorWriteRequest(uint32_t FAT_LBA,uint8_t* data, uint3
 	uint32_t firstWordOfMainFw = (uint32_t)&_estack;
 	uint32_t tempflashMaxLen  =  MAIN_FW_FLASH_SIZE * FLASH_PAGE_SIZE; //43KB
 
-    debug_printf("DW:%x %x - %x %x\n", FAT_LBA, len, filesize_total, firstWordOfMainFw);
+    DBG_PRINT("DW:%x %x - %x %x\n", FAT_LBA, len, filesize_total, firstWordOfMainFw);
 
     // 0x1A = RootDirSectors (16) + FAT1 sectors(1) + FAT2 sectors(1) + FirstClusterSectors(8) = 26 (0x1A)
     if (FAT_LBA > 0x1A)
     {
         if (filesize_total > tempflashMaxLen)
         {
-        	debug_printf(">>> Large\n");
+        	DBG_PRINT(">>> Large\n");
         	FATSetStatusFileName("LARGE   ");
         	return len;
         }
 
         if (startCopy == false)
         {
-			KeymapFile_t* checkKeymap = (KeymapFile_t*)data;
 			uint32_t* checkMainFw = (uint32_t*)data;
-			if ((checkKeymap->magic_high == KEYMAP_MAGIC_H_WORD) && (checkKeymap->magic_low == KEYMAP_MAGIC_L_WORD))
+			if (VerifyKeyMapFile(data))
 			{
-				debug_printf("Keymap download\n");
-				WriteKeyMapToFlash((uint8_t*)checkKeymap, FLASH_PAGE_SIZE);
+				DBG_PRINT("Keymap download\n");
+				WriteKeyMapToFlash(data, FLASH_PAGE_SIZE);
 				FATSetStatusFileName("SUCCESS ");
-				debug_printf(">>> Done\n");
+				DBG_PRINT(">>> Done\n");
 				return len;
 			}
 			else if (*checkMainFw == firstWordOfMainFw)
 			{
-				debug_printf("MainFW download\n");
+				DBG_PRINT("MainFW download\n");
 				tempflashStartPage = MAIN_FW_PAGENUM;
 				startCopy = true;
 			}
@@ -403,7 +402,7 @@ static uint32_t FAT_DataSectorWriteRequest(uint32_t FAT_LBA,uint8_t* data, uint3
 
 		if ((FileAttr.DIR_FileSize != 0) && (filesize_total >= FileAttr.DIR_FileSize))
 		{
-			debug_printf("--> Windows Operation Done\n");
+			DBG_PRINT("--> Windows Operation Done\n");
 			FATSetStatusFileName("SUCCESS ");
 			return len;
 		}

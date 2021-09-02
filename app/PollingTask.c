@@ -15,9 +15,10 @@
 
 #include "Kernel.h"
 
+
 void Polling_task(void)
 {
-    debug_printf("Polling Task....\n");
+    DBG_PRINT("Polling Task....\n");
 
     bool pressedFnKey = false;
     uint32_t pollingCount = 0;

@@ -11,6 +11,12 @@
 #include "stdint.h"
 #include "stdarg.h"
 
+#if (DEBUG_PRINT == 1)
+#define DBG_PRINT(...)       debug_printf(__VA_ARGS__)
+#else
+#define DBG_PRINT(...)
+#endif
+
 typedef enum utoa_t
 {
     utoa_dec = 10,

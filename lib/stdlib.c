@@ -110,6 +110,6 @@ uint32_t strncnt(char* str, uint32_t max_len)
 
 void halt(char* filename, uint32_t line)
 {
-	debug_printf("HALT [%s] at (%u)\n", filename, line);
+	DBG_PRINT("HALT [%s] at (%u)\n", filename, line);
 	while(1);
 }
