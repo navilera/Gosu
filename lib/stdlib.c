@@ -91,6 +91,23 @@ uint32_t htou(char* ascii, uint32_t count)
 	return ret;
 }
 
+uint32_t strncnt(char* str, uint32_t max_len)
+{
+    uint32_t cnt = 0;
+
+    for (uint32_t i = 0 ; i < max_len ; i++)
+    {
+        if (*str == '\0')
+        {
+            break;
+        }
+        cnt++;
+        str++;
+    }
+
+    return cnt;
+}
+
 void halt(char* filename, uint32_t line)
 {
 	debug_printf("HALT [%s] at (%u)\n", filename, line);

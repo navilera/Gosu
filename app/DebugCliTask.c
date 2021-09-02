@@ -148,7 +148,7 @@ static void HandleReadMem(char* param)
 		return;
 	}
 
-	uint32_t* addr = (uint32_t*)htou(param, strnlen(param, 8));
+	uint32_t* addr = (uint32_t*)htou(param, strncnt(param, 8));
 	uint32_t data = *addr;
 
 	debug_printf("[%x] %x\n",param, addr, data);
