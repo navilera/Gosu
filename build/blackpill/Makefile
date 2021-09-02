@@ -26,6 +26,9 @@ OD = arm-none-eabi-objdump
 PRJ_HOME = .
 OUTPUT_DIR = $(PRJ_HOME)/out
 
+# include config file
+include $(PRJ_HOME)/build/$(BOARD)/Config.mak
+
 ifdef LOADER
 LINKER_SCRIPT = $(PRJ_HOME)/build/$(BOARD)/loader.ld
 else
@@ -44,9 +47,10 @@ VPATH = boot/$(BOARD) 				\
         lib							\
         lib/$(ARM_ARCH)				\
         app/$(BOARD)				\
+        app/$(BOARD)/Layout/$(LAYOUT)				\
         app/$(BOARD)/USB			\
         app/$(BOARD)/HID			\
-		app/$(BOARD)/MSC    		\
+	app/$(BOARD)/MSC    		\
         app/	                	\
         kernel
 
@@ -64,6 +68,7 @@ C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/app/$(BOARD)/HID/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/app/*.c))
 C_SRCS += $(notdir $(wildcard $(PRJ_HOME)/kernel/*.c))
 endif
+C_SRCS += Layout.c
 
 C_OBJS = $(patsubst %.c, $(OUTPUT_DIR)/%.o, $(C_SRCS))
 
@@ -75,6 +80,7 @@ INC_DIRS  = -I boot/$(BOARD)    		\
             -I lib						\
             -I lib/$(ARM_ARCH)			\
             -I app/$(BOARD) 			\
+            -I app/$(BOARD)/Layout/$(LAYOUT)			\
             -I app/$(BOARD)/USB			\
             -I app/$(BOARD)/HID			\
             -I app/$(BOARD)/MSC 		\
@@ -112,10 +118,10 @@ clean:
 	@echo "Delete.. " $(OUTPUT_DIR) 
 	@rm -fr $(OUTPUT_DIR) 
 	
-$(navilos): $(ASM_OBJS) $(CC_OBJS) $(C_OBJS)
+$(navilos): $(ASM_OBJS) $(C_OBJS)
 	@echo "Linking.."
 	@echo "Generate binary.. " $(navilos_bin)
-	@$(LD) $(ASM_OBJS) $(CC_OBJS) $(C_OBJS) -o $(navilos) -n -T $(LINKER_SCRIPT) -Wl,-Map=$(MAP_FILE) $(LDFLAGS)
+	@$(LD) $(ASM_OBJS) $(C_OBJS) -o $(navilos) -n -T $(LINKER_SCRIPT) -Wl,-Map=$(MAP_FILE) $(LDFLAGS)
 	@$(OD) -t $(navilos) > $(SYM_FILE)
 	@$(OD) -d $(navilos) > $(navilos).dump
 	@$(OC) -O binary $(navilos) $(navilos_bin)

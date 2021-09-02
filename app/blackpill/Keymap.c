@@ -10,43 +10,17 @@
 #include "stdio.h"
 #include "stdlib.h"
 #include "keymap.h"
+#include "Layout.h"
 #include "MemoryMap.h"
 #include "Flash.h"
 
-/* Default Keymap
- *                                                    COL (input)
- *      +----+----------------------------------------------------------------------------------------------+
- *      |Col#|  0   |  1    |  2  | 3   |  4    |  5  | 6    | 7   | 8   |  9  | 10  |  11  | 12    |   13  |
- *      +----+------+-------+-----+-----+-------+-----+------+-----+-----+-----+-----+------+-------+-------+
- *      | 0  | ESC  | F1    | F2  | F3  | F4    | F5  | F6   | F7  | F8  | F9  | F10 | F11  |  F12  | back  |
- *      | 1  | Home | ~     | 1   | 2   | 3     | 4   | 5    | 6   | 7   | 8   | 9   | 0    | -     |  +    |
- * ROW  | 2  | End  | Tab   | Q   | W   | E     | R   | T    | Y   | U   | I   | O   | P    | [     |  ]    |
- *(out) | 3  | Inst | Fn    | A   | S   | D     | F   | G    | H   | J   | K   | L   | ;    | '     | Enter |
- *      | 4  | PgUp | shift | Z   | X   | C     | V   | B    | N   | M   | <   | >   | ?    | shift |  ↑    |
- *      | 5  | PgDn | ctrl  | Win | alt | space | alt | ctrl | ←   | ↓   | →   | \   | del  |       |       |
- *      +----+----------------------------------------------------------------------------------------------+
- *
- */
-
-static uint8_t sKeymap_buffer_layer0[KEYMAP_ROW_NUM][KEYMAP_COL_NUM] =
-{           /* Col#0	Col#1		Col#2		Col#3		Col#4	Col#5		Col#6		Col#7	Col#8	Col#9	Col#10		Col#11		Col#12		Col#13 */
-/* Row#0 */	{kEsc,		kF1,		kF2,		kF3,		kF4,	kF5,		kF6,		kF7,	kF8,	kF9,	kF10,		kF11,		kF12,		kBackspace},
-/* Row#1 */	{kHome,   	kGrave,		k1,			k2,			k3,		k4,			k5,			k6,		k7,		k8,		k9,			k0,			kMinus,		kEqual},
-/* Row#2 */	{kEnd, 		kTab,		kQ,			kW, 		kE, 	kR, 		kT, 		kY, 	kU, 	kI, 	kO, 		kP,			kLeftbrace,	kRightbrace},
-/* Row#3 */	{kInsert,	kFunction,	kA,			kS,			kD,		kF,			kG,			kH,		kJ,		kK,		kL,			kSemicolon,	kApostrophe,kEnter},
-/* Row#4 */	{kPageup,	kLeftshift,	kZ,			kX,			kC,		kV,			kB,			kN,		kM,		kComma,	kDot,		kSlash,		kRightshift,kUp},
-/* Row#5 */	{kPagedown,	kLeftctrl,	kLeftmeta, 	kLeftalt,	kSpace,	kRightalt,	kRightctrl,	kLeft,	kDown,	kRight,	kBackslash,	kDelete,	kNone,		kNone}
-};
-
-static uint8_t sKeymap_buffer_layer1[KEYMAP_ROW_NUM][KEYMAP_COL_NUM] =
-{			/* Col#0	Col#1		Col#2		Col#3		Col#4	Col#5		Col#6		Col#7	Col#8	Col#9	Col#10		Col#11		Col#12		Col#13 */
-/* Row#0 */	{0},
-/* Row#1 */	{0},
-/* Row#2 */	{0},
-/* Row#3 */	{0},
-/* Row#4 */	{0},
-/* Row#5 */	{0}
-};
+typedef struct KeymapFile
+{
+	uint32_t	magic_high;
+	uint32_t 	magic_low;
+	uint32_t	crc;
+	uint8_t		keymap[NUM_LAYERS][TOTAL_KEY_MAP_SIZE];
+} KeymapFile_t;
 
 static bool ReadKeyMapFromFlash(KeymapFile_t* keyfile, uint32_t size);
 static uint32_t GetCrc32(uint8_t* data, uint32_t count);
@@ -61,32 +35,42 @@ void LoadKeymap(void)
 	if (ReadKeyMapFromFlash(&saved_keymap, sizeof(KeymapFile_t)))
 	{
 		crc = GetCrc32((uint8_t*)saved_keymap.keymap, sizeof(saved_keymap.keymap));
-		debug_printf("CRC(%x -- %x)\n", saved_keymap.crc, crc);
+		DBG_PRINT("CRC(%x -- %x)\n", saved_keymap.crc, crc);
 		if (saved_keymap.crc == crc)
 		{
-			memncpy((uint8_t*)sKeymap_buffer_layer0, (uint8_t*)saved_keymap.keymap[0], TOTAL_KEY_MAP_SIZE);
-			memncpy((uint8_t*)sKeymap_buffer_layer1, (uint8_t*)saved_keymap.keymap[1], TOTAL_KEY_MAP_SIZE);
+			memncpy((uint8_t*)gKeymap_buffer_layer0, (uint8_t*)saved_keymap.keymap[0], TOTAL_KEY_MAP_SIZE);
+			memncpy((uint8_t*)gKeymap_buffer_layer1, (uint8_t*)saved_keymap.keymap[1], TOTAL_KEY_MAP_SIZE);
 		}
 	}
 
 	/*
 	// dump keymap
-	debug_printf("LAYER0 : ");
-	uint8_t* pkeycode = (uint8_t*)sKeymap_buffer_layer0;
+	DBG_PRINT("LAYER0 : ");
+	uint8_t* pkeycode = (uint8_t*)gKeymap_buffer_layer0;
 	for (uint32_t i = 0 ; i < TOTAL_KEY_MAP_SIZE ; i++)
 	{
-		debug_printf("%x ", *pkeycode++);
+		DBG_PRINT("%x ", *pkeycode++);
 	}
-	debug_printf("\n");
+	DBG_PRINT("\n");
 
-	debug_printf("LAYER1 : ");
-	pkeycode = (uint8_t*)sKeymap_buffer_layer1;
+	DBG_PRINT("LAYER1 : ");
+	pkeycode = (uint8_t*)gKeymap_buffer_layer1;
 	for (uint32_t i = 0 ; i < TOTAL_KEY_MAP_SIZE ; i++)
 	{
-		debug_printf("%x ", *pkeycode++);
+		DBG_PRINT("%x ", *pkeycode++);
 	}
-	debug_printf("\n");
+	DBG_PRINT("\n");
 	*/
+}
+
+bool VerifyKeyMapFile(uint8_t* keyfile)
+{
+    KeymapFile_t* checkKeymap = (KeymapFile_t*)keyfile;
+    if ((checkKeymap->magic_high == KEYMAP_MAGIC_H_WORD) && (checkKeymap->magic_low == KEYMAP_MAGIC_L_WORD))
+    {
+        return true;
+    }
+    return false;
 }
 
 bool WriteKeyMapToFlash(uint8_t* keyfile, uint32_t size) {
@@ -104,7 +88,7 @@ bool KeyMap_checkFnKey(KeyHwAddr_t* hwPollingAddrs, uint32_t pollingCount)
 		row = hwPollingAddrs->bit.row;
 		col = hwPollingAddrs->bit.col;
 
-		if (sKeymap_buffer_layer0[row][col] == kFunction)
+		if (gKeymap_buffer_layer0[row][col] == kFunction)
 		{
 			hwPollingAddrs->bit.fn = 1;
 			return true;
@@ -137,11 +121,11 @@ void KeyMap_getReport(bool isPressedFnKey, uint8_t* hidKeyboardReport, KeyHwAddr
 
 		if (!isPressedFnKey)
 		{
-			scancode = sKeymap_buffer_layer0[row][col];
+			scancode = gKeymap_buffer_layer0[row][col];
 		}
 		else
 		{
-			scancode = sKeymap_buffer_layer1[row][col];
+			scancode = gKeymap_buffer_layer1[row][col];
 		}
 
 		if (scancode == 0)
@@ -151,7 +135,7 @@ void KeyMap_getReport(bool isPressedFnKey, uint8_t* hidKeyboardReport, KeyHwAddr
 
 		modifierKeyBitmap = GetModifierKeyBitmap(scancode);
 
-		debug_printf("MODI:%x SCANCODE:%x\n", modifierKeyBitmap, scancode);
+		DBG_PRINT("MODI:%x SCANCODE:%x\n", modifierKeyBitmap, scancode);
 
 		if (modifierKeyBitmap == 0)	// Not modifier key pressed
 		{
