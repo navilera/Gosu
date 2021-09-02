@@ -152,6 +152,7 @@ void KeyMap_getReport(bool isPressedFnKey, uint8_t* hidKeyboardReport, KeyHwAddr
 		}
 	}
 
+	ChangeReportByLayout(hidKeyboardReport);
 	SortReport(hidKeyboardReport);
 }
 

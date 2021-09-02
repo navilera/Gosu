@@ -1,4 +1,5 @@
 #include "KeyHw.h"
+#include "keymap.h"
 #include "Layout.h"
 
 #include "stm32f1xx_hal.h"
@@ -75,3 +76,8 @@ uint8_t gKeymap_buffer_layer1[KEYMAP_ROW_NUM][KEYMAP_COL_NUM] =
 /* Row#5 */	{0}
 };
 
+void ChangeReportByLayout(uint8_t *report)
+{
+	// Do Nothing
+	return;
+}
