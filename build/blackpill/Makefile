@@ -3,7 +3,7 @@ ARMTHMODE = thumb
 ARM_ARCH = cortexM
 
 SOC = stm32f10c8
-BOARD = bluepill
+BOARD = blackpill
 
 ifdef LOADER
 OUTNAME = loader
@@ -94,7 +94,7 @@ CFLAGS += -Os -Wall -fdata-sections -ffunction-sections
 CFLAGS += $(USR_DEFINE) $(INC_DIRS)
 CFLAGS += $(COMMON_FLG) 
 
-LDFLAGS = $(COMMON_FLG) -Wl,--cref,--gc-sections
+LDFLAGS = $(COMMON_FLG) -Wl,--cref,--gc-sections 
 LDFLAGS += -lc -lm -lnosys
 
 navilos = $(OUTPUT_DIR)/$(OUTNAME).axf
