@@ -34,7 +34,7 @@ void Polling_task(void)
     {
     	USBD_Delay(HID_FS_BINTERVAL);
 
-    	memclr(hwPollingAddrs, HID_MAX_MULTIPLE_INPUT);
+    	memclr(hwPollingAddrs, HID_MAX_MULTIPLE_INPUT * sizeof(KeyHwAddr_t));
     	memclr(HIDKeyboardReport, HID_KBD_REPORT_BYTE);
 
     	pollingCount = KeyHw_polling(hwPollingAddrs, HID_MAX_MULTIPLE_INPUT);

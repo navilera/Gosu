@@ -40,7 +40,7 @@ uint32_t KeyHw_polling(KeyHwAddr_t* keyHwAddrBuff, uint32_t max_count)
 			{
 				if (cnt > 0)
 				{
-					if (keyHwAddrBuff->bit.row == (uint8_t)row && keyHwAddrBuff->bit.col == (uint8_t)col)
+					if (keyHwAddrBuff->row == (uint8_t)row && keyHwAddrBuff->col == (uint8_t)col)
 					{
 						continue;
 					}
@@ -50,8 +50,8 @@ uint32_t KeyHw_polling(KeyHwAddr_t* keyHwAddrBuff, uint32_t max_count)
 					}
 				}
 
-				keyHwAddrBuff->bit.row = (uint8_t)row;
-				keyHwAddrBuff->bit.col = (uint8_t)col;
+				keyHwAddrBuff->row = (uint8_t)row;
+				keyHwAddrBuff->col = (uint8_t)col;
 
 				DBG_PRINT("HW Polling (R:%u C:%u) %u\n", row, col, cnt);
 

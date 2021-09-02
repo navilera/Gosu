@@ -85,12 +85,12 @@ bool KeyMap_checkFnKey(KeyHwAddr_t* hwPollingAddrs, uint32_t pollingCount)
 
 	while (pollingCount--)
 	{
-		row = hwPollingAddrs->bit.row;
-		col = hwPollingAddrs->bit.col;
+		row = hwPollingAddrs->row;
+		col = hwPollingAddrs->col;
 
 		if (gKeymap_buffer_layer0[row][col] == kFunction)
 		{
-			hwPollingAddrs->bit.fn = 1;
+			hwPollingAddrs->fn = 1;
 			return true;
 		}
 		hwPollingAddrs++;
@@ -110,11 +110,11 @@ void KeyMap_getReport(bool isPressedFnKey, uint8_t* hidKeyboardReport, KeyHwAddr
 
 	while (pollingCount--)
 	{
-		row = hwPollingAddrs->bit.row;
-		col = hwPollingAddrs->bit.col;
+		row = hwPollingAddrs->row;
+		col = hwPollingAddrs->col;
 		hwPollingAddrs++;
 
-		if (hwPollingAddrs->bit.fn == 1)	// NOT report Fn key code
+		if (hwPollingAddrs->fn == 1)	// NOT report Fn key code
 		{
 			continue;
 		}

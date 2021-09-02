@@ -11,14 +11,11 @@
 #include "stdbool.h"
 #include "stdint.h"
 
-typedef union KeyHwAddr
+typedef struct KeyHwAddr
 {
-	uint8_t val;
-	struct {
-		uint8_t col:4;
-		uint8_t row:3;
-		uint8_t fn:1;
-	} bit;
+	uint8_t col;
+	uint8_t row;
+	uint8_t fn;
 } KeyHwAddr_t;
 
 typedef struct Keypin
