@@ -26,11 +26,11 @@
  */
 
 Keypin_t gRowPin[KEYMAP_ROW_NUM] = {
-		{(uint32_t)GPIOA, GPIO_PIN_0},
-		{(uint32_t)GPIOA, GPIO_PIN_1},
-		{(uint32_t)GPIOA, GPIO_PIN_2},
+		{(uint32_t)GPIOA, GPIO_PIN_4},
 		{(uint32_t)GPIOA, GPIO_PIN_3},
-		{(uint32_t)GPIOA, GPIO_PIN_4}
+		{(uint32_t)GPIOA, GPIO_PIN_2},
+		{(uint32_t)GPIOA, GPIO_PIN_1},
+		{(uint32_t)GPIOA, GPIO_PIN_0}
 };
 
 Keypin_t gColPin[KEYMAP_COL_NUM] = {
