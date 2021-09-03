@@ -57,7 +57,7 @@
 #define USBD_LANGID_STRING     1033
 #define USBD_MANUFACTURER_STRING     (uint8_t*)"Gosu Firmware"
 #define USBD_PID_FS     0xBEEF
-#define USBD_PRODUCT_STRING_FS     (uint8_t*)"Goso Peak Keyboard"
+#define USBD_PRODUCT_STRING_FS     (uint8_t*)"Project Cambrian"
 #define USBD_SERIALNUMBER_STRING_FS     (uint8_t*)"00000000001A"
 #define USBD_CONFIGURATION_STRING_FS     (uint8_t*)"HID Config"
 #define USBD_INTERFACE_STRING_FS     (uint8_t*)"HID Interface"
