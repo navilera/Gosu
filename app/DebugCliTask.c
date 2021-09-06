@@ -38,9 +38,6 @@ static CmdTable_t sCmdTable[] =
 		{0, NULL,NULL,NULL}
 };
 
-static char* no_param = "NEP";
-#define NEP()	DBG_PRINT("%s\n", no_param);
-
 void Debug_cli_task(void)
 {
     DBG_PRINT("Debug_cli_task....\n");
@@ -144,12 +141,12 @@ static void HandleReadMem(char* param)
 {
 	if (param == NULL)
 	{
-		NEP();
+		DBG_PRINT("No Param\n");
 		return;
 	}
 
 	uint32_t* addr = (uint32_t*)htou(param, strncnt(param, 8));
 	uint32_t data = *addr;
 
-	DBG_PRINT("[%x] %x\n",param, addr, data);
+	DBG_PRINT("[%x] %x\n", addr, data);
 }

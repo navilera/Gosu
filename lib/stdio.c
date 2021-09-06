@@ -13,6 +13,11 @@
 
 #define PRINTF_BUF_LEN  64
 
+void dummy_print(const char* format, ...)
+{
+    return;
+}
+
 uint32_t putstr(const char* s)
 {
     uint32_t c = 0;

@@ -86,11 +86,13 @@ static void Kernel_Init(void)
         DBG_PRINT("Host_comm_task creation fail\n");
     }
 
+#if (DEBUG_PRINT == 1)
     taskId = Kernel_task_create(Debug_cli_task);
     if (NOT_ENOUGH_TASK_NUM == taskId)
     {
         DBG_PRINT("Debug_cli_task creation fail\n");
     }
+#endif
 }
 #endif
 
@@ -100,7 +102,10 @@ int main(void)
     SystemClock_Config();
 
     Hal_gpio_init();
+
+#if (DEBUG_PRINT == 1)
     Hal_uart_init();
+#endif
 
 #ifdef LOADER
     if (CheckBootMode())

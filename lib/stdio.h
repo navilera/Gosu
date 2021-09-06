@@ -12,9 +12,10 @@
 #include "stdarg.h"
 
 #if (DEBUG_PRINT == 1)
-#define DBG_PRINT(...)       debug_printf(__VA_ARGS__)
+#define DBG_PRINT(...)      debug_printf(__VA_ARGS__)
 #else
-#define DBG_PRINT(...)
+void dummy_print(const char* format, ...);
+#define DBG_PRINT(...)      dummy_print(__VA_ARGS__)
 #endif
 
 typedef enum utoa_t
