@@ -6,7 +6,7 @@
 
 #define NUM_LAYERS 2  
 
-#define KEYMAP_COL_NUM	        16
+#define KEYMAP_COL_NUM	        15
 #define KEYMAP_ROW_NUM	        5
 #define TOTAL_KEY_MAP_SIZE	(KEYMAP_COL_NUM * KEYMAP_ROW_NUM)
 

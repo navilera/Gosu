@@ -50,53 +50,52 @@ Keypin_t gColPin[KEYMAP_COL_NUM] = {
 		{(uint32_t)GPIOB, GPIO_PIN_3},  
 		{(uint32_t)GPIOB, GPIO_PIN_15},  
 		{(uint32_t)GPIOB, GPIO_PIN_14}, 
-		{(uint32_t)GPIOB, GPIO_PIN_13}, 
-		{(uint32_t)GPIOB, GPIO_PIN_12}
+		{(uint32_t)GPIOB, GPIO_PIN_13}
 };
 
 
 /* Default Keymap
  *  **** Layer 0 ****
  *                                                    COL (input)
- *      +----+---------------------------------------+    +---------------------------------------------------+
- *      |Col#|  0   |  1  |  2  | 3   |  4 | 5  | 6  |    | 7  | 8   | 9   | 10  | 11 | 12 |   13  | 14  | 15 |
- *      +----+------+-----+-----+-----+----+----+----+    +----+-----+-----+-----+----+----+-------+-----+----+
- *      | 0  | ESC  | 1   | 2   |  3  | 4  | 5  |  6 |    | 7  |  8  | 9   | 0   | -  | +  | Back  | Del |    |
- *      | 1  | Tab  | Q   | W   | E   | R  | T  |    |    | Y  |  U  | I   | O   | P  | [  |  ]    |  \  |Home|
- * ROW  | 2  | Fn   | A   | S   | D   | F  | G  |    |    | H  |  J  | K   | L   | ;  | "  | Enter | End |    |
- *(out) | 3  |Shift | Z   | X   | C   | V  | B  |    |    | B  |  N  | M   | <   | >  | ?  | Shift |  ↑  |    |
- *      | 4  | Ctrl | Win | Alt | Spc |    |    |    |    | Spc| Fn  | Alt |Ctrl | ←  | ↓  | →     |     |    |
- *      +----+---------------------------------------+    +---------------------------------------------------+
+ *      +----+---------------------------------------+    +-----------------------------------------------
+ *      |Col#|  0   |  1  |  2  | 3   |  4 | 5  | 6  |    | 7  | 8   | 9   | 10  | 11 | 12 |   13  | 14  |
+ *      +----+------+-----+-----+-----+----+----+----+    +----+-----+-----+-----+----+----+-------+-----+
+ *      | 0  | ESC  | 1   | 2   |  3  | 4  | 5  |  6 |    | 7  |  8  | 9   | 0   | -  | +  | Back  | Del |
+ *      | 1  | Tab  | Q   | W   | E   | R  | T  |    |    | Y  |  U  | I   | O   | P  | [  |  ]    |  \  |
+ * ROW  | 2  | Fn   | A   | S   | D   | F  | G  |    |    | H  |  J  | K   | L   | ;  | "  | Enter | End |
+ *(out) | 3  |Shift | Z   | X   | C   | V  | B  |    |    | B  |  N  | M   | <   | >  | ?  | Shift |  ↑  |
+ *      | 4  | Ctrl | Win | Alt | Spc |    |    |    |    | Spc| Fn  | Alt |Ctrl | ←  | ↓  | →     |Home |
+ *      +----+---------------------------------------+    +----------------------------------------------+
  * 
  * **** Layer 1 ****
  *                                                     COL (input)
- *      +----+---------------------------------------+    +---------------------------------------------------+
- *      |Col#|  0   |  1  |  2  | 3   |  4 | 5  | 6  |    | 7  | 8   | 9   | 10  | 11 | 12 |   13  | 14  | 15 |
- *      +----+------+-----+-----+-----+----+----+----+    +----+-----+-----+-----+----+----+-------+-----+----+
- *      | 0  | `    | F1  | F2  | F3  | F4 | F5 | F6 |    | F7 |  F8 | F9  | F10 | F11| F12|       |     |    |
- *      | 1  |      |     |     |     |    |    |    |    |    |     |     |     |    |    |       |     |PgUp|
- * ROW  | 2  |      |     |     |     |    |    |    |    |    |     |     |     |    |    |       | PgD |    |
- *(out) | 3  |      |     |     |     |    |    |    |    |    |     |     |     |    |    |       |     |    |
- *      | 4  |      |     |     |     |    |    |    |    |    |     |     |     |    |    |       |     |    |
- *      +----+---------------------------------------+    +---------------------------------------------------+
+ *      +----+---------------------------------------+    +-----------------------------------------------
+ *      |Col#|  0   |  1  |  2  | 3   |  4 | 5  | 6  |    | 7  | 8   | 9   | 10  | 11 | 12 |   13  | 14  |
+ *      +----+------+-----+-----+-----+----+----+----+    +----+-----+-----+-----+----+----+-------+-----+
+ *      | 0  | `    | F1  | F2  | F3  | F4 | F5 | F6 |    | F7 |  F8 | F9  | F10 | F11| F12|       |     |
+ *      | 1  |      |     |     |     |    |    |    |    |    |     |     |     |    |    |       |     |
+ * ROW  | 2  |      |     |     |     |    |    |    |    |    |     |     |     |    |    |       | PgD |
+ *(out) | 3  |      |     |     |     |    |    |    |    |    |     |     |     |    |    |       |     |
+ *      | 4  |      |     |     |     |    |    |    |    |    |     |     |     |    |    |       |PgUp |
+ *      +----+---------------------------------------+    +----------------------------------------------+
  *
  */
 uint8_t gKeymap_buffer_layer0[KEYMAP_ROW_NUM][KEYMAP_COL_NUM] =
-{        /*  Col#0      Col#1      Col#2     Col#3   Col#4   Col#5  Col#6  ||  Col#7   Col#8      Col#9      Col#10      Col#11      Col#12       Col#13       Col#14      Col#15 */
-/* Row#0 */	{kEsc,      k1,        k2,       k3,     k4,     k5,    k6,        k7,     k8,        k9,        k0,         kMinus,     kEqual,      kBackspace,  kDelete,    kNone},
-/* Row#1 */	{kTab,      kQ,        kW,       kE,     kR,     kT,    kNone,     kY,     kU,        kI,        kO,         kP,         kLeftbrace,  kRightbrace, kBackslash, kHome},
-/* Row#2 */	{kFunction, kA,        kS,       kD,     kF,     kG,    kNone,     kH,     kJ,        kK,        kL,         kSemicolon, kApostrophe, kEnter,      kEnd,       kNone},
-/* Row#3 */	{kLeftshift,kZ,        kX,       kC,     kV,     kB,    kNone,     kB,     kN,        kM,        kComma,     kDot,       kSlash,      kRightshift, kUp,        kNone},
-/* Row#4 */	{kLeftctrl, kLeftmeta, kLeftalt, kSpace, kNone,  kNone, kNone,     kSpace, kFunction, kRightalt, kRightctrl, kLeft,      kDown,       kRight,      kNone,      kNone}
+{        /*  Col#0      Col#1      Col#2     Col#3   Col#4   Col#5  Col#6  ||  Col#7   Col#8      Col#9      Col#10      Col#11      Col#12       Col#13       Col#14 */
+/* Row#0 */	{kEsc,      k1,        k2,       k3,     k4,     k5,    k6,        k7,     k8,        k9,        k0,         kMinus,     kEqual,      kBackspace,  kDelete},
+/* Row#1 */	{kTab,      kQ,        kW,       kE,     kR,     kT,    kNone,     kY,     kU,        kI,        kO,         kP,         kLeftbrace,  kRightbrace, kBackslash},
+/* Row#2 */	{kFunction, kA,        kS,       kD,     kF,     kG,    kNone,     kH,     kJ,        kK,        kL,         kSemicolon, kApostrophe, kEnter,      kEnd},
+/* Row#3 */	{kLeftshift,kZ,        kX,       kC,     kV,     kB,    kNone,     kB,     kN,        kM,        kComma,     kDot,       kSlash,      kRightshift, kUp},
+/* Row#4 */	{kLeftctrl, kLeftmeta, kLeftalt, kSpace, kNone,  kNone, kNone,     kSpace, kFunction, kRightalt, kRightctrl, kLeft,      kDown,       kRight,      kHome}
 };
 
 uint8_t gKeymap_buffer_layer1[KEYMAP_ROW_NUM][KEYMAP_COL_NUM] =
-{        /*  Col#0   Col#1 Col#2  Col#3 Col#4   Col#5  Col#6   Col#7  Col#8  Col#9  Col#10   Col#11   Col#12  Col#13 Col14     Col15*/
-/* Row#0 */	{kGrave, kF1,  kF2,   kF3,  kF4,    kF5,   kF6,    kF7,   kF8,   kF9,   kF10,    kF11,    kF12,   kNone, kNone,    kNone},
-/* Row#1 */	{0,      0,    0,     0,    0,      0,     0,      0,     0,     0,     0,       0,       0,      0,     0,        kPageup},
-/* Row#2 */	{0,      0,    0,     0,    0,      0,     0,      0,     0,     0,     0,       0,       0,      0,     kPagedown,kNone},
+{        /*  Col#0   Col#1 Col#2  Col#3 Col#4   Col#5  Col#6   Col#7  Col#8  Col#9  Col#10   Col#11   Col#12  Col#13 Col14 */
+/* Row#0 */	{kGrave, kF1,  kF2,   kF3,  kF4,    kF5,   kF6,    kF7,   kF8,   kF9,   kF10,    kF11,    kF12,   kNone, kNone},
+/* Row#1 */	{0},
+/* Row#2 */	{0,      0,    0,     0,    0,      0,     0,      0,     0,     0,     0,       0,       0,      0,     kPagedown},
 /* Row#3 */	{0},
-/* Row#4 */	{0}
+/* Row#4 */	{0,      0,    0,     0,    0,      0,     0,      0,     0,     0,     0,       0,       0,      0,     kPageup}
 };
 
 void ChangeReportByLayout(uint8_t *report)
