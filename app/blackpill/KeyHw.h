@@ -15,7 +15,6 @@ typedef struct KeyHwAddr
 {
 	uint8_t col;
 	uint8_t row;
-	uint8_t fn;
 } KeyHwAddr_t;
 
 typedef struct Keypin
