@@ -38,6 +38,8 @@ static void SendUSBHID(void)
 
 	Kernel_recv_msg(KernelMsgQ_D2hData, HIDKeyboardReport, HID_KBD_REPORT_BYTE);
 
+    DBG_PRINT("HID: %x %x %x %x\n", HIDKeyboardReport[0], HIDKeyboardReport[1], HIDKeyboardReport[2], HIDKeyboardReport[3]);
+
 	App_hid_send(HIDKeyboardReport, HID_KBD_REPORT_BYTE);
 
 	// ignore unexpected data

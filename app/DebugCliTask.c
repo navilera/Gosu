@@ -29,12 +29,16 @@ static void HandleDebugCommand(void);
 static void HandleCmdHelp(char* param);
 static void HandleHid(char* param);
 static void HandleReadMem(char* param);
+static void StartHid(char* param);
+static void StopHid(char* param);
 
 static CmdTable_t sCmdTable[] =
 {
 		{4, "help",		"show this information", 	HandleCmdHelp},
 		{3, "hid",		"send hid keyboard report",	HandleHid},
 		{2, "RM",		"Read memory",				HandleReadMem},
+		{5, "start",	"Just send report",			StartHid},
+		{4, "stop",		"Stop report",				StopHid},
 		{0, NULL,NULL,NULL}
 };
 
@@ -130,6 +134,25 @@ static void HandleHid(char* param)
 	Kernel_yield();
 	USBD_Delay(200);
 
+	hid_key_report[0] = 0;
+	hid_key_report[2] = 0;	// clear
+	hid_key_report[3] = 0;	// clear
+	Kernel_send_msg(KernelMsgQ_D2hData, hid_key_report, 8);
+	Kernel_send_events(KernelEventFlag_SendD2H);
+}
+
+static void StartHid(char* param)
+{
+	uint8_t hid_key_report[8] = {0};
+	hid_key_report[2] = 0x11;	// 'n'
+	hid_key_report[3] = 0x1b;	// 'x'
+	Kernel_send_msg(KernelMsgQ_D2hData, hid_key_report, 8);
+	Kernel_send_events(KernelEventFlag_SendD2H);
+}
+
+static void StopHid(char* param)
+{
+	uint8_t hid_key_report[8] = {0};
 	hid_key_report[0] = 0;
 	hid_key_report[2] = 0;	// clear
 	hid_key_report[3] = 0;	// clear
